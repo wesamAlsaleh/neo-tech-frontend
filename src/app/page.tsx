@@ -1,16 +1,7 @@
-import Image from "next/image";
-
-// import the function from the server
-import { test } from "../test";
-
 export default function Home() {
   return (
-    <div>
-      <h1>Hello world</h1>
-      <br />
-      <h2>Test the server</h2>
-
-      <button onClick={() => test}></button>
+    <div className="flex justify-center">
+      <h1 className="text-2xl text-slate-800">Hello world</h1>
     </div>
   );
 }

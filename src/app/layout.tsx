@@ -13,10 +13,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "neoTech E-shop",
+  title: "neoTech",
   description: "neoTech E-shop",
 };
 
+// App Router
 export default function RootLayout({
   children,
 }: Readonly<{

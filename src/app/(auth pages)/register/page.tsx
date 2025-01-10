@@ -78,38 +78,48 @@ export default function Page() {
     } catch (error) {
       console.error("Error:", error);
       setStatus(""); // Clear status on error
-      setError("An unexpected error occurred.");
+      setError("");
     }
   }
 
   return (
-    <div>
-      <h1 style={{ color: "blue" }} className="font-bold text-4xl mb-4">
+    <div className="flex flex-col items-center mt-8">
+      <h1 className="font-bold text-4xl mb-4 flex justify-center text-blue-600">
         Register Page
       </h1>
 
-      <form onSubmit={handleRegisterSubmit} className="flex flex-col space-y-4">
+      <form
+        onSubmit={handleRegisterSubmit}
+        className="flex justify-center gap-2"
+      >
+        {/* Input fields for registration */}
+        <input type="text" name="first_name" placeholder="John" required />
+
+        <input type="text" name="last_name" placeholder="Stone" required />
+
         <input
-          type="text"
-          name="first_name"
-          placeholder="First Name"
+          type="email"
+          name="email"
+          placeholder="john25@email.com"
           required
         />
-        <input type="text" name="last_name" placeholder="Last Name" required />
-        <input type="email" name="email" placeholder="Email" required />
+
         <input
           type="password"
           name="password"
-          placeholder="Password"
+          placeholder="********"
           required
         />
+
         <input
           type="tel"
           name="phone_number"
           maxLength={8}
-          placeholder="Phone Number"
+          placeholder="+973 12345678"
           required
         />
+
+        {/* Submit button */}
         <button type="submit" className="border p-2 bg-primary text-white">
           Register
         </button>
@@ -119,8 +129,10 @@ export default function Page() {
       <p className={`text-green-500 mt-4`}>{status}</p>
       <p className={`text-red-500 mt-4`}>{error}</p>
 
-      <Link href="/" className="font-bold text-red-500 mt-4">
-        Cancel and go back
+      <Link href="/">
+        <button className="border p-2 font-bold text-red-500 mt-4">
+          Cancel and go back
+        </button>
       </Link>
     </div>
   );

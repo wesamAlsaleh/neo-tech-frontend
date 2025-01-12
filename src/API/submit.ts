@@ -39,10 +39,15 @@ export default async function handler(
   // Handle the request
   const data = request.body;
 
-  //   response.json({ data });
+  // set the cookie as the token from the response data
+  response.setHeader("Set-Cookie", `token=${data.token}; Path=/; HttpOnly`);
+  response.status(201).json({
+    message: "Registration successful.",
+    data,
+  });
 
-  // redirect
-  response.redirect(301, "/");
+  //   // redirect
+  //   response.redirect(301, "/");
 }
 
 // 201: Created, 200: OK, 300: Multiple Choices, 301: Moved Permanently, 302: Found, 303: See Other, 304: Not Modified, 307: Temporary Redirect, 308: Permanent Redirect, 400: Bad Request, 401: Unauthorized, 403: Forbidden, 404: Not Found, 500: Internal Server Error, 501: Not Implemented, 502: Bad Gateway, 503: Service Unavailable, 504: Gateway Timeout, 505: HTTP Version Not Supported

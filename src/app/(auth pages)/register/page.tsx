@@ -17,6 +17,10 @@ export default function Page() {
     setIsLoading(true);
 
     try {
+      // Clear the message and error states
+      setMessage(null);
+      setError(null);
+
       // Get the form data
       const formData = new FormData(event.currentTarget);
 
@@ -114,7 +118,11 @@ export default function Page() {
         </button>
       </form>
 
-      {message && <p className="mt-4 text-primary">* {message}</p>}
+      {/* if no error show the message */}
+      {error ? null : (
+        <p className="mt-4 text-green-500 font-bold">{message}</p>
+      )}
+
       {error && <p className="mt-4 text-red-500 font-bold">{error}</p>}
 
       <Link href="/">

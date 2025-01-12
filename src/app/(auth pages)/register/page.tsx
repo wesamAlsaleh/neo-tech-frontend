@@ -72,6 +72,7 @@ export default function Page() {
           type="text"
           name="first_name"
           placeholder="First Name"
+          defaultValue={""}
           required
           className="p-2 border"
         />
@@ -80,6 +81,7 @@ export default function Page() {
           type="text"
           name="last_name"
           placeholder="Last Name"
+          defaultValue={""}
           required
           className="p-2 border"
         />
@@ -88,6 +90,7 @@ export default function Page() {
           type="email"
           name="email"
           placeholder="Email"
+          defaultValue={""}
           required
           className="p-2 border"
         />
@@ -96,6 +99,7 @@ export default function Page() {
           type="password"
           name="password"
           placeholder="Password"
+          defaultValue={""}
           required
           className="p-2 border"
         />
@@ -105,6 +109,7 @@ export default function Page() {
           name="phone_number"
           maxLength={8}
           placeholder="Phone Number"
+          defaultValue={""}
           required
           className="p-2 border"
         />

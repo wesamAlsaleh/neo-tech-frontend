@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FormEvent, useState } from "react";
+import React, { useState, FormEvent } from "react";
 import Link from "next/link";
 
 export default function Page() {
@@ -10,20 +10,18 @@ export default function Page() {
 
   // IMPORTANT NOTE: handle submit function calls the handler function indirectly (submit.ts), This happens when handleSubmit sends a POST request to the API route where handler is defined.
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    // Prevent the default form submission
-    event.preventDefault();
-
-    // Set loading to true when the request starts
-    setIsLoading(true);
+    event.preventDefault(); // prevent the default form submission
+    setIsLoading(true); // set loading to true
 
     try {
-      // Clear the message and error states
+      // Reset the message and error states
       setMessage(null);
       setError(null);
 
       // Get the form data
       const formData = new FormData(event.currentTarget);
 
+      // Create a user data object from the form data
       const userData = {
         first_name: formData.get("first_name") as string,
         last_name: formData.get("last_name") as string,
@@ -32,31 +30,29 @@ export default function Page() {
         phone_number: formData.get("phone_number") as string,
       };
 
-      // Request to the server to register the user
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_APP_URI}/register`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Accept: "application/json",
           },
           body: JSON.stringify(userData),
         }
       );
 
-      // Handle the response from the server (for example, display the status message)
+      // Get the response data as JSON and set the message or error
       const data = await response.json();
 
-      setMessage(data.message);
-      setError(data.error);
-
-      console.log(data);
+      // Set the message or error based on the response data
+      setMessage(data.message || "Registration successful!");
+      setError(data.error || null);
     } catch (error) {
-      // Handle error if necessary
-      console.error(error);
+      // Log the error and set the error message
+      console.error("Error during submission:", error);
+      setError("An unexpected error occurred. Please try again.");
     } finally {
-      setIsLoading(false); // Set loading to false when the request completes
+      setIsLoading(false);
     }
   }
 

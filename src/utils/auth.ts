@@ -1,13 +1,27 @@
+"use server";
+
 import axios from "axios";
 
-export default async function handleRegisterSubmit(userData: {
+type UserData = {
   first_name: string;
   last_name: string;
   email: string;
   password: string;
   phone_number: string;
-}) {
+};
+
+// Handle registration form submission to the server
+export async function handleRegisterSubmit(prevState: any, formData: FormData) {
   try {
+    // Convert FormData to UserData object
+    const userData: UserData = {
+      first_name: formData.get("first_name") as string,
+      last_name: formData.get("last_name") as string,
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+      phone_number: formData.get("phone_number") as string,
+    };
+
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_APP_URI}/register`,
       userData,
@@ -16,37 +30,26 @@ export default async function handleRegisterSubmit(userData: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        // withCredentials: true, // Enable cookies if needed
       }
     );
-
-    // Successful registration
-    if (response.status === 201) {
-      // Extract the response data from the server response
-      const responseData = response.data;
-
-      // Store the token in localStorage (or use cookies for more secure storage)
-      localStorage.setItem("userToken", responseData.data.token);
-      return {
-        success: true,
-        message: response.data.message || "Registration successful.",
-        responseData: response.data.data, // Return the user data
-      };
-    } else if (response.status === 500) {
-      return {
-        success: false,
-        message: response.data.message || "Registration failed.",
-        error: response.data.error || "Error occurred.",
-      };
-    } else
-      return {
-        success: false,
-        error: "Unexpected response from the server.",
-      };
   } catch (error: any) {
-    // Handle general server errors
-    return {
-      success: false,
-    };
+    console.error(error + " from handleRegisterSubmit");
   }
 }
+
+// {
+//   "status": "success",
+//   "message": "User created successfully",
+//   "data": {
+//       "user": {
+//           "first_name": "Ali",
+//           "last_name": "Esa",
+//           "email": "wesammuneerali8003z@gmail.com",
+//           "phone_number": "11111172",
+//           "updated_at": "2025-01-13T01:19:20.000000Z",
+//           "created_at": "2025-01-13T01:19:20.000000Z",
+//           "id": 37
+//       },
+//       "token": "39|wnYwAqIBcJcyUvlHonYvGoNHPZ7hCDwsiFee3bAoa33293fe"
+//   }
+// }

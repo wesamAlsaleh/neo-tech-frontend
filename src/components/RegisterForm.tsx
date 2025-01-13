@@ -6,7 +6,7 @@ import { useFormStatus } from "react-dom";
 // Import the handleRegisterSubmit function from the auth util file in the utils folder
 import { handleRegisterSubmit } from "@/utils/auth";
 
-export default function LoginForm() {
+export default function RegisterForm() {
   const [state, registerAction] = useActionState(handleRegisterSubmit, null);
 
   return (
@@ -63,7 +63,16 @@ export default function LoginForm() {
       {/* Submit button */}
       <SubmitButton />
 
-      {/* TODO: Display the status of the form */}
+      {/* Display form status */}
+      {state && (
+        <div
+          className={`mt-4 p-2 text-center ${
+            state.success ? "text-green-500" : "text-red-500"
+          }`}
+        >
+          {state.message} {state.error && `: ${state.error}`}
+        </div>
+      )}
     </form>
   );
 }

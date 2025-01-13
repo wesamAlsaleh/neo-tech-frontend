@@ -1,5 +1,6 @@
 "use server";
 
+import { cookies } from "next/headers";
 import axios from "axios";
 
 type UserData = {
@@ -12,6 +13,9 @@ type UserData = {
 
 // Handle registration form submission to the server
 export async function handleRegisterSubmit(prevState: any, formData: FormData) {
+  // Get the cookies
+  const cookieStore = await cookies();
+
   try {
     // Convert FormData to UserData object
     const userData: UserData = {
@@ -32,8 +36,28 @@ export async function handleRegisterSubmit(prevState: any, formData: FormData) {
         },
       }
     );
+
+    // Save the token in a cookie
+    cookieStore.set({
+      name: "authToken",
+      value: response.data.data.token,
+      httpOnly: true,
+      path: "/",
+    });
+
+    // Return the response data
+    return {
+      success: true,
+      message: response.data.message,
+    };
   } catch (error: any) {
-    console.error(error + " from handleRegisterSubmit");
+    return {
+      success: false,
+      message:
+        error.response?.data?.message ||
+        "An error occurred while registering using handleRegisterSubmit",
+      error: error.response?.data?.error || error.message,
+    };
   }
 }
 

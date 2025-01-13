@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 // import custom components
-import LoginForm from "@/components/LoginForm";
+import RegisterForm from "@/components/RegisterForm";
 
 export default function Page() {
   return (
@@ -10,7 +10,7 @@ export default function Page() {
       <h1 className="font-bold text-4xl mb-4 text-primary">Register Page</h1>
 
       {/* registration form */}
-      <LoginForm />
+      <RegisterForm />
 
       {/* home page button */}
       <Link href="/">

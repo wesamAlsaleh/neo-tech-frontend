@@ -5,75 +5,92 @@ import { useFormStatus } from "react-dom";
 
 // Import the handleRegisterSubmit function from the auth util file in the utils folder
 import { handleRegisterSubmit } from "@/utils/auth";
+import Link from "next/link";
 
 export default function RegisterForm() {
   const [state, registerAction] = useActionState(handleRegisterSubmit, null);
 
   return (
-    <form
-      action={registerAction}
-      className="flex flex-col gap-4 w-full max-w-md rounded-md p-4 shadow-md"
-    >
-      <input
-        type="text"
-        name="first_name"
-        placeholder="First Name"
-        defaultValue={""}
-        required
-        className="p-2 border"
-      />
+    <>
+      <form
+        action={registerAction}
+        className="flex flex-col gap-4 w-full max-w-md rounded-md p-4 shadow-md"
+      >
+        <input
+          type="text"
+          name="first_name"
+          placeholder="First Name"
+          defaultValue={""}
+          required
+          className="p-2 border"
+        />
 
-      <input
-        type="text"
-        name="last_name"
-        placeholder="Last Name"
-        defaultValue={""}
-        required
-        className="p-2 border"
-      />
+        <input
+          type="text"
+          name="last_name"
+          placeholder="Last Name"
+          defaultValue={""}
+          required
+          className="p-2 border"
+        />
 
-      <input
-        type="email"
-        name="email"
-        placeholder="Email"
-        defaultValue={""}
-        required
-        className="p-2 border"
-      />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          defaultValue={""}
+          required
+          className="p-2 border"
+        />
 
-      <input
-        type="password"
-        name="password"
-        placeholder="Password"
-        defaultValue={""}
-        required
-        className="p-2 border"
-      />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          defaultValue={""}
+          required
+          className="p-2 border"
+        />
 
-      <input
-        type="tel"
-        name="phone_number"
-        maxLength={8}
-        placeholder="Phone Number"
-        defaultValue={""}
-        required
-        className="p-2 border"
-      />
+        <input
+          type="tel"
+          name="phone_number"
+          maxLength={8}
+          placeholder="Phone Number"
+          defaultValue={""}
+          required
+          className="p-2 border"
+        />
 
-      {/* Submit button */}
-      <SubmitButton />
+        {/* Submit button */}
+        <SubmitButton />
 
-      {/* Display form status */}
-      {state && (
-        <div
-          className={`mt-4 p-2 text-center ${
-            state.success ? "text-green-500" : "text-red-500"
+        {/* Display form status */}
+        {state && (
+          <div
+            className={`mt-4 p-2 text-center ${
+              state.success ? "text-green-500" : "text-red-500"
+            }`}
+          >
+            {/* success or fail message */}
+            {state.message}
+            {/* if there is an error show it */}
+            {state.error && `: ${state.error}`}
+          </div>
+        )}
+      </form>
+
+      {/* home page button */}
+      <Link href="/">
+        <button
+          className={`border p-2 font-bold mt-4 shadow-md  ${
+            state?.success ? "text-green-500" : "text-red-500"
           }`}
         >
-          {state.message} {state.error && `: ${state.error}`}
-        </div>
-      )}
-    </form>
+          {state?.success ? "Go to Home Page" : "Cancel and Go to Home Page"}
+        </button>
+      </Link>
+    </>
   );
 }
 

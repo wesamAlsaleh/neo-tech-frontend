@@ -63,6 +63,7 @@ export async function handleRegisterSubmit(prevState: any, formData: FormData) {
   }
 }
 
+// Handle get user data to the server
 export async function getUser() {
   try {
     // Access the cookies

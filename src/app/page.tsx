@@ -1,6 +1,12 @@
-import Link from "next/link";
+"use server";
 
-export default function Home() {
+import Link from "next/link";
+import { cookies } from "next/headers";
+
+export default async function Home() {
+  // Check if the user is logged in or not and get the user data accordingly
+  const cookieStore = await cookies();
+
   return (
     <>
       {/* Navbar container */}

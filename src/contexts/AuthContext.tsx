@@ -41,19 +41,3 @@ export const useAuth = (): AuthContextType => {
 
   return context;
 };
-
-// {
-//     "message": "User retrieved successfully",
-//     "status": "success",
-//     "data": {
-//         "id": 7,
-//         "first_name": "Ali",
-//         "last_name": "Esa",
-//         "email": "wesammuneerali800s@gmail.com",
-//         "email_verified_at": null,
-//         "role": "user",
-//         "phone_number": "11111112",
-//         "created_at": "2025-01-13T18:13:52.000000Z",
-//         "updated_at": "2025-01-13T18:13:52.000000Z"
-//     }
-// }

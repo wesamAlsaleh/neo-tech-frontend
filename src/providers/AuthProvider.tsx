@@ -24,8 +24,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [user, setUser] = useState<User | null>(null); // user state
   const [loading, setLoading] = useState(true); // loading state
 
-  const router = useRouter(); // router object
-
   // Fetch the user
   useEffect(() => {
     const fetchUser = async () => {

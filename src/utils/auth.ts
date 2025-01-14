@@ -1,6 +1,6 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import axios from "axios";
 
 type UserData = {
@@ -61,19 +61,62 @@ export async function handleRegisterSubmit(prevState: any, formData: FormData) {
   }
 }
 
+export async function getUser() {
+  try {
+    // Access the cookies
+    const cookieStore = cookies();
+
+    // Extract the auth token
+    const authToken = (await cookieStore).get("authToken")?.value;
+
+    if (!authToken) {
+      return {
+        success: false,
+        message: "Auth token not found in cookies.",
+      };
+    }
+
+    // Request the user data using the token
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/user`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+        timeout: 5000, // 5 seconds timeout
+      }
+    );
+
+    // Return success and user data
+    return {
+      success: true,
+      message: response.data.message,
+      userData: response.data.data,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message:
+        error.response?.data?.message ||
+        "An unexpected error occurred. handler!",
+    };
+  }
+}
+
 // {
+//   "message": "User retrieved successfully",
 //   "status": "success",
-//   "message": "User created successfully",
 //   "data": {
-//       "user": {
-//           "first_name": "Ali",
-//           "last_name": "Esa",
-//           "email": "wesammuneerali8003z@gmail.com",
-//           "phone_number": "11111172",
-//           "updated_at": "2025-01-13T01:19:20.000000Z",
-//           "created_at": "2025-01-13T01:19:20.000000Z",
-//           "id": 37
-//       },
-//       "token": "39|wnYwAqIBcJcyUvlHonYvGoNHPZ7hCDwsiFee3bAoa33293fe"
+//       "id": 5,
+//       "first_name": "Wesam",
+//       "last_name": "Muneer",
+//       "email": "wesammuneer@gmail.com",
+//       "email_verified_at": null,
+//       "role": "user",
+//       "phone_number": "37234155",
+//       "created_at": "2025-01-13T17:45:12.000000Z",
+//       "updated_at": "2025-01-13T17:45:12.000000Z"
 //   }
 // }

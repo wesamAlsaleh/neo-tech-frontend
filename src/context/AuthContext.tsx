@@ -2,17 +2,8 @@
 
 import { createContext, Dispatch, SetStateAction, useContext } from "react";
 
-type User = {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  email_verified_at: string | null;
-  role: string;
-  phone_number: string;
-  created_at: string;
-  updated_at: string;
-};
+// import the User type
+import { User } from "@/types/User";
 
 // create an interface for the AuthContext
 interface AuthContextType {
@@ -23,7 +14,7 @@ interface AuthContextType {
 }
 
 // create a context to store the user data and the setUser function
-const AuthContext = createContext<AuthContextType>({
+export const AuthContext = createContext<AuthContextType>({
   user: null,
   setUser: () => {},
   loading: true,

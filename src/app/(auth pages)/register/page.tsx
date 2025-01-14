@@ -1,7 +1,7 @@
 // import custom components
 import RegisterForm from "@/components/RegisterForm";
 
-export default function Page() {
+export default function registerPage() {
   return (
     <div className="flex flex-col items-center mt-8">
       {/* page title */}

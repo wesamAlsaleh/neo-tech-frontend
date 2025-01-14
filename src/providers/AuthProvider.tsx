@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 
 // import the auth context to store the user data in it + to prepare it to wrap the whole application
-import { AuthContext, useAuth } from "@/context/AuthContext";
+import { AuthContext, useAuth } from "@/contexts/AuthContext";
 
 // import axios
 import axios from "axios";
@@ -12,10 +12,10 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 
 // import the getUser function from the auth services file
-import { getUser } from "./auth";
+import { getUser } from "@/services/auth-services";
 
 // import the User type
-import { User } from "@/types/User";
+import { User } from "@/types/user";
 
 // Auth provider to wrap the application with the user data
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({

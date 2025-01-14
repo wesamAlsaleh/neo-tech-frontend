@@ -3,7 +3,7 @@
 import { createContext, Dispatch, SetStateAction, useContext } from "react";
 
 // import the User type
-import { User } from "@/types/User";
+import { User } from "@/types/user";
 
 // create an interface for the AuthContext
 interface AuthContextType {

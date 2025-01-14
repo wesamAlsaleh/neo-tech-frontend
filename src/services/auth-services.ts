@@ -1,6 +1,8 @@
 "use server";
 
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
+
+//
 import axios from "axios";
 
 type UserData = {
@@ -104,19 +106,3 @@ export async function getUser() {
     };
   }
 }
-
-// {
-//   "message": "User retrieved successfully",
-//   "status": "success",
-//   "data": {
-//       "id": 5,
-//       "first_name": "Wesam",
-//       "last_name": "Muneer",
-//       "email": "wesammuneer@gmail.com",
-//       "email_verified_at": null,
-//       "role": "user",
-//       "phone_number": "37234155",
-//       "created_at": "2025-01-13T17:45:12.000000Z",
-//       "updated_at": "2025-01-13T17:45:12.000000Z"
-//   }
-// }

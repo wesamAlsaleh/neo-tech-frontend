@@ -4,7 +4,7 @@ import React, { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 
 // Import the handleRegisterSubmit function from the auth util file in the utils folder
-import { handleRegisterSubmit } from "@/utils/auth";
+import { handleRegisterSubmit } from "@/services/auth-services";
 import Link from "next/link";
 
 export default function RegisterForm() {

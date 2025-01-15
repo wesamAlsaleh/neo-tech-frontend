@@ -15,46 +15,36 @@ import { User } from "@/types/user";
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  // Initialize the user state with the user data from the local storage or null if it doesn't exist
-  const [user, setUser] = useState<User | null>(() => {
-    // Get the user from the local storage
-    const cachedUser = localStorage.getItem("user");
+  // Set the user state to store the user data
+  const [user, setUser] = useState<User | null>(null);
 
-    // Return the user if it exists from the local storage or return null if it doesn't exist
-    return cachedUser ? JSON.parse(cachedUser) : null;
-  }); // This state is a function to run only once when the component is mounted
-
-  // Skip loading if user exists in cache
-  const [loading, setLoading] = useState(!user);
+  // Set the loading state to show the loading spinner when fetching the user data
+  const [loading, setLoading] = useState(true);
 
   // Fetch the user if it doesn't exist in the local storage
   useEffect(() => {
     const fetchUser = async () => {
-      /** @this Statement will trigger the user `function/state` to see
-       *  if the user doesn't exist in the local storage try to fetch it from the server */
-      if (!user) {
-        try {
-          // Fetch the user data from the server
-          const result = await getUser();
+      try {
+        // Fetch the user data from the server
+        const result = await getUser();
 
-          // If the request is successful set the user data in the local storage
-          if (result.success) {
-            // Set the user data in the state
-            setUser(result.userData);
+        // If the request is successful set the user data in the local storage
+        if (result.success) {
+          // Set the user data in the state
+          setUser(result.userData);
 
-            // Set the user data in the local storage
-            localStorage.setItem("user", JSON.stringify(result.userData));
-          }
-        } catch (error) {
-          setUser(null); // Set the user to null if there is an error
-        } finally {
-          setLoading(false); // Set the loading to false after the request is done
+          // Set the user data in the local storage
+          localStorage.setItem("user", JSON.stringify(result.userData));
         }
+      } catch (error) {
+        setUser(null); // Set the user to null if there is an error
+      } finally {
+        setLoading(false); // Set the loading to false after the request is done
       }
     };
 
     fetchUser();
-  }, [user]); // this will run every time the user state changes (when the user changes)
+  }, [user]);
 
   return (
     <AuthContext.Provider value={{ user, setUser, loading, setLoading }}>

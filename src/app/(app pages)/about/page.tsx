@@ -19,10 +19,16 @@ export default function aboutPage() {
       ) : (
         <div>
           <h1 className="text-3xl font-bold">User Details:</h1>
-          <h2>Name: {`${user?.first_name} ${user?.last_name}`}</h2>
-          <h2>Email: {user?.email}</h2>
-          <h2>Phone Number: {user?.phone_number}</h2>
-          <h2>role: {user?.role}</h2>
+          {user ? (
+            <>
+              <h2>Name: {`${user?.first_name} ${user?.last_name}`}</h2>
+              <h2>Email: {user?.email}</h2>
+              <h2>Phone Number: {user?.phone_number}</h2>
+              <h2>role: {user?.role}</h2>
+            </>
+          ) : (
+            <p>No User Available, please sign in.</p>
+          )}
         </div>
       )}
     </div>

@@ -24,17 +24,23 @@ export default function homePage() {
 
         {/* pages links */}
         <div className="flex space-x-4">
-          <Link href="/" className="font-bold">
-            <h1>Home</h1>
-          </Link>
+          <button>
+            <Link href="/" className="font-bold">
+              <h1>Home</h1>
+            </Link>
+          </button>
 
-          <Link href="/contact" className="font-bold">
-            <h1>Contact</h1>
-          </Link>
+          <button>
+            <Link href="/contact" className="font-bold">
+              <h1>Contact</h1>
+            </Link>
+          </button>
 
-          <Link href="/about" className="font-bold">
-            <h1>About</h1>
-          </Link>
+          <button>
+            <Link href="/about" className="font-bold">
+              <h1>About</h1>
+            </Link>
+          </button>
 
           {/* if not authenticated show signup button */}
           {!user ? (
@@ -57,20 +63,26 @@ export default function homePage() {
             <button className="bg-orange-500 text-white p-1">Search</button>
           </div>
 
-          <Link href="#">
-            <h1>Wish list icon</h1>
-          </Link>
+          <button>
+            <Link href="#">
+              <h1>Wish list icon</h1>
+            </Link>
+          </button>
 
-          <Link href="#">
-            <h1>Cart icon</h1>
-          </Link>
+          <button>
+            <Link href="#">
+              <h1>Cart icon</h1>
+            </Link>
+          </button>
 
           {/* if logged in show the profile icon here */}
           {user ? (
             loading ? null : (
-              <Link href="#">
-                <h1>Profile DropDown Menu</h1>{" "}
-              </Link>
+              <button>
+                <Link href="#">
+                  <h1>Profile DropDown Menu</h1>{" "}
+                </Link>
+              </button>
             )
           ) : null}
         </div>

@@ -22,7 +22,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
     // Return the user if it exists from the local storage or return null if it doesn't exist
     return cachedUser ? JSON.parse(cachedUser) : null;
-  });
+  }); // This state is a function to run only once when the component is mounted
 
   // Skip loading if user exists in cache
   const [loading, setLoading] = useState(!user);
@@ -30,9 +30,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Fetch the user if it doesn't exist in the local storage
   useEffect(() => {
     const fetchUser = async () => {
-      // If the user doesn't exist in the local storage try to fetch it from the server
+      /** @this Statement will trigger the user `function/state` to see
+       *  if the user doesn't exist in the local storage try to fetch it from the server */
       if (!user) {
         try {
+          // Fetch the user data from the server
           const result = await getUser();
 
           // If the request is successful set the user data in the local storage
@@ -60,3 +62,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     </AuthContext.Provider>
   );
 };
+
+// Fetching sample response
+// {
+//   "message": "User retrieved successfully",
+//   "status": "success",
+//   "data": {
+//       "id": 5,
+//       "first_name": "Wesam",
+//       "last_name": "Muneer",
+//       "email": "wesammuneer@gmail.com",
+//       "email_verified_at": null,
+//       "role": "user",
+//       "phone_number": "37234155",
+//       "created_at": "2025-01-13T17:45:12.000000Z",
+//       "updated_at": "2025-01-13T17:45:12.000000Z"
+//   }
+// }

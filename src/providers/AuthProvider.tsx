@@ -15,27 +15,45 @@ import { User } from "@/types/user";
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [user, setUser] = useState<User | null>(null); // user state
-  const [loading, setLoading] = useState(true); // loading state
+  // Initialize the user state with the user data from the local storage or null if it doesn't exist
+  const [user, setUser] = useState<User | null>(() => {
+    // Get the user from the local storage
+    const cachedUser = localStorage.getItem("user");
 
-  // Fetch the user
+    // Return the user if it exists from the local storage or return null if it doesn't exist
+    return cachedUser ? JSON.parse(cachedUser) : null;
+  });
+
+  // Skip loading if user exists in cache
+  const [loading, setLoading] = useState(!user);
+
+  // Fetch the user if it doesn't exist in the local storage
   useEffect(() => {
     const fetchUser = async () => {
-      try {
-        const result = await getUser();
+      // If the user doesn't exist in the local storage try to fetch it from the server
+      if (!user) {
+        try {
+          const result = await getUser();
 
-        if (result.success) {
-          setUser(result.userData);
+          // If the request is successful set the user data in the local storage
+          if (result.success) {
+            // Set the user data in the state
+            setUser(result.userData);
+
+            // Set the user data in the local storage
+            localStorage.setItem("user", JSON.stringify(result.userData));
+          }
+        } catch (error) {
+          setUser(null); // Set the user to null if there is an error
+        } finally {
+          setLoading(false); // Set the loading to false after the request is done
         }
-      } catch (error) {
-        setUser(null);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchUser();
-  }, []);
+  }, [user]);
+
   return (
     <AuthContext.Provider value={{ user, setUser, loading, setLoading }}>
       {children}

@@ -168,12 +168,12 @@ export async function getUser() {
     const cookieStore = cookies();
 
     // Extract the auth token
-    const authToken = (await cookieStore).get("authToken")?.value;
+    const authToken = (await cookieStore).get("userToken")?.value;
 
     if (!authToken) {
       return {
         success: false,
-        message: "Auth token not found in cookies.",
+        message: "Token not found in cookies.",
       };
     }
 

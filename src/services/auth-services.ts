@@ -41,10 +41,10 @@ export async function handleRegisterSubmit(prevState: any, formData: FormData) {
 
     // Save the token in a cookie
     cookieStore.set({
-      name: "authToken",
-      value: response.data.data.token,
-      httpOnly: true,
-      path: "/",
+      name: "userToken", // Cookie name
+      value: response.data.data.token, // Save the token in the cookie
+      httpOnly: true, // Make it accessible only on the server side
+      path: "/", // Root path to make it accessible everywhere in the app
     });
 
     // Return the response data

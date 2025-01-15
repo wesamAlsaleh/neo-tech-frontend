@@ -90,6 +90,13 @@ export default function RegisterForm() {
           {state?.success ? "Go to Home Page" : "Cancel and Go to Home Page"}
         </button>
       </Link>
+
+      {/* login page button */}
+      <Link href="/login">
+        <button className="border p-2 font-bold mt-4 shadow-md text-indigo-600">
+          Go to Login Page
+        </button>
+      </Link>
     </>
   );
 }

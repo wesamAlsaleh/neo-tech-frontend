@@ -64,11 +64,13 @@ export default function homePage() {
           </Link>
 
           {/* if logged in show the profile icon here */}
-          {user && !loading ? (
-            <h1>Profile DropDown Menu</h1>
-          ) : (
-            <LoadingSpinner />
-          )}
+          {user ? (
+            loading ? (
+              <LoadingSpinner />
+            ) : (
+              <h1>Profile DropDown Menu</h1>
+            )
+          ) : null}
         </div>
       </div>
     </>

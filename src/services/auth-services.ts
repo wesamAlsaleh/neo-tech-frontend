@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 
 //
 import axios from "axios";
+import { redirect } from "next/navigation";
 
 type RegisterUserData = {
   first_name: string;
@@ -167,7 +168,7 @@ export async function getUser() {
     // Access the cookies
     const cookieStore = cookies();
 
-    // Extract the auth token
+    // Extract the auth token from the cookies
     const authToken = (await cookieStore).get("userToken")?.value;
 
     if (!authToken) {

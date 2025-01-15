@@ -2,12 +2,19 @@
 
 import React, { useActionState } from "react";
 import { useFormStatus } from "react-dom";
+import Link from "next/link";
 
 // Import the handleRegisterSubmit function from the auth util file in the utils folder
 import { handleRegisterSubmit } from "@/services/auth-services";
-import Link from "next/link";
+
+// import router from the next/navigation module to redirect the user to the home page after successful registration
+import { redirect, useRouter } from "next/navigation";
 
 export default function RegisterForm() {
+  // Get the router object from the useRouter hook
+  const router = useRouter();
+
+  // useActionState hook to handle the form submission
   const [state, registerAction] = useActionState(handleRegisterSubmit, null);
 
   return (
@@ -79,6 +86,9 @@ export default function RegisterForm() {
           </div>
         )}
       </form>
+
+      {/*TODO: if successfully register redirect to the home page */}
+      {/* {state?.success && redirect("/")} */}
 
       {/* home page button */}
       <Link href="/">

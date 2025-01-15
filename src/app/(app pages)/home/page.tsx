@@ -6,7 +6,7 @@ import React from "react";
 // import the auth context to get the user data
 import { useAuth } from "@/contexts/AuthContext";
 
-// Import custom components
+// Import custom components TODO: Enhance the component to be more reusable and flexible
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function homePage() {
@@ -37,11 +37,13 @@ export default function homePage() {
           </Link>
 
           {/* if not authenticated show signup button */}
-          {!user && (
-            <Link href="/register" className="font-bold">
-              <h1>Sign up</h1>
-            </Link>
-          )}
+          {!user ? (
+            loading ? null : (
+              <Link href="/register" className="font-bold">
+                <h1>Sign up</h1>
+              </Link>
+            )
+          ) : null}
         </div>
 
         {/* Search bar and icons */}
@@ -65,9 +67,7 @@ export default function homePage() {
 
           {/* if logged in show the profile icon here */}
           {user ? (
-            loading ? (
-              <LoadingSpinner />
-            ) : (
+            loading ? null : (
               <Link href="#">
                 <h1>Profile DropDown Menu</h1>{" "}
               </Link>

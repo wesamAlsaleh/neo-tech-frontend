@@ -55,11 +55,11 @@ export default function homePage() {
             <button className="bg-orange-500 text-white p-1">Search</button>
           </div>
 
-          <Link href="/whishlist">
+          <Link href="#">
             <h1>Wish list icon</h1>
           </Link>
 
-          <Link href="/cart">
+          <Link href="#">
             <h1>Cart icon</h1>
           </Link>
 
@@ -68,7 +68,9 @@ export default function homePage() {
             loading ? (
               <LoadingSpinner />
             ) : (
-              <h1>Profile DropDown Menu</h1>
+              <Link href="#">
+                <h1>Profile DropDown Menu</h1>{" "}
+              </Link>
             )
           ) : null}
         </div>

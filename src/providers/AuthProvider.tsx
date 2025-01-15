@@ -44,7 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     fetchUser();
-  }, [user]);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, setUser, loading, setLoading }}>

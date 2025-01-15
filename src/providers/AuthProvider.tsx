@@ -3,13 +3,7 @@
 import React, { useState, useEffect } from "react";
 
 // import the auth context to store the user data in it + to prepare it to wrap the whole application
-import { AuthContext, useAuth } from "@/contexts/AuthContext";
-
-// import axios
-import axios from "axios";
-
-// import router
-import { useRouter } from "next/navigation";
+import { AuthContext } from "@/contexts/AuthContext";
 
 // import the getUser function from the auth services file
 import { getUser } from "@/services/auth-services";

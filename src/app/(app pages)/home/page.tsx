@@ -60,8 +60,8 @@ export default function homePage() {
             <h1>Cart icon</h1>
           </Link>
 
-          {/* TODO: if logged in show the profile icon here */}
-          {user && <h1>Avatar icon</h1>}
+          {/* if logged in show the profile icon here */}
+          {user && !loading && <h1>Avatar icon</h1>}
         </div>
       </div>
     </>

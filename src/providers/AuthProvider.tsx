@@ -54,7 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     };
 
     fetchUser();
-  }, [user]);
+  }, [user]); // this will run every time the user state changes (when the user changes)
 
   return (
     <AuthContext.Provider value={{ user, setUser, loading, setLoading }}>

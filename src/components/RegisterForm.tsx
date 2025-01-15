@@ -110,6 +110,7 @@ function SubmitButton() {
   );
 }
 
+// Response from the server when a user is created successfully
 // {
 //   "status": "success",
 //   "message": "User created successfully",

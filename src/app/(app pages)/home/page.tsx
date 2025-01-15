@@ -6,6 +6,9 @@ import React from "react";
 // import the auth context to get the user data
 import { useAuth } from "@/contexts/AuthContext";
 
+// Import custom components
+import LoadingSpinner from "@/components/LoadingSpinner";
+
 export default function homePage() {
   // get user data
   const { user, loading } = useAuth();
@@ -61,7 +64,7 @@ export default function homePage() {
           </Link>
 
           {/* if logged in show the profile icon here */}
-          {user && !loading && <h1>Avatar icon</h1>}
+          {user ? loading && <LoadingSpinner /> : <h1>Sign in</h1>}
         </div>
       </div>
     </>

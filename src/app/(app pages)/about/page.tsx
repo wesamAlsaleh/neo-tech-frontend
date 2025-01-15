@@ -1,7 +1,12 @@
 "use client";
 
 import React from "react";
+
+// import the auth context to get the user data
 import { useAuth } from "@/contexts/AuthContext";
+
+// Import custom components
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function aboutPage() {
   // get the user data from the auth context
@@ -10,7 +15,7 @@ export default function aboutPage() {
   return (
     <div>
       {loading ? (
-        <p>Loading user data</p>
+        <LoadingSpinner />
       ) : (
         <div>
           <h1 className="text-3xl font-bold">User Details:</h1>

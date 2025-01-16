@@ -50,6 +50,13 @@ export default function homePage() {
               </Link>
             )
           ) : null}
+
+          {/* TODO: remove this button */}
+          <button>
+            <Link href="/dashboard" className="font-bold">
+              <h1>Dashboard</h1>
+            </Link>
+          </button>
         </div>
 
         {/* Search bar and icons */}

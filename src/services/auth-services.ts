@@ -1,10 +1,10 @@
 "use server";
 
+// Import the cookies from the next/headers module
 import { cookies } from "next/headers";
 
-//
+// import axios to make requests to the server
 import axios from "axios";
-import { redirect } from "next/navigation";
 
 type RegisterUserData = {
   first_name: string;
@@ -45,7 +45,7 @@ export async function handleRegisterSubmit(prevState: any, formData: FormData) {
       }
     );
 
-    // Save the token in a cookie
+    // Save the token in a cookie  TODO:consider adding secure: true and sameSite: "Strict" for better security
     cookieStore.set({
       name: "userToken", // Cookie name
       value: response.data.userData.token, // Save the token in the cookie
@@ -227,3 +227,72 @@ export async function getUser() {
 // {
 //   "message": "Unauthenticated."
 // }
+
+/**
+ * Retrieves the user role by accessing the authentication token from cookies
+ * and making a request to the user-role endpoint.
+ *
+ * @returns {Promise<{ success: boolean; message?: string; userRole?: string }>}
+ * An object containing the success status, an optional message, and the user role if successful.
+ *
+ * @throws {Error} If an unexpected error occurs during the request.
+ */
+export async function getUserRole(): Promise<{
+  success: boolean;
+  message?: string;
+  userRole?: string;
+}> {
+  try {
+    // Access the cookies
+    const cookieStore = cookies();
+
+    // Extract the auth token from the cookies
+    const userToken = (await cookieStore).get("userToken")?.value;
+
+    if (!userToken) {
+      return {
+        success: false,
+        message: "Token not found in cookies.",
+      };
+    }
+
+    // Request the user data using the token
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/user-role`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+        timeout: 5000, // 5 seconds timeout
+      }
+    );
+
+    // Return success and user role
+    return {
+      success: true,
+      userRole: response.data.userRole,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message:
+        error.response?.data?.message ||
+        "An unexpected error occurred. GetUser service failed.",
+    };
+  }
+}
+
+// Response from the server when a user role is retrieved successfully
+// {
+//   "message": "User role retrieved successfully",
+//   "userRole": "admin"
+// }
+
+// Response from the server when a user role is not retrieved successfully
+// {
+//   "message": "Unauthenticated."
+// }
+
+// TODO: Handle logout

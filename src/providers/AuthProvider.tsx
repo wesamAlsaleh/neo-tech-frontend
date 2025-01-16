@@ -53,11 +53,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-// Fetching sample response
+// Response from the server when a user is retrieved successfully
 // {
 //   "message": "User retrieved successfully",
-//   "status": "success",
-//   "data": {
+//   "userData": {
 //       "id": 5,
 //       "first_name": "Wesam",
 //       "last_name": "Muneer",

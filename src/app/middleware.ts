@@ -1,16 +1,19 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// Import the getUserRole function from the auth-services file
-import { getUserRole } from "@/services/auth-services";
-import { cookies } from "next/headers";
+export function middleware(request: NextRequest) {
+  // Get the user role from the cookie
+  const userRole = request.cookies.get("userRole")?.value;
 
-// Define the paths that require admin access
-const protectedRoutes = ["/dashboard"];
+  // If the user is not an admin, redirect to the home page
+  if (!userRole || userRole !== "admin") {
+    return NextResponse.redirect(new URL("/home", request.url));
+  }
 
-export async function middleware(request: NextRequest) {}
+  // If the user is an admin, continue to the next middleware
+  return NextResponse.next();
+}
 
-// Define the paths where the middleware should be applied
 export const config = {
-  matcher: ["/dashboard/:path*"], // Only apply middleware to these paths
+  matcher: ["/admin/:path*"], // Apply middleware to admin routes
 };

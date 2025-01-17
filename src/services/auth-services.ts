@@ -75,14 +75,14 @@ export async function handleRegisterSubmit(prevState: any, formData: FormData) {
 //   "userData": {
 //       "user": {
 //           "first_name": "Ali",
-//           "last_name": "Esa 3",
-//           "email": "wesammuneerali80sq0@gmail.com",
-//           "phone_number": "33333333",
-//           "updated_at": "2025-01-15T00:59:38.000000Z",
-//           "created_at": "2025-01-15T00:59:38.000000Z",
-//           "id": 11
+//           "last_name": "Esa",
+//           "email": "wesammuneerali800@gmail.com",
+//           "phone_number": "23232323",
+//           "updated_at": "2025-01-16T00:25:58.000000Z",
+//           "created_at": "2025-01-16T00:25:58.000000Z",
+//           "id": 6
 //       },
-//       "token": "14|k6LrmI5C4EnohZpp22m5uIW5PdIEY1TvCAyzVg1kec594a19"
+//       "token": "14|D8qNtchclDPec24scFFTp9IzwvYxeNUbp37sk4bic5bc1bbc"
 //   }
 // }
 

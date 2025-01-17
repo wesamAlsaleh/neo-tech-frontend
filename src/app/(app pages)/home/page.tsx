@@ -53,7 +53,7 @@ export default function homePage() {
 
           {/* TODO: remove this button */}
           <button>
-            <Link href="/dashboard" className="font-bold">
+            <Link href="/admin/dashboard" className="font-bold">
               <h1>Dashboard</h1>
             </Link>
           </button>

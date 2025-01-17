@@ -5,8 +5,6 @@ export function middleware(request: NextRequest) {
   // Get the user role from the cookie
   const userRoleCookie = request.cookies.get("userRole")?.value;
 
-  console.log("userRoleCookie", userRoleCookie);
-
   // If the user is not an admin, redirect to the home page
   if (!userRoleCookie || userRoleCookie !== "admin") {
     return NextResponse.redirect(new URL("/home", request.url));

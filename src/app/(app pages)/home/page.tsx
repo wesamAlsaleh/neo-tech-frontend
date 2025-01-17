@@ -51,12 +51,16 @@ export default function homePage() {
             )
           ) : null}
 
-          {/* TODO: remove this button */}
-          <button>
-            <Link href="/admin/dashboard" className="font-bold">
-              <h1>Dashboard</h1>
-            </Link>
-          </button>
+          {/* TODO: change the place of this button */}
+          {user?.role === "admin" ? (
+            loading ? null : (
+              <button>
+                <Link href="/admin/dashboard" className="font-bold">
+                  <h1>Dashboard</h1>
+                </Link>
+              </button>
+            )
+          ) : null}
         </div>
 
         {/* Search bar and icons */}

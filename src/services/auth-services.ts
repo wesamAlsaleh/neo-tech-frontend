@@ -166,10 +166,10 @@ export async function handleLoginSubmit(prevState: any, formData: FormData) {
 export async function getUser() {
   try {
     // Access the cookies
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
 
     // Extract the auth token from the cookies
-    const authToken = (await cookieStore).get("userToken")?.value;
+    const authToken = cookieStore.get("userToken")?.value;
 
     if (!authToken) {
       return {
@@ -190,6 +190,24 @@ export async function getUser() {
         timeout: 5000, // 5 seconds timeout
       }
     );
+
+    // Check if the user role is stored in the cookies
+    const hasRoleCookie = cookieStore.has("userRole");
+
+    // If the role is stored in the cookies, delete it and set the new role
+    if (hasRoleCookie) {
+      (await cookies())
+        .delete("userRole")
+        .set("userRole", response.data.userData.role, { secure: true });
+    }
+
+    // Save the role in a cookie
+    cookieStore.set({
+      name: "userRole", // Cookie name
+      value: response.data.userData.role, // Save the role in the cookie
+      httpOnly: true, // Make it accessible only on the server side
+      path: "/", // Root path to make it accessible everywhere in the app
+    });
 
     // Return success and user data
     return {

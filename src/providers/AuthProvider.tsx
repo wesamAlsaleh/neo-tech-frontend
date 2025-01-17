@@ -10,6 +10,7 @@ import { getUser } from "@/services/auth-services";
 
 // import the User type
 import { User } from "@/types/user";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 // Auth provider to wrap the application with the user data
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -21,8 +22,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Set the loading state to show the loading spinner when fetching the user data
   const [loading, setLoading] = useState(true);
 
+  // Detect when the component is mounted
+  const [isMounted, setIsMounted] = useState(false);
+
   // Fetch the user if it doesn't exist in the local storage
   useEffect(() => {
+    // Set the isMounted state to true after the component is mounted
+    setIsMounted(true);
+
+    // Fetch the user data from the server
     const fetchUser = async () => {
       try {
         // Fetch the user data from the server
@@ -43,8 +51,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     };
 
-    fetchUser();
-  }, []);
+    // Fetch the user data if mounted (if the component is rendered)
+    if (isMounted) {
+      fetchUser();
+    }
+  }, [isMounted]);
+
+  // Show a loading spinner until hydration is complete
+  if (!isMounted) return <LoadingSpinner />;
 
   return (
     <AuthContext.Provider value={{ user, setUser, loading, setLoading }}>

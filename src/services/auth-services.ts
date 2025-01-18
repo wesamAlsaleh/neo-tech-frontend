@@ -49,6 +49,7 @@ export async function handleRegisterSubmit(prevState: any, formData: FormData) {
     cookieStore.set({
       name: "userToken", // Cookie name
       value: response.data.userData.token, // Save the token in the cookie
+      secure: true, // Make it accessible only on the server side and not on the client side
       httpOnly: true, // Make it accessible only on the server side
       path: "/", // Root path to make it accessible everywhere in the app
     });
@@ -119,6 +120,7 @@ export async function handleLoginSubmit(prevState: any, formData: FormData) {
     cookieStore.set({
       name: "userToken", // Cookie name
       value: response.data.userData.token, // Save the token in the cookie
+      secure: true, // Make it accessible only on the server side and not on the client side
       httpOnly: true, // Make it accessible only on the server side
       path: "/", // Root path to make it accessible everywhere in the app
     });
@@ -205,6 +207,7 @@ export async function getUser() {
     cookieStore.set({
       name: "userRole", // Cookie name
       value: response.data.userData.role, // Save the role in the cookie
+      secure: true, // Make it accessible only on the server side and not on the client side
       httpOnly: true, // Make it accessible only on the server side
       path: "/", // Root path to make it accessible everywhere in the app
     });

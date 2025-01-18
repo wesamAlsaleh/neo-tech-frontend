@@ -1,12 +1,24 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { getUserRole } from "./services/auth-services";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   // Get the user role from the cookie
   const userRoleCookie = request.cookies.get("userRole")?.value;
 
+  // Get the user role from the server
+  const userRoleServerResponse = await getUserRole();
+
+  // Extract the role from the server response
+  const userRole = userRoleServerResponse?.userRole;
+
   // If the user is not an admin, redirect to the home page
-  if (!userRoleCookie || userRoleCookie !== "admin") {
+  if (
+    !userRoleCookie ||
+    !userRole ||
+    userRoleCookie !== "admin" ||
+    userRole !== "admin"
+  ) {
     return NextResponse.redirect(new URL("/home", request.url));
   }
 

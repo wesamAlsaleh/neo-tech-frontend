@@ -1,102 +1,60 @@
-"use client";
+"use server";
 
-import Link from "next/link";
 import React from "react";
 
-// import the auth context to get the user data
-import { useAuth } from "@/contexts/AuthContext";
+// import cookies from "next/cookies";
+import { cookies } from "next/headers";
 
-// Import custom components TODO: Enhance the component to be more reusable and flexible
-import LoadingSpinner from "@/components/LoadingSpinner";
+// Import custom components
+import NavBar from "@/components/NavBar";
 
-export default function homePage() {
-  // get user data
-  const { user, loading } = useAuth();
+// Import the Categories function
+import { getAllCategories } from "@/services/categories-services";
+
+export default async function homePage() {
+  // Get the user token from the cookies
+  const cookieStore = await cookies();
+  const userToken = cookieStore.get("userToken")?.value;
+
+  // Get all categories from the API
+  const categories = await getAllCategories(userToken!);
 
   return (
     <>
-      {/* Navbar container */}
-      <div className="flex p-4 items-center justify-between">
-        {/* Shop name */}
-        <div className="flex items-center ml-10">
-          <h1 className="text-3xl font-bold text-primary">neoTech</h1>
+      {/* Navigation Bar */}
+      <NavBar />
+
+      {/* Main content */}
+      <div>
+        <h1 className="text-4xl font-bold text-center mt-10">
+          All categories on neoTech
+        </h1>
+
+        {/* Categories */}
+        <div className="flex flex-wrap justify-center mt-10">
+          {categories.map((category) => (
+            <div
+              key={category.id}
+              className="bg-gray-100 p-4 rounded-lg shadow-md"
+            >
+              <img
+                src={category.category_image}
+                alt={category.category_name}
+                className="w-full h-32 object-cover rounded-lg"
+              />
+              <h2 className="text-xl font-bold mt-2">
+                {category.category_name} Category
+              </h2>
+              <p className="text-gray-500 mt-2">
+                {category.category_description}
+              </p>
+            </div>
+          ))}
         </div>
 
-        {/* pages links */}
-        <div className="flex space-x-4">
-          <button>
-            <Link href="/" className="font-bold">
-              <h1>Home</h1>
-            </Link>
-          </button>
-
-          <button>
-            <Link href="/contact" className="font-bold">
-              <h1>Contact</h1>
-            </Link>
-          </button>
-
-          <button>
-            <Link href="/about" className="font-bold">
-              <h1>About</h1>
-            </Link>
-          </button>
-
-          {/* if not authenticated show signup button */}
-          {!user ? (
-            loading ? null : (
-              <Link href="/register" className="font-bold">
-                <h1>Sign up</h1>
-              </Link>
-            )
-          ) : null}
-
-          {/* TODO: change the place of this button */}
-          {user?.role === "admin" ? (
-            loading ? null : (
-              <button>
-                <Link href="/admin/dashboard" className="font-bold">
-                  <h1>Dashboard</h1>
-                </Link>
-              </button>
-            )
-          ) : null}
-        </div>
-
-        {/* Search bar and icons */}
-        <div className="flex items-center space-x-4">
-          <div className="flex">
-            <input
-              type="text"
-              placeholder="Search"
-              className="border-2 border-gray-300 p-1"
-            />
-            <button className="bg-orange-500 text-white p-1">Search</button>
-          </div>
-
-          <button>
-            <Link href="#">
-              <h1>Wish list icon</h1>
-            </Link>
-          </button>
-
-          <button>
-            <Link href="#">
-              <h1>Cart icon</h1>
-            </Link>
-          </button>
-
-          {/* if logged in show the profile icon here */}
-          {user ? (
-            loading ? null : (
-              <button>
-                <Link href="#">
-                  <h1>Profile DropDown Menu</h1>{" "}
-                </Link>
-              </button>
-            )
-          ) : null}
-        </div>
+        <p className="text-center mt-4 text-gray-500">
+          The best tech shop in the world
+        </p>
       </div>
     </>
   );

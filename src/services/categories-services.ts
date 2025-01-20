@@ -7,9 +7,7 @@ import axios from "axios";
 import type { Category } from "@/types/category";
 
 // Get all categories from the API endpoint
-export async function getAllCategories(
-  AdminUserToken: string
-): Promise<Category[]> {
+export async function getAllCategories(AdminUserToken: string) {
   try {
     // Fetch the categories
     const response = await axios.get(
@@ -18,7 +16,6 @@ export async function getAllCategories(
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
-          Authorization: `Bearer ${AdminUserToken}`,
         },
       }
     );
@@ -27,10 +24,14 @@ export async function getAllCategories(
     const categories: Category[] = response.data.categories;
 
     // Return the categories
-    return categories;
+    return {
+      message: "Categories fetched successfully",
+      categories,
+    };
   } catch (error) {
-    console.error(error);
-    return [];
+    return {
+      message: "An error occurred while fetching the categories from the API",
+    };
   }
 }
 
@@ -38,15 +39,17 @@ export async function getAllCategories(
 // {
 //     "message": "Categories fetched successfully",
 //     "categories": [
-//         {
-//             "id": 17,
-//             "category_name": "Machine",
-//             "category_slug": "machine",
-//             "category_description": "laptop to machine",
-//             "category_image": "678c64197fc25.png",
-//             "is_active": 0,
-//             "created_at": "2025-01-19T02:31:53.000000Z",
-//             "updated_at": "2025-01-19T02:49:32.000000Z"
-//         }
+//   {
+//     "id": 38,
+//     "category_name": "Laptop",
+//     "category_slug": "laptop",
+//     "category_description": "testing",
+//     "category_image": "678d973602a96.png",
+//     "is_active": 0,
+//     "created_at": "2025-01-20T00:22:14.000000Z",
+//     "updated_at": "2025-01-20T00:22:14.000000Z",
+//     "category_image_url": "http://127.0.0.1:8000/storage/images/categories_images/678d973602a96.png"
+// },
+//
 //     ]
 // }

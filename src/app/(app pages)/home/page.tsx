@@ -17,7 +17,10 @@ export default async function homePage() {
   const userToken = cookieStore.get("userToken")?.value;
 
   // Get all categories from the API
-  const categories = await getAllCategories(userToken!);
+  const FetchCategories = await getAllCategories(userToken!);
+
+  // Get the categories from the response
+  const categories = FetchCategories.categories;
 
   return (
     <>
@@ -32,13 +35,13 @@ export default async function homePage() {
 
         {/* Categories */}
         <div className="flex flex-wrap justify-center mt-10">
-          {categories.map((category) => (
+          {categories?.map((category) => (
             <div
               key={category.id}
               className="bg-gray-100 p-4 rounded-lg shadow-md"
             >
               <img
-                src={category.category_image}
+                src={category.category_image_url}
                 alt={category.category_name}
                 className="w-full h-32 object-cover rounded-lg"
               />

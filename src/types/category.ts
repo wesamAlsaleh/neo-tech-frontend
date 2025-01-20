@@ -7,13 +7,17 @@ export type Category = {
   is_active: number;
   created_at: string;
   updated_at: string;
+  category_image_url?: string;
 };
 
-// "id": 17,
-// "category_name": "Machine",
-// "category_slug": "machine",
-// "category_description": "laptop to machine",
-// "category_image": "678c64197fc25.png",
-// "is_active": 0,
-// "created_at": "2025-01-19T02:31:53.000000Z",
-// "updated_at": "2025-01-19T02:49:32.000000Z"
+// {
+//   "id": 38,
+//   "category_name": "Laptop",
+//   "category_slug": "laptop",
+//   "category_description": "testing",
+//   "category_image": "678d973602a96.png",
+//   "is_active": 0,
+//   "created_at": "2025-01-20T00:22:14.000000Z",
+//   "updated_at": "2025-01-20T00:22:14.000000Z",
+//   "category_image_url": "http://127.0.0.1:8000/storage/images/categories_images/678d973602a96.png"
+// },

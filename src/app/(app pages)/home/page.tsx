@@ -38,12 +38,12 @@ export default async function homePage() {
           {categories?.map((category) => (
             <div
               key={category.id}
-              className="bg-gray-100 p-4 rounded-lg shadow-md"
+              className="bg-gray-100 p-4 rounded-lg shadow-md gap-4 flex flex-col items-center mx-4 my-4"
             >
               <img
                 src={category.category_image_url}
                 alt={category.category_name}
-                className="w-full h-32 object-cover rounded-lg"
+                className="w-32 h-32 object-cover rounded-lg"
               />
               <h2 className="text-xl font-bold mt-2">
                 {category.category_name} Category

@@ -45,13 +45,14 @@ export async function handleRegisterSubmit(prevState: any, formData: FormData) {
       }
     );
 
-    // Save the token in a cookie  TODO:consider adding secure: true and sameSite: "Strict" for better security
+    // Save the token in a cookie  @NOTE: consider adding secure: true and sameSite: "Strict" for better security
     cookieStore.set({
       name: "userToken", // Cookie name
       value: response.data.userData.token, // Save the token in the cookie
       secure: true, // Make it accessible only on the server side and not on the client side
       httpOnly: true, // Make it accessible only on the server side
       path: "/", // Root path to make it accessible everywhere in the app
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // Expires in 7 days
     });
 
     // Return the response data
@@ -123,6 +124,7 @@ export async function handleLoginSubmit(prevState: any, formData: FormData) {
       secure: true, // Make it accessible only on the server side and not on the client side
       httpOnly: true, // Make it accessible only on the server side
       path: "/", // Root path to make it accessible everywhere in the app
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // Expires in 7 days
     });
 
     // Return the response data
@@ -210,6 +212,7 @@ export async function getUser() {
       secure: true, // Make it accessible only on the server side and not on the client side
       httpOnly: true, // Make it accessible only on the server side
       path: "/", // Root path to make it accessible everywhere in the app
+      expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // Expires in 7 days
     });
 
     // Return success and user data

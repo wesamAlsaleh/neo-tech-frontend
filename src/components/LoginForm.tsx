@@ -19,7 +19,7 @@ export default function LoginForm() {
   // Redirect the user to the home page after login is successful
   useEffect(() => {
     if (state?.success) {
-      router.push("/");
+      router.push("/home");
     }
   }, [state?.success, router]);
 

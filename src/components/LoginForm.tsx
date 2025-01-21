@@ -1,14 +1,27 @@
 "use client";
 
-import React, { useActionState } from "react";
+import React, { useActionState, useEffect } from "react";
 import Link from "next/link";
 import { useFormStatus } from "react-dom";
 
 // Import the handleLoginSubmit function from the auth util file in the utils folder
 import { handleLoginSubmit } from "@/services/auth-services";
 
+// import router from the next/navigation module to redirect the user to the home page after successful login
+import { useRouter } from "next/navigation";
+
 export default function LoginForm() {
+  // Get the router object from the useRouter hook
+  const router = useRouter();
+
   const [state, loginAction] = useActionState(handleLoginSubmit, null);
+
+  // Redirect the user to the home page after login is successful
+  useEffect(() => {
+    if (state?.success) {
+      router.push("/");
+    }
+  }, [state?.success, router]);
 
   return (
     <>
@@ -44,22 +57,22 @@ export default function LoginForm() {
               state.success ? "text-green-500" : "text-red-500"
             }`}
           >
-            {/* success or fail message */}
+            {/* success or fail message without details! */}
             {state.message}
           </div>
         )}
       </form>
 
       {/* home page button */}
-      <Link href="/">
-        <button
-          className={`border p-2 font-bold mt-4 shadow-md  ${
-            state?.success ? "text-green-500" : "text-red-500"
-          }`}
-        >
-          {state?.success ? "Go to Home Page" : "Cancel and Go to Home Page"}
-        </button>
-      </Link>
+      {state?.success === false && (
+        <Link href="/">
+          <button
+            className={`border p-2 font-bold mt-4 shadow-md text-red-500`}
+          >
+            Cancel and Go to Home Page
+          </button>
+        </Link>
+      )}
 
       {/* Register page button */}
       <Link href="/register">

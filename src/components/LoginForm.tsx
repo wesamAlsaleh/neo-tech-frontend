@@ -8,7 +8,7 @@ import { useFormStatus } from "react-dom";
 import { handleLoginSubmit } from "@/services/auth-services";
 
 // import router from the next/navigation module to redirect the user to the home page after successful login
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation"; // TODO: check if this is the correct import or react-router should be used instead
 
 export default function LoginForm() {
   // Get the router object from the useRouter hook

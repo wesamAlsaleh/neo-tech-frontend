@@ -27,9 +27,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Fetch the user if it doesn't exist in the local storage
   useEffect(() => {
-    // Set the isMounted state to true after the component is mounted
-    setIsMounted(true);
-
     // Fetch the user data from the server
     const fetchUser = async () => {
       try {
@@ -41,7 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           // Set the user data in the state
           setUser(result.userData);
 
-          // Set the user data in the local storage
+          // Set the user data in the local storage TODO: Check if it's necessary to store the user data in the local storage
           localStorage.setItem("user", JSON.stringify(result.userData));
         }
       } catch (error) {
@@ -50,6 +47,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setLoading(false); // Set the loading to false after the request is done
       }
     };
+
+    // Set the isMounted state to true after the component is mounted
+    setIsMounted(true);
 
     // Fetch the user data if mounted (if the component is rendered)
     if (isMounted) {

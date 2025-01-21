@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 
 // import axios to make requests to the server
 import axios from "axios";
+import { redirect } from "next/navigation";
 
 type RegisterUserData = {
   first_name: string;

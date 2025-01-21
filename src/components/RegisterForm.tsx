@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useActionState } from "react";
+import React, { useActionState, useEffect } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
 
@@ -8,7 +8,7 @@ import Link from "next/link";
 import { handleRegisterSubmit } from "@/services/auth-services";
 
 // import router from the next/navigation module to redirect the user to the home page after successful registration
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function RegisterForm() {
   // Get the router object from the useRouter hook
@@ -16,6 +16,13 @@ export default function RegisterForm() {
 
   // useActionState hook to handle the form submission
   const [state, registerAction] = useActionState(handleRegisterSubmit, null);
+
+  // Redirect the user to the home page after registration is successful
+  useEffect(() => {
+    if (state?.success) {
+      router.push("/");
+    }
+  }, [state?.success, router]);
 
   return (
     <>
@@ -79,27 +86,22 @@ export default function RegisterForm() {
               state.success ? "text-green-500" : "text-red-500"
             }`}
           >
-            {/* success or fail message */}
-            {state.message}
-            {/* if there is an error show it */}
-            {state.error && `: ${state.error}`}
+            {/* success or fail message with details */}
+            {`${state.message} ${state.error && `: ${state.error}`}`}
           </div>
         )}
       </form>
 
-      {/*TODO: if successfully register redirect to the home page */}
-      {/* {state?.success && redirect("/")} */}
-
       {/* home page button */}
-      <Link href="/">
-        <button
-          className={`border p-2 font-bold mt-4 shadow-md  ${
-            state?.success ? "text-green-500" : "text-red-500"
-          }`}
-        >
-          {state?.success ? "Go to Home Page" : "Cancel and Go to Home Page"}
-        </button>
-      </Link>
+      {state?.success === false && (
+        <Link href="/">
+          <button
+            className={`border p-2 font-bold mt-4 shadow-md text-red-500`}
+          >
+            Cancel and Go to Home Page
+          </button>
+        </Link>
+      )}
 
       {/* login page button */}
       <Link href="/login">

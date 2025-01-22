@@ -21,3 +21,9 @@ export type Category = {
 //   "updated_at": "2025-01-20T00:22:14.000000Z",
 //   "category_image_url": "http://127.0.0.1:8000/storage/images/categories_images/678d973602a96.png"
 // },
+
+export type CategoryData = {
+  category_name: string;
+  category_description: string;
+  category_image: File;
+};

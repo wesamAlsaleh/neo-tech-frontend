@@ -49,7 +49,7 @@ export default function DropDownMenu() {
         router.push("#"); // TODO: change the route
         break;
       case "Manage Categories":
-        router.push("#"); // TODO: change the route
+        router.push("/admin/categories"); // Navigate to the categories page
         break;
       case "Manage Products":
         router.push("#"); // TODO: change the route
@@ -65,19 +65,19 @@ export default function DropDownMenu() {
     }
   };
 
-  let menuItems = ["Profile", "My Orders", "Logout"]; // Default menu items
-
-  if (user?.role === "admin") {
-    menuItems = [
-      "Profile",
-      "My Orders",
-      "Manage Categories",
-      "Manage Products",
-      "Manage Orders",
-      "Manage Users",
-      "Logout",
-    ]; // Menu items
-  }
+  // Menu items based on the user role
+  const menuItems =
+    user?.role === "admin"
+      ? [
+          "Profile",
+          "My Orders",
+          "Manage Categories",
+          "Manage Products",
+          "Manage Orders",
+          "Manage Users",
+          "Logout",
+        ]
+      : ["Profile", "My Orders", "Logout"];
 
   if (loading) {
     return <LoadingSpinner />; // Show a loading spinner while the user data is being fetched

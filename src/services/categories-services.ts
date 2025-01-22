@@ -7,7 +7,7 @@ import axios from "axios";
 import type { Category } from "@/types/category";
 
 // Get all categories from the API endpoint
-export async function getAllCategories(AdminUserToken: string) {
+export async function getAllCategories() {
   try {
     // Fetch the categories
     const response = await axios.get(
@@ -50,6 +50,3 @@ export async function getAllCategories(AdminUserToken: string) {
 //     "updated_at": "2025-01-20T00:22:14.000000Z",
 //     "category_image_url": "http://127.0.0.1:8000/storage/images/categories_images/678d973602a96.png"
 // },
-//
-//     ]
-// }

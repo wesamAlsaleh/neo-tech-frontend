@@ -14,7 +14,7 @@ import { Category } from "@/types/category";
 // import the LoadingSpinner component
 import LoadingSpinner from "./LoadingSpinner";
 
-export function CategoryList() {
+export default function CategoryList() {
   // Categories state
   const [categories, setCategories] = useState<Category[]>([]);
 

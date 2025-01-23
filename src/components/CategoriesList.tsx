@@ -49,9 +49,21 @@ export default function CategoryList() {
 
   // Handle category status toggle
   const handleCategoryStatusToggle = async (categoryId: number) => {
+    // Toggle category status by id
     const serverResponse = await toggleCategoryStatusById(categoryId);
 
+    // If the server response is successful
     if (serverResponse.success) {
+      /**
+       * Update the categories state by mapping through the old categories state and
+       * checking if the category id matches the category id that was toggled. If it matches,
+       * update the category is_active property to the opposite of the current value.
+       * If it doesn't match, return the category as is.
+       *
+       * In other words, we will change the category status from active to inactive (0 to 1 or 1 to 0) that they
+       * were already available in the categories state after the component mounted, all without refreshing the page.
+       * because we already changed the category status in the database using the toggleCategoryStatusById function.
+       */
       setCategories((prevCategories) =>
         prevCategories.map((category) =>
           category.id === categoryId

@@ -47,6 +47,23 @@ export default function CategoryList() {
     fetchCategories();
   }, []);
 
+  // Handle category status toggle
+  const handleCategoryStatusToggle = async (categoryId: number) => {
+    const serverResponse = await toggleCategoryStatusById(categoryId);
+
+    if (serverResponse.success) {
+      setCategories((prevCategories) =>
+        prevCategories.map((category) =>
+          category.id === categoryId
+            ? { ...category, is_active: !category.is_active ? 1 : 0 }
+            : category
+        )
+      );
+    } else {
+      setMessage(serverResponse.message || "Failed to toggle category status.");
+    }
+  };
+
   // Render loading spinner or message
   if (loading) {
     return <LoadingSpinner />;
@@ -140,6 +157,7 @@ export default function CategoryList() {
                       ? `bg-green-500 hover:bg-green-700`
                       : "bg-orange-400 hover:bg-orange-400"
                   } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
+                  onClick={() => handleCategoryStatusToggle(category.id)}
                 >
                   {category.is_active ? "Deactivate" : "Activate"}
                 </button>

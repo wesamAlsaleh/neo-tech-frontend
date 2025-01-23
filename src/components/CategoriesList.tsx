@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 // import functions from the categories-services.ts file
 import {
+  deleteCategoryById,
   getAllCategories,
   toggleCategoryStatusById,
 } from "@/services/categories-services";
@@ -20,6 +21,9 @@ export default function CategoryList() {
 
   // Message state
   const [message, setMessage] = useState<string>("Loading categories...");
+
+  // Delete category message state
+  const [deleteMessage, setDeleteMessage] = useState<string>("");
 
   // Loading state
   const [loading, setLoading] = useState<boolean>(true);
@@ -76,6 +80,31 @@ export default function CategoryList() {
     }
   };
 
+  // Handle category delete by id
+  const handleCategoryDelete = async (categoryId: number) => {
+    // Delete category by id
+    const serverResponse = await deleteCategoryById(categoryId);
+
+    // If the server response is successful
+    if (serverResponse.success) {
+      /**
+       * Filter the categories state by removing the category with the id that was deleted.
+       * This will update the categories state by removing the category that was deleted
+       * without refreshing the page.
+       */
+      setCategories(
+        (prevCategories) =>
+          prevCategories.filter((category) => category.id !== categoryId) // Remove the category with the id that was deleted
+      );
+
+      setDeleteMessage(
+        serverResponse.message || "Category deleted successfully."
+      );
+    } else {
+      setDeleteMessage(serverResponse.message || "Failed to delete category.");
+    }
+  };
+
   // Render loading spinner or message
   if (loading) {
     return <LoadingSpinner />;
@@ -88,6 +117,18 @@ export default function CategoryList() {
   return (
     // Categories Table Container
     <div className="overflow-x-auto">
+      {/* Delete category message */}
+      {deleteMessage && (
+        <div
+          className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
+          role="alert"
+        >
+          <strong className="font-bold">Success! </strong>
+          <span className="block sm:inline">{deleteMessage}</span>
+        </div>
+      )}
+
+      {/* Categories Table */}
       <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
         <thead>
           <tr className="bg-gray-100 border-b border-gray-300">
@@ -159,7 +200,10 @@ export default function CategoryList() {
                   Edit
                 </button>
 
-                <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                <button
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  onClick={() => handleCategoryDelete(category.id)}
+                >
                   Delete
                 </button>
 

@@ -184,9 +184,8 @@ export async function deleteCategoryById(categoryId: number) {
     }
 
     // API call to toggle category status
-    const response = await axios.patch(
-      `${process.env.NEXT_PUBLIC_APP_URI}/admin/toggle-category-status/${categoryId}`,
-      {},
+    const response = await axios.delete(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/delete-category/${categoryId}`,
       {
         headers: {
           "Content-Type": "application/json",
@@ -198,7 +197,7 @@ export async function deleteCategoryById(categoryId: number) {
     // Return success message
     return {
       success: true,
-      message: response.data.message || "Category status updated successfully!",
+      message: response.data.message || "Category deleted successfully!",
     };
   } catch (error: any) {
     // Parse error and return a user-friendly response
@@ -206,7 +205,12 @@ export async function deleteCategoryById(categoryId: number) {
       success: false,
       message:
         error.response?.data?.message ||
-        "An error occurred while updating the category status.",
+        "An error occurred while deleting the category.",
     };
   }
 }
+
+// Response from the server when a category is deleted successfully
+// {
+//   "message": "Moblie category deleted successfully"
+// }

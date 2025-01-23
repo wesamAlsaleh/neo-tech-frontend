@@ -26,14 +26,24 @@ export async function getAllCategories() {
     // Extract the categories from the response
     const categories: Category[] = response.data.categories;
 
+    if (!categories) {
+      return {
+        message: response.data.message || "No categories found",
+        categories: [],
+      };
+    }
+
     // Return the categories
     return {
       message: "Categories fetched successfully",
       categories,
     };
-  } catch (error) {
+  } catch (error: any) {
+    console.error("Categories fetch error:", error);
     return {
-      message: "An error occurred while fetching the categories from the API",
+      message:
+        error.response?.data?.message ||
+        "An error occurred while fetching categories",
       categories: [],
     };
   }
@@ -157,3 +167,46 @@ export async function toggleCategoryStatusById(categoryId: number) {
 // }
 
 // Response from the server when a category status is not updated successfully
+// TODO: Add the response from the server when a category status is not updated successfully
+
+// Update a category by ID
+
+// Delete a category by ID
+export async function deleteCategoryById(categoryId: number) {
+  try {
+    // Get user token from cookies
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    // Check if user token exists
+    if (!userToken) {
+      throw new Error("Authentication required. Please log in.");
+    }
+
+    // API call to toggle category status
+    const response = await axios.patch(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/toggle-category-status/${categoryId}`,
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    // Return success message
+    return {
+      success: true,
+      message: response.data.message || "Category status updated successfully!",
+    };
+  } catch (error: any) {
+    // Parse error and return a user-friendly response
+    return {
+      success: false,
+      message:
+        error.response?.data?.message ||
+        "An error occurred while updating the category status.",
+    };
+  }
+}

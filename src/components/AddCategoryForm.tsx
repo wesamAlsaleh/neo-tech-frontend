@@ -16,7 +16,11 @@ export default function AddCategoryForm() {
   const [categoryImage, setCategoryImage] = useState<File | null>(null);
 
   // State to store the response status to display to the user after form submission
-  const [status, setStatus] = useState({ success: false, message: "" });
+  const [status, setStatus] = useState({
+    success: false,
+    message: "",
+    error: "",
+  });
 
   // Function to handle the form submission
   const handleSubmit = async (e: React.FormEvent) => {
@@ -38,6 +42,11 @@ export default function AddCategoryForm() {
 
     // Update UI with the response
     setStatus(result);
+
+    // Reload the page after 2 seconds if the category is created successfully
+    if (result.success) {
+      setTimeout(() => window.location.reload(), 2000);
+    }
   };
 
   return (
@@ -114,6 +123,7 @@ export default function AddCategoryForm() {
             }`}
           >
             {status.message}
+            {status.error && status.error}
           </p>
         )}
       </form>

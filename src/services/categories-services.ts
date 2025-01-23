@@ -214,3 +214,46 @@ export async function deleteCategoryById(categoryId: number) {
 // {
 //   "message": "Mobile category deleted successfully"
 // }
+
+// Handle the category update form submission
+export async function handleUpdateCategorySubmit(
+  categoryId: number,
+  formData: FormData
+) {
+  try {
+    // Get user token from cookies
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    // Check if user token exists
+    if (!userToken) {
+      throw new Error("Authentication required. Please log in.");
+    }
+
+    // API call to update category
+    const response = await axios.patch(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/update-category/${categoryId}`,
+      formData, // Send the FormData directly
+      {
+        headers: {
+          "Content-Type": "multipart/form-data", // Required for file uploads
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    // Return success message
+    return {
+      success: true,
+      message: response.data.message || "Category updated successfully!",
+    };
+  } catch (error: any) {
+    // Parse error and return a user-friendly response
+    return {
+      success: false,
+      message:
+        error.response?.data?.message ||
+        "An error occurred while updating the category.",
+    };
+  }
+}

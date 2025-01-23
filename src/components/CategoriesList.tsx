@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import {
   deleteCategoryById,
   getAllCategories,
+  handleUpdateCategorySubmit,
   toggleCategoryStatusById,
 } from "@/services/categories-services";
 
@@ -14,6 +15,7 @@ import { Category } from "@/types/category";
 
 // import the LoadingSpinner component
 import LoadingSpinner from "./LoadingSpinner";
+import EditModalComponent from "./EditModalComponent";
 
 export default function CategoryList() {
   // Categories state
@@ -27,6 +29,9 @@ export default function CategoryList() {
 
   // Loading state
   const [loading, setLoading] = useState<boolean>(true);
+
+  // Edit Modal state
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -104,6 +109,9 @@ export default function CategoryList() {
       setDeleteMessage(serverResponse.message || "Failed to delete category.");
     }
   };
+
+  // Open the category edit modal if the openModal state is true
+  const handleCategoryEdit = async (categoryId: number) => {};
 
   // Render loading spinner or message
   if (loading) {
@@ -196,7 +204,10 @@ export default function CategoryList() {
 
               {/* Category  */}
               <td className="px-4 py-2 border border-gray-300 flex gap-2">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                <button
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  onClick={() => setIsEditModalOpen(true)}
+                >
                   Edit
                 </button>
 
@@ -222,6 +233,12 @@ export default function CategoryList() {
           ))}
         </tbody>
       </table>
+
+      {/* Edit Modal */}
+      <EditModalComponent
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+      />
     </div>
   );
 }

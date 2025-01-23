@@ -18,16 +18,13 @@ export default async function manageCategoriesPage() {
         <h2 className="text-2xl font-semibold mb-4">Categories List</h2>
 
         <p className="mb-4">Here you can see all categories</p>
-        {/* Suspense to display a fallback until its children have finished loading  */}
-        <Suspense fallback={<LoadingSpinner />}>
-          {/* Categories table */}
-          <CategoryList />
-        </Suspense>
+        {/* Categories table */}
+        <CategoryList />
       </div>
 
       {/* Create Category Form Container */}
       <div>
-        <h2 className="text-2xl font-semibold mb-4">Add Category</h2>
+        <h2 className="text-2xl font-semibold mb-4">Add New Category</h2>
         <p className="mb-4">Here you can add a new category</p>
 
         {/* Add Category Form */}

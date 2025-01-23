@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useActionState, useEffect, useState } from "react";
+import React, { useState } from "react";
 
 // Import the handleCreateCategorySubmit function from the categories-services file in the services folder
 import { handleCreateCategorySubmit } from "@/services/categories-services";
@@ -77,7 +77,7 @@ export default function AddCategoryForm() {
             htmlFor="category_description"
             className="block text-sm font-medium text-gray-700"
           >
-            Category Description
+            Category Description (Optional)
           </label>
 
           <textarea

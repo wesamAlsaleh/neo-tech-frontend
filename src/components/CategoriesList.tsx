@@ -1,16 +1,58 @@
-"use server";
+"use client";
 
-// import { getAllCategories } from "@/services/categories-services";
-import { getAllCategories } from "@/services/categories-services";
+import { useEffect, useState } from "react";
 
-export async function CategoryList() {
-  // Fetch all categories
-  const categoriesObj = await getAllCategories();
+// import functions from the categories-services.ts file
+import {
+  getAllCategories,
+  toggleCategoryStatusById,
+} from "@/services/categories-services";
 
-  // Extract the categories and message from the response
-  const { message, categories } = categoriesObj;
+// import the Category type
+import { Category } from "@/types/category";
 
-  if (!categories || categories.length === 0) {
+// import the LoadingSpinner component
+import LoadingSpinner from "./LoadingSpinner";
+
+export function CategoryList() {
+  // Categories state
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  // Message state
+  const [message, setMessage] = useState<string>("Loading categories...");
+
+  // Loading state
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        // Fetch all categories
+        const categoriesObj = await getAllCategories();
+
+        // if categories are available, set the categories state
+        if (categoriesObj?.categories.length > 0) {
+          setCategories(categoriesObj.categories!);
+        } else {
+          setMessage(categoriesObj.message || "No categories available.");
+        }
+      } catch (error) {
+        setMessage("Failed to load categories. Please try again later.");
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  // Render loading spinner or message
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (!categories.length) {
     return <p>{message}</p>;
   }
 

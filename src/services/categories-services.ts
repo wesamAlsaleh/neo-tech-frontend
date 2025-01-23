@@ -212,5 +212,5 @@ export async function deleteCategoryById(categoryId: number) {
 
 // Response from the server when a category is deleted successfully
 // {
-//   "message": "Moblie category deleted successfully"
+//   "message": "Mobile category deleted successfully"
 // }

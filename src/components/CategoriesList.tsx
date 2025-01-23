@@ -20,7 +20,7 @@ export default function CategoryList() {
   const [categories, setCategories] = useState<Category[]>([]);
 
   // Message state
-  const [message, setMessage] = useState<string>("Loading categories...");
+  const [message, setMessage] = useState<string>("");
 
   // Delete category message state
   const [deleteMessage, setDeleteMessage] = useState<string>("");
@@ -117,7 +117,7 @@ export default function CategoryList() {
   return (
     // Categories Table Container
     <div className="overflow-x-auto">
-      {/* Delete category message */}
+      {/* Delete category success message */}
       {deleteMessage && (
         <div
           className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"

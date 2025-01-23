@@ -45,6 +45,7 @@ export async function CategoryList() {
             </th>
           </tr>
         </thead>
+
         <tbody>
           {categories.map((category) => (
             <tr key={category.id} className="hover:bg-gray-100 even:bg-gray-50">

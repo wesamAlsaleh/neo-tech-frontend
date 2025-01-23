@@ -60,57 +60,39 @@ export async function handleCreateCategorySubmit(
   formData: FormData
 ) {
   try {
-    // Get the cookies
+    // Get user token from cookies
     const cookieStore = await cookies();
-
-    // Get the user cookie from the cookies
     const userToken = cookieStore.get("userToken")?.value;
 
-    // Create a new FormData object
-    const formDataToSend = new FormData();
-
-    // Append the form data to the formDataToSend object
-    formDataToSend.append(
-      "category_name",
-      formData.get("category_name") as string
-    ); // Get the category name from the form data
-    formDataToSend.append(
-      "category_description",
-      formData.get("category_description") as string
-    ); // Get the category description from the form data
-
-    // Check if the category image is available in the form data
-    if (formData.get("category_image")) {
-      formDataToSend.append(
-        "category_image",
-        formData.get("category_image") as Blob
-      ); // Get the category image from the form data
+    // Check if user token exists
+    if (!userToken) {
+      throw new Error("Authentication required. Please log in.");
     }
 
+    // API call to create category
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_APP_URI}/admin/create-category`,
-      formDataToSend,
+      formData, // Send the FormData directly
       {
         headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
+          "Content-Type": "multipart/form-data", // Required for file uploads
           Authorization: `Bearer ${userToken}`,
         },
       }
     );
 
-    // Return the response data
+    // Return success message
     return {
       success: true,
-      message: response.data.message,
+      message: response.data.message || "Category created successfully!",
     };
   } catch (error: any) {
+    // Parse error and return a user-friendly response
     return {
-      // TODO: change the error message to a more user-friendly message for the user
       success: false,
       message:
         error.response?.data?.message ||
-        "An error occurred while registering using handleRegisterSubmit",
+        "An error occurred while creating the category.",
       error: error.response?.data?.errorMessage || error.message,
     };
   }

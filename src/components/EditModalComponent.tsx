@@ -148,13 +148,20 @@ export default function EditModalComponent({
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
             />
 
-            {/* TODO: Preview the image if available */}
-            {/* {categoryImage && (
-              <Image
-                src={URL.createObjectURL(categoryImage)}
+            {/* Preview the existing category image or newly uploaded image */}
+            {(category?.category_image_url || categoryImage) && (
+              <img
+                src={
+                  categoryImage
+                    ? URL.createObjectURL(categoryImage)
+                    : category?.category_image_url!
+                }
                 alt="Category Image"
+                width={100}
+                height={100}
+                className="mt-2 rounded"
               />
-            )} */}
+            )}
           </div>
 
           <button

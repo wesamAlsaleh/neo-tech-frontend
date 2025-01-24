@@ -30,8 +30,11 @@ export default function CategoryList() {
   // Loading state
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Edit Modal state
+  // Edit Modal states
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<
+    Category | undefined
+  >(undefined); // Selected category to edit
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -111,7 +114,27 @@ export default function CategoryList() {
   };
 
   // Open the category edit modal if the openModal state is true
-  const handleCategoryEdit = async (categoryId: number) => {};
+  // const handleCategoryEdit = async (categoryId: number) => {
+  //   // Update the category by id
+  //   const serverResponse = await handleUpdateCategorySubmit(categoryId);
+
+  //   // If the server response is successful
+  //   if (serverResponse.success) {
+  //     // Update the categories state by mapping through the old categories state
+  //     // and checking if the category id matches the category id that was updated.
+  //     // If it matches, update the category with the new category data.
+  //     // If it doesn't match, return the category as is.
+  //     setCategories((prevCategories) =>
+  //       prevCategories.map((category) =>
+  //         category.id === categoryId ? serverResponse.category : category
+  //       )
+  //     );
+
+  //     setIsEditModalOpen(false);
+  //   } else {
+  //     setMessage(serverResponse.message || "Failed to update category.");
+  //   }
+  // };
 
   // Render loading spinner or message
   if (loading) {
@@ -206,7 +229,10 @@ export default function CategoryList() {
               <td className="px-4 py-2 border border-gray-300 flex gap-2">
                 <button
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  onClick={() => setIsEditModalOpen(true)}
+                  onClick={() => {
+                    setIsEditModalOpen(true);
+                    setSelectedCategory(category);
+                  }}
                 >
                   Edit
                 </button>
@@ -237,6 +263,7 @@ export default function CategoryList() {
       {/* Edit Modal */}
       <EditModalComponent
         isOpen={isEditModalOpen}
+        category={selectedCategory}
         onClose={() => setIsEditModalOpen(false)}
       />
     </div>

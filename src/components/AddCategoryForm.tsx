@@ -43,9 +43,9 @@ export default function AddCategoryForm() {
     // Update UI with the response
     setStatus(result);
 
-    // Reload the page after 2 seconds if the category is created successfully
+    // Reload the page after second if the category is created successfully
     if (result.success) {
-      setTimeout(() => window.location.reload(), 2000);
+      setTimeout(() => window.location.reload(), 1000);
     }
   };
 

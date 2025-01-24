@@ -231,7 +231,7 @@ export async function handleUpdateCategorySubmit(
     }
 
     // API call to update category
-    const response = await axios.patch(
+    const response = await axios.post(
       `${process.env.NEXT_PUBLIC_APP_URI}/admin/update-category/${categoryId}`,
       formData, // Send the FormData directly
       {

@@ -17,7 +17,7 @@ export default async function homePage() {
   const userToken = cookieStore.get("userToken")?.value;
 
   // Get all categories from the API
-  const FetchCategories = await getAllCategories(userToken!);
+  const FetchCategories = await getAllCategories();
 
   // Get the categories from the response
   const categories = FetchCategories.categories;

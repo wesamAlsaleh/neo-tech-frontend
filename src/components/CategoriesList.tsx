@@ -113,29 +113,6 @@ export default function CategoryList() {
     }
   };
 
-  // Open the category edit modal if the openModal state is true
-  // const handleCategoryEdit = async (categoryId: number) => {
-  //   // Update the category by id
-  //   const serverResponse = await handleUpdateCategorySubmit(categoryId);
-
-  //   // If the server response is successful
-  //   if (serverResponse.success) {
-  //     // Update the categories state by mapping through the old categories state
-  //     // and checking if the category id matches the category id that was updated.
-  //     // If it matches, update the category with the new category data.
-  //     // If it doesn't match, return the category as is.
-  //     setCategories((prevCategories) =>
-  //       prevCategories.map((category) =>
-  //         category.id === categoryId ? serverResponse.category : category
-  //       )
-  //     );
-
-  //     setIsEditModalOpen(false);
-  //   } else {
-  //     setMessage(serverResponse.message || "Failed to update category.");
-  //   }
-  // };
-
   // Render loading spinner or message
   if (loading) {
     return <LoadingSpinner />;

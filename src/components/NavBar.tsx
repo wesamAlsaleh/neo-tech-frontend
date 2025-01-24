@@ -26,7 +26,7 @@ export default function NavBar() {
         {/* pages links */}
         <div className="flex space-x-4">
           <button>
-            <Link href="/" className="font-bold">
+            <Link href="/home" className="font-bold">
               <h1>Home</h1>
             </Link>
           </button>

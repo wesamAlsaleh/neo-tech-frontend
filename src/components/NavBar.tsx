@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 
 // import custom components
 import LoadingSpinner from "@/components/LoadingSpinner";
+import DropDownMenu from "./DropDownMenu";
 
 export default function NavBar() {
   // get user data
@@ -25,7 +26,7 @@ export default function NavBar() {
         {/* pages links */}
         <div className="flex space-x-4">
           <button>
-            <Link href="/" className="font-bold">
+            <Link href="/home" className="font-bold">
               <h1>Home</h1>
             </Link>
           </button>
@@ -87,15 +88,7 @@ export default function NavBar() {
           </button>
 
           {/* if logged in show the profile icon here */}
-          {user ? (
-            loading ? null : (
-              <button>
-                <Link href="#">
-                  <h1>Profile DropDown Menu</h1>{" "}
-                </Link>
-              </button>
-            )
-          ) : null}
+          {user ? loading ? null : <DropDownMenu /> : null}
         </div>
       </div>
     </div>

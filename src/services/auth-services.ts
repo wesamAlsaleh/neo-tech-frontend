@@ -320,4 +320,50 @@ export async function getUserRole(): Promise<{
 //   "message": "Unauthenticated."
 // }
 
-// TODO: Handle logout
+// Handle logout
+export async function handleLogout() {
+  try {
+    // Get the cookies
+    const cookieStore = await cookies();
+
+    // Get the user token from the cookies
+    const userToken = cookieStore.get("userToken")?.value;
+
+    // Remove the user token from the cookies
+    cookieStore.delete("userToken");
+
+    // Remove the user role from the cookies
+    cookieStore.delete("userRole");
+
+    // Remove the local storage data
+    localStorage.removeItem("user");
+
+    // Revoke the user token from the server
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_APP_URI}/logout`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+        timeout: 5000, // 5 seconds timeout
+      }
+    );
+
+    return {
+      success: true,
+      message: response.data.message,
+    };
+  } catch (error: any) {
+    return {
+      success: false,
+      message: "An unexpected error occurred. Logout service failed.",
+    };
+  }
+}
+
+// Response from the server when a user is logged out successfully
+// {
+//   "message": "User logged out successfully"
+// }

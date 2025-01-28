@@ -125,7 +125,11 @@ export const createProduct = async (productData: FormData) => {
     );
 
     // return the response data
-    return response.data;
+    return {
+      status: response.status,
+      message: response.data.message,
+      productData: response.data.product,
+    };
   } catch (error) {
     // if there is an error, log the error
     console.error(error);

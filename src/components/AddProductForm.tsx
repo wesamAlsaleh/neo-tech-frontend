@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 
 // import handle form submission function
-import {} from "@/services/products-services";
+import { createProduct } from "@/services/products-services";
 
 // import categories service
 import { getAllCategories } from "@/services/categories-services";
@@ -12,6 +12,7 @@ import { getAllCategories } from "@/services/categories-services";
 import { Category } from "@/types/category";
 
 // import custom components
+import ProductImageUpload from "@/components/ProductImageUpload";
 
 export default function AddProductForm() {
   // State to store the product name
@@ -23,11 +24,11 @@ export default function AddProductForm() {
   // State to store the product price
   const [productPrice, setProductPrice] = useState<number>(0);
 
+  // State to store the product images
+  const [productImages, setProductImages] = useState<FileList | null>(null);
+
   // State to store the product rating
   const [productRating, setProductRating] = useState<number>(0);
-
-  // State to store the product images
-  const [productImages, setProductImages] = useState<File | null>(null);
 
   // State to store the product category
   const [productCategory, setProductCategory] = useState<number>(0);
@@ -42,10 +43,15 @@ export default function AddProductForm() {
   const [categories, setCategories] = useState<Category[]>([]);
 
   // State to store the response status to display to the user after form submission
-  const [status, setStatus] = useState({});
+  const [status, setStatus] = useState<string>("");
 
   // Loading state
   const [loading, setLoading] = useState<boolean>(false);
+
+  // Function to handle image change and set the product images using the selected files via the ProductImageUpload component
+  const handleImageChange = (files: FileList) => {
+    setProductImages(files);
+  };
 
   // Fetch the categories list from the API
   useEffect(() => {
@@ -78,18 +84,31 @@ export default function AddProductForm() {
     // Prepare form data
     const formData = new FormData();
 
-    // formData.append("category_name", categoryName); // Add the category name
+    formData.append("category_name", productName); // Add the product name to the form data
+    formData.append("category_description", productDescription); // Add the product description to the form data
+    formData.append("category_price", String(productPrice)); // Add the product price to the form data
+    formData.append("category_rating", String(productRating)); // Add the product rating to the form data
+    formData.append("category_status", productStatus); // Add the product status to the form data
+    formData.append("category_availability", productAvailability); // Add the product availability to the form data
+    formData.append("category_id", String(productCategory)); // Add the product category to the form data
+
+    if (productImages) {
+      // Add the product images to the form data
+      Array.from(productImages).forEach((image, index) => {
+        formData.append(`category_image_${index}`, image);
+      });
+    }
 
     // Submit the form data using the service
-    // const result = await handleCreateCategorySubmit(null, formData);
+    const result = await createProduct(formData);
 
-    // Update UI with the response
-    // setStatus(result);
+    // Update UI with the response message
+    setStatus(result?.message);
 
     // Reload the page after second if the category is created successfully
-    // if (result.success) {
-    //   setTimeout(() => window.location.reload(), 1000);
-    // }
+    if (result?.status) {
+      setTimeout(() => window.location.reload());
+    }
   };
 
   // If the data is still loading, display a loading message
@@ -168,26 +187,9 @@ export default function AddProductForm() {
           />
         </div>
 
-        {/* TODO: Image Upload field container */}
-        <div>
-          <label
-            htmlFor="product_images"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Products Image (Max 4 images)
-          </label>
+        {/* Image Upload field container */}
+        <ProductImageUpload onChange={handleImageChange} required />
 
-          <input
-            type="file"
-            id="product_images"
-            accept="image/*"
-            onChange={
-              (event) => setProductImages(event.target.files?.[0] || null) // TODO: handle multiple images
-            }
-            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2"
-            required
-          />
-        </div>
         {/* Category, Status, Availability */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Category field container */}
@@ -314,6 +316,13 @@ export default function AddProductForm() {
             Add Product
           </button>
         </div>
+
+        {/* Display the response message */}
+        {status && (
+          <div className="p-3 bg-green-100 text-green-600 rounded-lg text-center">
+            {status}
+          </div>
+        )}
       </form>
     </div>
   );

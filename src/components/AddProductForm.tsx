@@ -84,18 +84,18 @@ export default function AddProductForm() {
     // Prepare form data
     const formData = new FormData();
 
-    formData.append("category_name", productName); // Add the product name to the form data
-    formData.append("category_description", productDescription); // Add the product description to the form data
-    formData.append("category_price", String(productPrice)); // Add the product price to the form data
-    formData.append("category_rating", String(productRating)); // Add the product rating to the form data
-    formData.append("category_status", productStatus); // Add the product status to the form data
-    formData.append("category_availability", productAvailability); // Add the product availability to the form data
+    formData.append("product_name", productName); // Add the product name to the form data
+    formData.append("product_description", productDescription); // Add the product description to the form data
+    formData.append("product_price", String(productPrice)); // Add the product price to the form data
+    formData.append("product_rating", String(productRating)); // Add the product rating to the form data
+    formData.append("is_active", productStatus); // Add the product status to the form data
+    formData.append("in_stock", productAvailability); // Add the product availability to the form data
     formData.append("category_id", String(productCategory)); // Add the product category to the form data
 
     if (productImages) {
       // Add the product images to the form data
       Array.from(productImages).forEach((image, index) => {
-        formData.append(`category_image_${index}`, image);
+        formData.append(`product_images[]`, image);
       });
     }
 

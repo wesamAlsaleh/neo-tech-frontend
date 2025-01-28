@@ -133,6 +133,10 @@ export const createProduct = async (productData: FormData) => {
   } catch (error) {
     // if there is an error, log the error
     console.error(error);
+    return {
+      message:
+        (error as any).response?.data?.errorMessage || "An error occurred",
+    };
   }
 };
 

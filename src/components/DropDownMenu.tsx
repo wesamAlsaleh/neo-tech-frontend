@@ -52,7 +52,7 @@ export default function DropDownMenu() {
         router.push("/admin/categories"); // Navigate to the categories page
         break;
       case "Manage Products":
-        router.push("#"); // TODO: change the route
+        router.push("/admin/products"); // TODO: change the route
         break;
       case "Manage Orders":
         router.push("#"); // TODO: change the route

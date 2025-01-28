@@ -15,8 +15,9 @@ export const getProducts = async () => {
     );
 
     if (response.status !== 200) {
-      return "Error fetching products from the server side";
+      return "Error fetching products 😕";
     }
+
     // return the data from the response which is an array of products
     return response.data;
   } catch (error) {

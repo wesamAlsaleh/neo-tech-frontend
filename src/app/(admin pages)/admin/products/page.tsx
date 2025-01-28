@@ -2,6 +2,7 @@ import React from "react";
 
 // import custom components
 import ProductsList from "@/components/ProductsList";
+import AddProductForm from "@/components/AddProductForm";
 
 export default function ManageProductsPage() {
   return (
@@ -16,6 +17,7 @@ export default function ManageProductsPage() {
         <ProductsList />
 
         {/* add product form */}
+        <AddProductForm />
       </div>
     </div>
   );

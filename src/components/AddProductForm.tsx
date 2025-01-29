@@ -48,7 +48,7 @@ export default function AddProductForm() {
   // Loading state
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Function to handle image change and set the product images using the selected files via the ProductImageUpload component
+  // handle image change function to update the product images state when the user uploads images on the form
   const handleImageChange = (files: FileList) => {
     setProductImages(files);
   };
@@ -92,22 +92,44 @@ export default function AddProductForm() {
     formData.append("in_stock", productAvailability); // Add the product availability to the form data
     formData.append("category_id", String(productCategory)); // Add the product category to the form data
 
+    // Check if the product images are available and add them to the form data
     if (productImages) {
-      // Add the product images to the form data
-      Array.from(productImages).forEach((image, index) => {
-        formData.append(`product_images[]`, image);
+      // Convert FileList to Array for easier handling
+      const filesArray = Array.from(productImages);
+
+      // Append each file with the same field name 'product_images[]'
+      filesArray.forEach((file) => {
+        formData.append("product_images[]", file);
       });
     }
 
-    // Submit the form data using the service
-    const result = await createProduct(formData);
+    try {
+      // Submit the form data using the service
+      const result = await createProduct(formData);
 
-    // Update UI with the response message
-    setStatus(result?.message);
+      // Reload the page after second if the category is created successfully
+      if (result?.status) {
+        // Update UI with the response message
+        setStatus(result?.message);
 
-    // Reload the page after second if the category is created successfully
-    if (result?.status) {
-      setTimeout(() => window.location.reload());
+        // Clear form after successful submission
+        setProductName("");
+        setProductDescription("");
+        setProductPrice(0);
+        setProductImages(null);
+        setProductRating(0);
+        setProductCategory(0);
+        setProductStatus("");
+        setProductAvailability("");
+
+        // Reload the page after successful submission
+        setTimeout(() => window.location.reload());
+      } else {
+        setStatus(result.message);
+      }
+    } catch (error) {
+      // Update UI with the error message
+      setStatus("Error creating product. Please try again. 😕");
     }
   };
 
@@ -134,7 +156,7 @@ export default function AddProductForm() {
               htmlFor="product_name"
               className="block text-sm font-medium text-gray-700"
             >
-              Product Name
+              Product Name*
             </label>
 
             <input
@@ -153,7 +175,7 @@ export default function AddProductForm() {
               htmlFor="product_price"
               className="block text-sm font-medium text-gray-700"
             >
-              Product Price (BHD)
+              Product Price (BHD)*
             </label>
 
             <input
@@ -175,7 +197,7 @@ export default function AddProductForm() {
             htmlFor="product_description"
             className="block text-sm font-medium text-gray-700"
           >
-            Product Description (Optional)
+            Product Description*
           </label>
 
           <textarea
@@ -198,7 +220,7 @@ export default function AddProductForm() {
               htmlFor="product_category"
               className="block text-sm font-medium text-gray-700"
             >
-              Category
+              Category*
             </label>
 
             <select
@@ -218,6 +240,7 @@ export default function AddProductForm() {
               <option value="" disabled>
                 Select a category
               </option>
+
               {/* list the categories in the select */}
               {categories.map((category) => (
                 <option key={category.id} value={category.id}>
@@ -233,7 +256,7 @@ export default function AddProductForm() {
               htmlFor="product_status"
               className="block text-sm font-medium text-gray-700"
             >
-              Product Status
+              Product Status*
             </label>
 
             <select
@@ -257,7 +280,7 @@ export default function AddProductForm() {
               htmlFor="product_availability"
               className="block text-sm font-medium text-gray-700"
             >
-              Product Availability
+              Product Availability*
             </label>
 
             <select

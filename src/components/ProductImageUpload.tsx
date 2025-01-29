@@ -116,7 +116,7 @@ export default function ProductImageUpload({
           htmlFor="product_images"
           className="block text-sm font-medium text-gray-700"
         >
-          Product Images (1-4 images)
+          Product Images (1-4 images)*
         </label>
 
         <input

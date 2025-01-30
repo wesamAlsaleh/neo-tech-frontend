@@ -11,6 +11,9 @@ import { getProducts } from "@/services/products-services";
 // import the LoadingSpinner component
 import LoadingSpinner from "./LoadingSpinner";
 
+// import icons
+import { icons } from "../../public/icons";
+
 // import custom components
 
 export default function ProductsList() {
@@ -169,14 +172,26 @@ export default function ProductsList() {
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   onClick={() => {}}
                 >
-                  Edit Product
+                  {" "}
+                  <img
+                    src={icons.edit50.src}
+                    alt="Add to Basket"
+                    width={35}
+                    height={35}
+                  />
                 </button>
 
                 <button
                   className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   onClick={() => {}}
                 >
-                  Delete Product
+                  {" "}
+                  <img
+                    src={icons.delete50.src}
+                    alt="Add to Basket"
+                    width={35}
+                    height={35}
+                  />
                 </button>
 
                 <button
@@ -187,9 +202,21 @@ export default function ProductsList() {
                   } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
                   onClick={() => {}}
                 >
-                  {product.is_active
-                    ? "Deactivate Product"
-                    : "Activate Product"}
+                  {product.is_active ? (
+                    <img
+                      src={icons.addBasket50.src}
+                      alt="Add to Basket"
+                      width={35}
+                      height={35}
+                    />
+                  ) : (
+                    <img
+                      src={icons.removeBasket50.src}
+                      alt="Add to Basket"
+                      width={35}
+                      height={35}
+                    />
+                  )}
                 </button>
               </td>
             </tr>

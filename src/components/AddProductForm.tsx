@@ -31,13 +31,15 @@ export default function AddProductForm() {
   const [productRating, setProductRating] = useState<number>(0);
 
   // State to store the product category
-  const [productCategory, setProductCategory] = useState<number>(0);
+  const [productCategory, setProductCategory] = useState<string | number>("");
 
   // State to store the product status 'active' or 'inactive'
-  const [productStatus, setProductStatus] = useState<number>(0);
+  const [productStatus, setProductStatus] = useState<string | number>("");
 
   // State to store the product availability 'in stock' or 'out of stock'
-  const [productAvailability, setProductAvailability] = useState<number>(0);
+  const [productAvailability, setProductAvailability] = useState<
+    string | number
+  >("");
 
   // State to store the categories list
   const [categories, setCategories] = useState<Category[]>([]);

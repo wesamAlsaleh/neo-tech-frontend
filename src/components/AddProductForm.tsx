@@ -34,10 +34,10 @@ export default function AddProductForm() {
   const [productCategory, setProductCategory] = useState<number>(0);
 
   // State to store the product status 'active' or 'inactive'
-  const [productStatus, setProductStatus] = useState<string>("");
+  const [productStatus, setProductStatus] = useState<number>(0);
 
   // State to store the product availability 'in stock' or 'out of stock'
-  const [productAvailability, setProductAvailability] = useState<string>("");
+  const [productAvailability, setProductAvailability] = useState<number>(0);
 
   // State to store the categories list
   const [categories, setCategories] = useState<Category[]>([]);
@@ -88,8 +88,8 @@ export default function AddProductForm() {
     formData.append("product_description", productDescription); // Add the product description to the form data
     formData.append("product_price", String(productPrice)); // Add the product price to the form data
     formData.append("product_rating", String(productRating)); // Add the product rating to the form data
-    formData.append("is_active", productStatus); // Add the product status to the form data
-    formData.append("in_stock", productAvailability); // Add the product availability to the form data
+    formData.append("is_active", String(productStatus)); // Add the product status to the form data
+    formData.append("in_stock", String(productAvailability)); // Add the product availability to the form data
     formData.append("category_id", String(productCategory)); // Add the product category to the form data
 
     // Check if the product images are available and add them to the form data
@@ -119,8 +119,8 @@ export default function AddProductForm() {
         setProductImages(null);
         setProductRating(0);
         setProductCategory(0);
-        setProductStatus("");
-        setProductAvailability("");
+        setProductStatus(0);
+        setProductAvailability(0);
 
         // Reload the page after successful submission
         setTimeout(() => window.location.reload());
@@ -262,15 +262,15 @@ export default function AddProductForm() {
             <select
               id="product_status"
               value={productStatus}
-              onChange={(event) => setProductStatus(event.target.value)}
+              onChange={(event) => setProductStatus(Number(event.target.value))}
               className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2"
               required
             >
               <option value="" disabled>
                 Select a status
               </option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
+              <option value="1">Active</option>
+              <option value="0">Inactive</option>
             </select>
           </div>
 
@@ -286,15 +286,17 @@ export default function AddProductForm() {
             <select
               id="product_availability"
               value={productAvailability}
-              onChange={(event) => setProductAvailability(event.target.value)}
+              onChange={(event) =>
+                setProductAvailability(Number(event.target.value))
+              }
               className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2"
               required
             >
               <option value="" disabled>
                 Select availability
               </option>
-              <option value="in stock">In Stock</option>
-              <option value="out of stock">Out of Stock</option>
+              <option value="1">In Stock</option>
+              <option value="0">Out of Stock</option>
             </select>
           </div>
         </div>

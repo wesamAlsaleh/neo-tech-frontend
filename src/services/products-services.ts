@@ -2,6 +2,7 @@
 
 // import axios to make http requests
 import axios from "axios";
+import { stat } from "fs";
 
 // import cookies from next/headers
 import { cookies } from "next/headers";
@@ -255,7 +256,7 @@ export const updateProduct = async (
 /**
  * @function deleteProduct to delete a product
  */
-export const deleteProduct = async (productId: string) => {
+export const deleteProduct = async (productId: number) => {
   try {
     // Get user token from cookies
     const cookieStore = await cookies();
@@ -272,10 +273,17 @@ export const deleteProduct = async (productId: string) => {
     );
 
     // return the response data
-    return response.data;
+    return {
+      status: "success",
+      message: response.data.message,
+    };
   } catch (error) {
     // if there is an error, log the error
     console.error(error);
+    return {
+      status: "failed",
+      message: "An error occurred while deleting the product.",
+    };
   }
 };
 

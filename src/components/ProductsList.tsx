@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { Products } from "@/types/product";
 
 // Services import
-import { getProducts } from "@/services/products-services";
+import { deleteProduct, getProducts } from "@/services/products-services";
 
 // import the LoadingSpinner component
 import LoadingSpinner from "./LoadingSpinner";
@@ -23,11 +23,21 @@ export default function ProductsList() {
   // Message state
   const [message, setMessage] = useState<string>("");
 
+  // Edit category message state
+  const [editMessage, setEditMessage] = useState<string>("");
+
   // Delete category message state
   const [deleteMessage, setDeleteMessage] = useState<string>("");
 
+  // Toggle product status message state
+  const [toggleProductStatusMessage, setToggleProductStatusMessage] =
+    useState<string>("");
+
   // Loading state
   const [loading, setLoading] = useState<boolean>(true);
+
+  // success background color state
+  const [successBgColor, setSuccessBgColor] = useState<boolean>(false);
 
   // Edit Modal states
   //   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -35,10 +45,27 @@ export default function ProductsList() {
   //     Category | undefined
   //   >(undefined); // Selected category to edit
 
+  // Delete Modal states
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  // Selected product name to delete
+  const [selectedProductNameToDelete, setSelectedProductNameToDelete] =
+    useState<string>("");
+
+  // Selected product id to delete
+  const [selectedProductIdToDelete, setSelectedProductIdToDelete] =
+    useState<number>(0);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
+
+        // clear the message states
+        setMessage("");
+        setEditMessage("");
+        setDeleteMessage("");
+        setToggleProductStatusMessage("");
 
         const fetchProducts = await getProducts();
 
@@ -59,6 +86,48 @@ export default function ProductsList() {
     return <LoadingSpinner />;
   }
 
+  // Handle edit product
+
+  // Handle delete product
+  const handleDeleteClick = (productId: number, productName: string) => {
+    setSelectedProductNameToDelete(productName); // set the selected product to delete to add it to the delete modal
+    setSelectedProductIdToDelete(productId); // set the selected product id to delete
+    setIsDeleteModalOpen(true); // open the delete modal after setting the selected product to delete
+  };
+
+  // Handle confirm delete product
+  const handleConfirmDelete = async (productId: number) => {
+    try {
+      // If there is no product id, return
+      if (!productId) return;
+
+      // Delete product
+      const response = await deleteProduct(productId);
+
+      if (response.status === "success") {
+        // Set the success background color to true
+        setSuccessBgColor(true);
+
+        // Set delete message
+        setDeleteMessage(response.message);
+
+        // Reload the page to update the products list
+        window.location.reload();
+      } else {
+        // Set the success background color to false
+        setSuccessBgColor(false);
+
+        // Set delete message
+        setDeleteMessage(response.message);
+      }
+    } catch (error) {
+      setMessage("Failed to delete product. Please try again later.");
+      console.error(error);
+    }
+  };
+
+  // Handle toggle product status
+
   // Render message if there are no products
   if (!products.length) {
     return <p>No Products in the system</p>;
@@ -67,16 +136,20 @@ export default function ProductsList() {
   return (
     // Categories Table Container
     <div className="overflow-x-auto">
-      {/* Delete category success message */}
-      {/* {deleteMessage && (
+      {/* Delete category message */}
+      {deleteMessage && (
         <div
-          className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
+          className={`px-4 py-3 rounded relative mb-4 ${
+            successBgColor
+              ? "bg-green-100 border border-green-400 text-green-700"
+              : "bg-red-100 border border-red-400 text-red-700 "
+          }`}
           role="alert"
         >
           <strong className="font-bold">Success! </strong>
           <span className="block sm:inline">{deleteMessage}</span>
         </div>
-      )} */}
+      )}
 
       {/* Categories Table */}
       <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
@@ -168,6 +241,7 @@ export default function ProductsList() {
 
               {/* Product Edit*/}
               <td className="px-4 py-2 border border-gray-300 flex gap-2">
+                {/* Edit button */}
                 <button
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   onClick={() => {}}
@@ -181,9 +255,12 @@ export default function ProductsList() {
                   />
                 </button>
 
+                {/* Delete button */}
                 <button
                   className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  onClick={() => {}}
+                  onClick={() =>
+                    handleDeleteClick(product.id, product.product_name)
+                  }
                 >
                   {" "}
                   <img
@@ -194,6 +271,7 @@ export default function ProductsList() {
                   />
                 </button>
 
+                {/* Toggle status button */}
                 <button
                   className={`${
                     product.is_active
@@ -225,6 +303,65 @@ export default function ProductsList() {
       </table>
 
       {/* TODO: Edit Modal */}
+
+      {/* Delete Modal */}
+      <DeleteModal
+        isOpen={isDeleteModalOpen} // open the modal
+        onClose={() => setIsDeleteModalOpen(false)} // close the modal
+        productName={selectedProductNameToDelete} // pass the selected product name to delete
+        onConfirm={() => handleConfirmDelete(selectedProductIdToDelete)}
+      />
+    </div>
+  );
+}
+
+// Delete Modal Component
+function DeleteModal({
+  isOpen,
+  onClose,
+  onConfirm,
+  productName,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  productName: string;
+}) {
+  // close the modal if it's not open
+  if (!isOpen) return null;
+
+  return (
+    // Modal Container
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      {/* Modal Content */}
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+        {/* Modal Name */}
+        <h2 className="text-lg font-semibold">Confirm Deletion</h2>
+
+        {/* Product Name container*/}
+        <p className="mt-2 text-gray-600">
+          Are you sure you want to delete <strong>{productName}</strong>?
+        </p>
+
+        {/* Buttons Container */}
+        <div className="mt-4 flex justify-end gap-2">
+          {/* Cancel Button */}
+          <button
+            className="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded"
+            onClick={onClose}
+          >
+            Cancel
+          </button>
+
+          {/* Delete Button */}
+          <button
+            className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded"
+            onClick={onConfirm}
+          >
+            Delete
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

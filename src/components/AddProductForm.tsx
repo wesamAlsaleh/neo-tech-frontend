@@ -48,6 +48,9 @@ export default function AddProductForm() {
   // Loading state
   const [loading, setLoading] = useState<boolean>(false);
 
+  //
+  const [isTrue, setIsTrue] = useState<boolean>(false);
+
   // handle image change function to update the product images state when the user uploads images on the form
   const handleImageChange = (files: FileList) => {
     setProductImages(files);
@@ -98,8 +101,8 @@ export default function AddProductForm() {
       const filesArray = Array.from(productImages);
 
       // Append each file with the same field name 'product_images[]'
-      filesArray.forEach((file) => {
-        formData.append("product_images[]", file);
+      filesArray.forEach((file, index) => {
+        formData.append(`product_images[${index}]`, file);
       });
     }
 
@@ -117,9 +120,12 @@ export default function AddProductForm() {
       console.log("Result:", result);
 
       // Reload the page after second if the category is created successfully
-      if (result?.status) {
+      if (result?.status === "success") {
         // Update UI with the response message
         setStatus(result?.message);
+
+        // Set the response status to true to display the success message with a green background
+        setIsTrue(true);
 
         // Clear form after successful submission
         setProductName("");
@@ -157,7 +163,11 @@ export default function AddProductForm() {
 
       {/* Display the response message */}
       {status && (
-        <div className="p-3 bg-green-100 text-green-600 rounded-lg text-center">
+        <div
+          className={`p-3  rounded-lg text-center my-3 ${
+            isTrue ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"
+          }`}
+        >
           {status}
         </div>
       )}

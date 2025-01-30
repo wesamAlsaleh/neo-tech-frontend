@@ -144,8 +144,7 @@ export const createProduct = async (productData: FormData) => {
     // Return a user-friendly error message
     return {
       status: "failed",
-      message:
-        (error as any).response?.data?.errorMessage || "An error occurred",
+      message: "An error occurred, check the console for more information.",
     };
   }
 };

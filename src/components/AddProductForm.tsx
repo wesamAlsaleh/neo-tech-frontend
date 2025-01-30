@@ -88,22 +88,23 @@ export default function AddProductForm() {
     // Prepare form data
     const formData = new FormData();
 
-    formData.append("product_name", productName); // Add the product name to the form data
-    formData.append("product_description", productDescription); // Add the product description to the form data
-    formData.append("product_price", String(productPrice)); // Add the product price to the form data
-    formData.append("product_rating", String(productRating)); // Add the product rating to the form data
-    formData.append("is_active", String(productStatus)); // Add the product status to the form data
-    formData.append("in_stock", String(productAvailability)); // Add the product availability to the form data
-    formData.append("category_id", String(productCategory)); // Add the product category to the form data
+    // Append text fields
+    formData.append("product_name", productName);
+    formData.append("product_description", productDescription);
+    formData.append("product_price", String(productPrice));
+    formData.append("product_rating", String(productRating));
+    formData.append("is_active", String(productStatus));
+    formData.append("in_stock", String(productAvailability));
+    formData.append("category_id", String(productCategory));
 
-    // Check if the product images are available and add them to the form data
+    // Append image files
     if (productImages) {
       // Convert FileList to Array for easier handling
       const filesArray = Array.from(productImages);
 
       // Append each file with the same field name 'product_images[]'
-      filesArray.forEach((file, index) => {
-        formData.append(`product_images[${index}]`, file);
+      filesArray.forEach((file) => {
+        formData.append("product_images[]", file);
       });
     }
 

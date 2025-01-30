@@ -140,11 +140,12 @@ export const createProduct = async (productData: FormData) => {
   } catch (error) {
     // Log the error for debugging
     console.error("Error creating product:", error);
+    console.error("Error response:", (error as any).response?.data?.errors);
 
     // Return a user-friendly error message
     return {
       status: "failed",
-      message: "An error occurred, check the console for more information.",
+      message: "An error occurred while creating the product.",
     };
   }
 };

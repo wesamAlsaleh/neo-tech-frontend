@@ -133,7 +133,7 @@ export const createProduct = async (productData: FormData) => {
 
     // Return the response data
     return {
-      status: response.status,
+      status: "success",
       message: response.data.message,
       productData: response.data.product,
     };

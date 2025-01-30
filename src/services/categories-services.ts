@@ -23,28 +23,20 @@ export async function getAllCategories() {
       }
     );
 
-    // Extract the categories from the response
-    const categories: Category[] = response.data.categories;
-
-    if (!categories) {
-      return {
-        message: response.data.message || "No categories found",
-        categories: [],
-      };
-    }
-
     // Return the categories
     return {
+      status: "success",
       message: "Categories fetched successfully",
-      categories,
+      categories: response.data.categories,
     };
   } catch (error: any) {
     console.error("Categories fetch error:", error);
     return {
+      status: "error",
       message:
         error.response?.data?.message ||
         "An error occurred while fetching categories",
-      categories: [],
+      categories: "Error",
     };
   }
 }

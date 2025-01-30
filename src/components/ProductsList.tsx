@@ -125,7 +125,7 @@ export default function ProductsList() {
               <td className="px-4 py-2 border border-gray-300">
                 <img
                   className="h-10 w-10 object-cover"
-                  src={product.images[0] || ""}
+                  src={product.images[0] || undefined}
                   alt={product.product_name}
                 />
               </td>

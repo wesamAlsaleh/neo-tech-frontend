@@ -151,6 +151,8 @@ export default function AddProductForm() {
     return <p>Loading Dynamic Data...</p>;
   }
 
+  console.log(categories);
+
   return (
     // form container
     <div className="max-w-2xl mx-auto mt-8 bg-white shadow-lg rounded-lg p-6">
@@ -253,11 +255,8 @@ export default function AddProductForm() {
               id="product_category"
               value={productCategory}
               onChange={(event) => {
-                // Get the selected category id
-                const selectedCategoryId = Number(event.target.value);
-
                 // Set the selected category id for the product
-                setProductCategory(selectedCategoryId);
+                setProductCategory(Number(event.target.value));
               }}
               className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2"
               required

@@ -347,7 +347,7 @@ export const toggleProductStatus = async (productId: number) => {
  * @returns {Promise<any>}
  */
 export const toggleProductAvailability = async (
-  productId: string
+  productId: number
 ): Promise<any> => {
   try {
     // Get user token from cookies
@@ -355,7 +355,7 @@ export const toggleProductAvailability = async (
     const userToken = cookieStore.get("userToken")?.value;
 
     // make a post request to the server
-    const response = await axios.post(
+    const response = await axios.patch(
       `${process.env.NEXT_PUBLIC_APP_URI}/admin/toggle-product-availability/${productId}`,
       {},
       {
@@ -366,10 +366,18 @@ export const toggleProductAvailability = async (
     );
 
     // return the response data
-    return response.data;
+    return {
+      status: "success",
+      message: response.data.message,
+    };
   } catch (error) {
     // if there is an error, log the error
     console.error(error);
+
+    return {
+      status: "failed",
+      message: "An error occurred while toggling the product availability.",
+    };
   }
 };
 // Sample response from the server is updated successfully

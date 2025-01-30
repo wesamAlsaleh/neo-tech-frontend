@@ -9,6 +9,7 @@ import { Products } from "@/types/product";
 import {
   deleteProduct,
   getProducts,
+  toggleProductAvailability,
   toggleProductStatus,
 } from "@/services/products-services";
 
@@ -158,6 +159,39 @@ export default function ProductsList() {
       }
     } catch (error) {
       setMessage("Failed to toggle product status. Please try again later.");
+      console.error(error);
+    }
+  };
+
+  // Handle toggle product availability
+  const handleToggleProductAvailability = async (productId: number) => {
+    try {
+      // If there is no product id, return
+      if (!productId) return;
+
+      // Toggle product availability
+      const response = await toggleProductAvailability(productId);
+
+      if (response.status === "success") {
+        // Set the success background color to true
+        setSuccessBgColor(true);
+
+        // Set toggle product status message
+        setToggleProductStatusMessage(response.message);
+
+        // Reload the page to update the products list
+        window.location.reload();
+      } else {
+        // Set the success background color to false
+        setSuccessBgColor(false);
+
+        // Set toggle product status message
+        setToggleProductStatusMessage(response.message);
+      }
+    } catch (error) {
+      setMessage(
+        "Failed to toggle product availability. Please try again later."
+      );
       console.error(error);
     }
   };
@@ -324,6 +358,32 @@ export default function ProductsList() {
                   ) : (
                     <img
                       src={icons.addBasket50.src}
+                      alt="Add to Basket"
+                      width={35}
+                      height={35}
+                    />
+                  )}
+                </button>
+
+                {/* Toggle availability button */}
+                <button
+                  className={`${
+                    product.in_stock
+                      ? "bg-rose-400 hover:bg-rose-400"
+                      : `bg-fuchsia-500 hover:bg-fuchsia-700`
+                  } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
+                  onClick={() => handleToggleProductAvailability(product.id)}
+                >
+                  {product.in_stock ? (
+                    <img
+                      src={icons.unavailableIcon50.src}
+                      alt="Add to Basket"
+                      width={35}
+                      height={35}
+                    />
+                  ) : (
+                    <img
+                      src={icons.availableIcon50.src}
                       alt="Add to Basket"
                       width={35}
                       height={35}

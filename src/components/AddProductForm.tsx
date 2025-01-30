@@ -121,11 +121,11 @@ export default function AddProductForm() {
 
       // Reload the page after second if the category is created successfully
       if (result?.status === "success") {
-        // Update UI with the response message
-        setStatus(result?.message);
-
         // Set the response status to true to display the success message with a green background
         setIsSuccessfulResponse(true);
+
+        // Update UI with the response message
+        setStatus(result?.message);
 
         // Clear form after successful submission
         setProductName("");
@@ -138,7 +138,9 @@ export default function AddProductForm() {
         setProductAvailability(0);
 
         // Reload the page after successful submission
-        setTimeout(() => window.location.reload());
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
       } else {
         setStatus(result.message);
       }
@@ -168,8 +170,8 @@ export default function AddProductForm() {
         <div
           className={`p-3  rounded-lg text-center my-3 ${
             isSuccessfulResponse
-              ? "bg-green-100 text-green-600"
-              : "bg-red-100 text-red-600"
+              ? "bg-red-100 text-red-600"
+              : "bg-green-100 text-green-600"
           }`}
         >
           {status}

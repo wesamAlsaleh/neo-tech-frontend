@@ -138,13 +138,18 @@ export default function AddProductForm() {
         setProductAvailability(0);
 
         // Reload the page after successful submission
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
+        window.location.reload();
       } else {
+        // Set error response
+        setIsSuccessfulResponse(false);
+
+        // Update UI with the error message
         setStatus(result.message);
       }
     } catch (error) {
+      // Set error response
+      setIsSuccessfulResponse(false);
+
       // Update UI with the error message
       setStatus("Error creating product. Please try again. 😕");
     }
@@ -154,8 +159,6 @@ export default function AddProductForm() {
   if (loading) {
     return <p>Loading Dynamic Data...</p>;
   }
-
-  console.log(categories);
 
   return (
     // form container
@@ -168,10 +171,10 @@ export default function AddProductForm() {
       {/* Display the response message */}
       {status && (
         <div
-          className={`p-3  rounded-lg text-center my-3 ${
+          className={`p-3 rounded-lg text-center my-3 ${
             isSuccessfulResponse
-              ? "bg-red-100 text-red-600"
-              : "bg-green-100 text-green-600"
+              ? "bg-green-100 text-green-600" // Success styles
+              : "bg-red-100 text-red-600" // Error styles
           }`}
         >
           {status}

@@ -300,14 +300,14 @@ export const deleteProduct = async (productId: number) => {
 /**
  * @function toggleProductStatus to toggle a product status between active and inactive
  */
-export const toggleProductStatus = async (productId: string) => {
+export const toggleProductStatus = async (productId: number) => {
   try {
     // Get user token from cookies
     const cookieStore = await cookies();
     const userToken = cookieStore.get("userToken")?.value;
 
     // make a post request to the server
-    const response = await axios.post(
+    const response = await axios.patch(
       `${process.env.NEXT_PUBLIC_APP_URI}/admin/toggle-product-status/${productId}`,
       {},
       {
@@ -318,10 +318,18 @@ export const toggleProductStatus = async (productId: string) => {
     );
 
     // return the response data
-    return response.data;
+    return {
+      status: "success",
+      message: response.data.message,
+    };
   } catch (error) {
     // if there is an error, log the error
     console.error(error);
+
+    return {
+      status: "failed",
+      message: "An error occurred while toggling the product status.",
+    };
   }
 };
 // Sample response from the server is updated successfully

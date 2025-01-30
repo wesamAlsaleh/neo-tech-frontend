@@ -6,7 +6,11 @@ import { useEffect, useState } from "react";
 import { Products } from "@/types/product";
 
 // Services import
-import { deleteProduct, getProducts } from "@/services/products-services";
+import {
+  deleteProduct,
+  getProducts,
+  toggleProductStatus,
+} from "@/services/products-services";
 
 // import the LoadingSpinner component
 import LoadingSpinner from "./LoadingSpinner";
@@ -56,6 +60,7 @@ export default function ProductsList() {
   const [selectedProductIdToDelete, setSelectedProductIdToDelete] =
     useState<number>(0);
 
+  // Fetch Data after the component is mounted
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -127,6 +132,35 @@ export default function ProductsList() {
   };
 
   // Handle toggle product status
+  const handleToggleProductStatus = async (productId: number) => {
+    try {
+      // If there is no product id, return
+      if (!productId) return;
+
+      // Toggle product status
+      const response = await toggleProductStatus(productId);
+
+      if (response.status === "success") {
+        // Set the success background color to true
+        setSuccessBgColor(true);
+
+        // Set toggle product status message
+        setToggleProductStatusMessage(response.message);
+
+        // Reload the page to update the products list
+        window.location.reload();
+      } else {
+        // Set the success background color to false
+        setSuccessBgColor(false);
+
+        // Set toggle product status message
+        setToggleProductStatusMessage(response.message);
+      }
+    } catch (error) {
+      setMessage("Failed to toggle product status. Please try again later.");
+      console.error(error);
+    }
+  };
 
   // Render message if there are no products
   if (!products.length) {
@@ -275,21 +309,21 @@ export default function ProductsList() {
                 <button
                   className={`${
                     product.is_active
-                      ? `bg-green-500 hover:bg-green-700`
-                      : "bg-orange-400 hover:bg-orange-400"
+                      ? "bg-orange-400 hover:bg-orange-400"
+                      : `bg-green-500 hover:bg-green-700`
                   } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
-                  onClick={() => {}}
+                  onClick={() => handleToggleProductStatus(product.id)}
                 >
                   {product.is_active ? (
                     <img
-                      src={icons.addBasket50.src}
+                      src={icons.removeBasket50.src}
                       alt="Add to Basket"
                       width={35}
                       height={35}
                     />
                   ) : (
                     <img
-                      src={icons.removeBasket50.src}
+                      src={icons.addBasket50.src}
                       alt="Add to Basket"
                       width={35}
                       height={35}
@@ -309,7 +343,7 @@ export default function ProductsList() {
         isOpen={isDeleteModalOpen} // open the modal
         onClose={() => setIsDeleteModalOpen(false)} // close the modal
         productName={selectedProductNameToDelete} // pass the selected product name to delete
-        onConfirm={() => handleConfirmDelete(selectedProductIdToDelete)}
+        onConfirm={() => handleConfirmDelete(selectedProductIdToDelete)} // confirm delete product
       />
     </div>
   );

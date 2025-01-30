@@ -112,7 +112,14 @@ export const createProduct = async (productData: FormData) => {
     const cookieStore = await cookies();
     const userToken = cookieStore.get("userToken")?.value;
 
-    // make a post request to the server
+    if (!userToken) {
+      return {
+        status: "failed",
+        message: "Authentication token not found.",
+      };
+    }
+
+    // Make a POST request to the server
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_APP_URI}/admin/create-product`,
       productData,
@@ -124,16 +131,19 @@ export const createProduct = async (productData: FormData) => {
       }
     );
 
-    // return the response data
+    // Return the response data
     return {
       status: response.status,
       message: response.data.message,
       productData: response.data.product,
     };
   } catch (error) {
-    // if there is an error, log the error
-    console.error(error);
+    // Log the error for debugging
+    console.error("Error creating product:", error);
+
+    // Return a user-friendly error message
     return {
+      status: "failed",
       message:
         (error as any).response?.data?.errorMessage || "An error occurred",
     };

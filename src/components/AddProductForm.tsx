@@ -104,8 +104,17 @@ export default function AddProductForm() {
     }
 
     try {
+      // Display the form data in the console
+      formData.forEach((value, key) => {
+        console.log(`${key}:`, value);
+      });
+
+      console.log("Before calling the service");
+
       // Submit the form data using the service
       const result = await createProduct(formData);
+
+      console.log("Result:", result);
 
       // Reload the page after second if the category is created successfully
       if (result?.status) {
@@ -145,6 +154,13 @@ export default function AddProductForm() {
       <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
         Add a New Product
       </h2>
+
+      {/* Display the response message */}
+      {status && (
+        <div className="p-3 bg-green-100 text-green-600 rounded-lg text-center">
+          {status}
+        </div>
+      )}
 
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -341,13 +357,6 @@ export default function AddProductForm() {
             Add Product
           </button>
         </div>
-
-        {/* Display the response message */}
-        {status && (
-          <div className="p-3 bg-green-100 text-green-600 rounded-lg text-center">
-            {status}
-          </div>
-        )}
       </form>
     </div>
   );

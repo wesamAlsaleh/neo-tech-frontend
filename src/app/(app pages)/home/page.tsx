@@ -35,17 +35,11 @@ export default function homePage() {
       const fetchCategories = await getAllCategories();
       const fetchProducts = await getProducts();
 
-      // check if the data is available
-      if (fetchCategories.categories) {
-        // set the data to the state
-        setCategories(fetchCategories.categories);
+      setCategories(fetchCategories.categories); // set the data to the state
+      setCategoryMessage(fetchCategories.message); // set the message to the state
 
-        // set the message to the state
-        setCategoryMessage(fetchCategories.message);
-      }
-
-      setProducts(fetchProducts);
-      setProductMessage(fetchProducts.message);
+      setProducts(fetchProducts); // set the data to the state
+      setProductMessage(fetchProducts.message); // set the message to the state
 
       setLoading(false);
     };

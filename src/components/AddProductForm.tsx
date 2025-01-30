@@ -114,12 +114,8 @@ export default function AddProductForm() {
         console.log(`${key}:`, value);
       });
 
-      console.log("Before calling the service");
-
       // Submit the form data using the service
       const result = await createProduct(formData);
-
-      console.log("Result:", result);
 
       // Reload the page after second if the category is created successfully
       if (result?.status === "success") {

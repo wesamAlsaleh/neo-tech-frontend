@@ -49,7 +49,8 @@ export default function AddProductForm() {
   const [loading, setLoading] = useState<boolean>(false);
 
   //
-  const [isTrue, setIsTrue] = useState<boolean>(false);
+  const [isSuccessfulResponse, setIsSuccessfulResponse] =
+    useState<boolean>(false);
 
   // handle image change function to update the product images state when the user uploads images on the form
   const handleImageChange = (files: FileList) => {
@@ -125,7 +126,7 @@ export default function AddProductForm() {
         setStatus(result?.message);
 
         // Set the response status to true to display the success message with a green background
-        setIsTrue(true);
+        setIsSuccessfulResponse(true);
 
         // Clear form after successful submission
         setProductName("");
@@ -165,7 +166,9 @@ export default function AddProductForm() {
       {status && (
         <div
           className={`p-3  rounded-lg text-center my-3 ${
-            isTrue ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"
+            isSuccessfulResponse
+              ? "bg-green-100 text-green-600"
+              : "bg-red-100 text-red-600"
           }`}
         >
           {status}

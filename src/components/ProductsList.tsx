@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 // import types
-import { Products } from "@/types/product";
+import { Product, Products } from "@/types/product";
 
 // Services import
 import {
@@ -18,6 +18,7 @@ import LoadingSpinner from "./LoadingSpinner";
 
 // import icons
 import { icons } from "../../public/icons";
+import EditProductModal from "./EditProductModal";
 
 // import custom components
 
@@ -45,10 +46,10 @@ export default function ProductsList() {
   const [successBgColor, setSuccessBgColor] = useState<boolean>(false);
 
   // Edit Modal states
-  //   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  //   const [selectedCategory, setSelectedCategory] = useState<
-  //     Category | undefined
-  //   >(undefined); // Selected category to edit
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedProductToEdit, setSelectedProductToEdit] = useState<
+    Product | undefined
+  >(undefined); // Selected product to edit
 
   // Delete Modal states
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -93,6 +94,10 @@ export default function ProductsList() {
   }
 
   // Handle edit product
+  const handleEditClick = (product: Product) => {
+    setIsEditModalOpen(true); // open the edit modal after setting the selected product to edit
+    setSelectedProductToEdit(product); // set the selected product to edit
+  };
 
   // Handle delete product
   const handleDeleteClick = (productId: number, productName: string) => {
@@ -312,7 +317,7 @@ export default function ProductsList() {
                 {/* Edit button */}
                 <button
                   className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  onClick={() => {}}
+                  onClick={() => handleEditClick(product)}
                 >
                   {" "}
                   <img
@@ -396,7 +401,12 @@ export default function ProductsList() {
         </tbody>
       </table>
 
-      {/* TODO: Edit Modal */}
+      {/* Edit Modal */}
+      <EditProductModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        product={selectedProductToEdit}
+      />
 
       {/* Delete Modal */}
       <DeleteModal

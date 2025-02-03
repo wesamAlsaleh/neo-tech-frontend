@@ -13,6 +13,21 @@ export type Products = {
   updated_at: string;
 };
 
+export type Product = {
+  id: number;
+  product_name: string;
+  product_description: string;
+  product_price: string;
+  product_rating: number;
+  slug: string;
+  images: string[];
+  is_active: boolean;
+  in_stock: boolean;
+  category_id: number;
+  created_at: string;
+  updated_at: string;
+};
+
 // {
 //     "id": 4,
 //     "product_name": "Product 1",

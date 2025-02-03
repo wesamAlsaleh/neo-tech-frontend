@@ -190,7 +190,7 @@ export const createProduct = async (productData: FormData) => {
  */
 export const updateProduct = async (
   productData: FormData,
-  productId: string
+  productId: number
 ) => {
   try {
     // Get user token from cookies
@@ -209,11 +209,19 @@ export const updateProduct = async (
       }
     );
 
-    // return the response data
-    return response.data;
+    return {
+      status: "success",
+      message: response.data.message,
+      productData: response.data.productData,
+    };
   } catch (error) {
     // if there is an error, log the error
     console.error(error);
+
+    return {
+      status: "failed",
+      message: "An error occurred while updating the product.",
+    };
   }
 };
 

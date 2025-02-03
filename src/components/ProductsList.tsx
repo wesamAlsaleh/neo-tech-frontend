@@ -42,8 +42,9 @@ export default function ProductsList() {
   // Loading state
   const [loading, setLoading] = useState<boolean>(true);
 
-  // success background color state
-  const [successBgColor, setSuccessBgColor] = useState<boolean>(false);
+  // Form submission response status
+  const [isSuccessfulResponse, setIsSuccessfulResponse] =
+    useState<boolean>(false);
 
   // Edit Modal states
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -117,7 +118,7 @@ export default function ProductsList() {
 
       if (response.status === "success") {
         // Set the success background color to true
-        setSuccessBgColor(true);
+        setIsSuccessfulResponse(true);
 
         // Set delete message
         setDeleteMessage(response.message);
@@ -126,7 +127,7 @@ export default function ProductsList() {
         window.location.reload();
       } else {
         // Set the success background color to false
-        setSuccessBgColor(false);
+        setIsSuccessfulResponse(false);
 
         // Set delete message
         setDeleteMessage(response.message);
@@ -148,7 +149,7 @@ export default function ProductsList() {
 
       if (response.status === "success") {
         // Set the success background color to true
-        setSuccessBgColor(true);
+        setIsSuccessfulResponse(true);
 
         // Set toggle product status message
         setToggleProductStatusMessage(response.message);
@@ -157,7 +158,7 @@ export default function ProductsList() {
         window.location.reload();
       } else {
         // Set the success background color to false
-        setSuccessBgColor(false);
+        setIsSuccessfulResponse(false);
 
         // Set toggle product status message
         setToggleProductStatusMessage(response.message);
@@ -179,7 +180,7 @@ export default function ProductsList() {
 
       if (response.status === "success") {
         // Set the success background color to true
-        setSuccessBgColor(true);
+        setIsSuccessfulResponse(true);
 
         // Set toggle product status message
         setToggleProductStatusMessage(response.message);
@@ -188,7 +189,7 @@ export default function ProductsList() {
         window.location.reload();
       } else {
         // Set the success background color to false
-        setSuccessBgColor(false);
+        setIsSuccessfulResponse(false);
 
         // Set toggle product status message
         setToggleProductStatusMessage(response.message);
@@ -213,7 +214,7 @@ export default function ProductsList() {
       {deleteMessage && (
         <div
           className={`px-4 py-3 rounded relative mb-4 ${
-            successBgColor
+            isSuccessfulResponse
               ? "bg-green-100 border border-green-400 text-green-700"
               : "bg-red-100 border border-red-400 text-red-700 "
           }`}

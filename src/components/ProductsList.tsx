@@ -27,12 +27,12 @@ export default function ProductsList() {
   const [products, setProducts] = useState<Products[]>([]);
 
   // Message state
-  const [message, setMessage] = useState<string>("");
+  const [fetchingMessage, setFetchingMessage] = useState<string>("");
 
-  // Edit category message state
+  // Edit message state
   const [editMessage, setEditMessage] = useState<string>("");
 
-  // Delete category message state
+  // Delete message state
   const [deleteMessage, setDeleteMessage] = useState<string>("");
 
   // Toggle product status message state
@@ -70,7 +70,7 @@ export default function ProductsList() {
         setLoading(true);
 
         // clear the message states
-        setMessage("");
+        setFetchingMessage("");
         setEditMessage("");
         setDeleteMessage("");
         setToggleProductStatusMessage("");
@@ -79,7 +79,7 @@ export default function ProductsList() {
 
         setProducts(fetchProducts);
       } catch (error) {
-        setMessage("Failed to load products. Please try again later.");
+        setFetchingMessage("Failed to load products. Please try again later.");
         console.error(error);
       } finally {
         setLoading(false);
@@ -133,7 +133,7 @@ export default function ProductsList() {
         setDeleteMessage(response.message);
       }
     } catch (error) {
-      setMessage("Failed to delete product. Please try again later.");
+      setDeleteMessage("Failed to delete product. Please try again later.");
       console.error(error);
     }
   };
@@ -164,7 +164,9 @@ export default function ProductsList() {
         setToggleProductStatusMessage(response.message);
       }
     } catch (error) {
-      setMessage("Failed to toggle product status. Please try again later.");
+      setToggleProductStatusMessage(
+        "Failed to toggle product status. Please try again later."
+      );
       console.error(error);
     }
   };
@@ -195,7 +197,7 @@ export default function ProductsList() {
         setToggleProductStatusMessage(response.message);
       }
     } catch (error) {
-      setMessage(
+      setToggleProductStatusMessage(
         "Failed to toggle product availability. Please try again later."
       );
       console.error(error);
@@ -210,7 +212,7 @@ export default function ProductsList() {
   return (
     // Categories Table Container
     <div className="overflow-x-auto">
-      {/* Delete category message */}
+      {/* Delete product message */}
       {deleteMessage && (
         <div
           className={`px-4 py-3 rounded relative mb-4 ${
@@ -220,12 +222,35 @@ export default function ProductsList() {
           }`}
           role="alert"
         >
-          <strong className="font-bold">Success! </strong>
+          {isSuccessfulResponse ? (
+            <strong className="font-bold">Success! </strong>
+          ) : (
+            <strong className="font-bold">Error! </strong>
+          )}
           <span className="block sm:inline">{deleteMessage}</span>
         </div>
       )}
 
-      {/* Categories Table */}
+      {/* Toggle product message */}
+      {toggleProductStatusMessage && (
+        <div
+          className={`px-4 py-3 rounded relative mb-4 ${
+            isSuccessfulResponse
+              ? "bg-green-100 border border-green-400 text-green-700"
+              : "bg-red-100 border border-red-400 text-red-700 "
+          }`}
+          role="alert"
+        >
+          {isSuccessfulResponse ? (
+            <strong className="font-bold">Success! </strong>
+          ) : (
+            <strong className="font-bold">Error! </strong>
+          )}
+          <span className="block sm:inline">{toggleProductStatusMessage}</span>
+        </div>
+      )}
+
+      {/* Products Table */}
       <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
         <thead>
           <tr className="bg-gray-100 border-b border-gray-300">

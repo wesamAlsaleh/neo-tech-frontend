@@ -10,6 +10,18 @@ export type Category = {
   category_image_url?: string;
 };
 
+export type Categories = {
+  id: number;
+  category_name: string;
+  category_slug: string;
+  category_description: string;
+  category_image: string;
+  is_active: number;
+  created_at: string;
+  updated_at: string;
+  category_image_url?: string;
+};
+
 // {
 //   "id": 38,
 //   "category_name": "Laptop",

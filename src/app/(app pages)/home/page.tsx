@@ -1,29 +1,58 @@
-"use server";
+"use client";
 
-import React from "react";
-
-// import cookies from "next/cookies";
-import { cookies } from "next/headers";
+import React, { useEffect, useState } from "react";
 
 // Import custom components
 import NavBar from "@/components/NavBar";
 
-// Import the Categories function
+// Services import
+import { getProducts } from "@/services/products-services";
 import { getAllCategories } from "@/services/categories-services";
 
-export default async function homePage() {
-  // Get the user token from the cookies
-  const cookieStore = await cookies();
-  const userToken = cookieStore.get("userToken")?.value;
+// import types
+import { Products } from "@/types/product";
+import { Categories } from "@/types/category";
 
-  // Get all categories from the API
-  const FetchCategories = await getAllCategories();
+// import custom components
+import LoadingSpinner from "@/components/LoadingSpinner";
 
-  // Get the categories from the response
-  const categories = FetchCategories.categories;
+export default function homePage() {
+  // data state
+  const [categories, setCategories] = useState<Categories[]>([]);
+  const [products, setProducts] = useState<Products[]>([]);
+
+  // loading state
+  const [loading, setLoading] = useState<boolean>(true);
+
+  // UI messages states
+  const [categoryMessage, setCategoryMessage] = useState<string>("");
+  const [productMessage, setProductMessage] = useState<string>("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+
+      const fetchCategories = await getAllCategories();
+      const fetchProducts = await getProducts();
+
+      setCategories(fetchCategories.categories); // set the data to the state
+      setCategoryMessage(fetchCategories.message); // set the message to the state
+
+      setProducts(fetchProducts); // set the data to the state
+      setProductMessage(fetchProducts.message); // set the message to the state
+
+      setLoading(false);
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div>{loading && <LoadingSpinner />}</div>;
+  }
 
   return (
-    <>
+    <div className="max-h-screen overflow-y-auto px-4">
       {/* Navigation Bar */}
       <NavBar />
 
@@ -55,10 +84,56 @@ export default async function homePage() {
           ))}
         </div>
 
+        {/* Products list container */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 my-4">
+          {products?.map((product) => {
+            return (
+              // Product card container
+              <div
+                key={product.id}
+                className="bg-white shadow-md rounded-lg p-4 hover:shadow-lg transition"
+              >
+                <img
+                  src={product.images[0] || "https://via.placeholder.com/150"}
+                  alt={product.product_name}
+                  className="w-full h-40 object-cover rounded-md"
+                />
+                {/* product title */}
+                <h3 className="text-lg font-semibold mt-2">
+                  {product.product_name}
+                </h3>
+
+                {/* product description */}
+                <p className="text-gray-600 text-sm">
+                  {product.product_description}
+                </p>
+
+                {/* price & rating container */}
+                <div className="flex justify-between items-center mt-3">
+                  {/* price section */}
+                  <span className="text-xl font-bold">
+                    ${product.product_price}
+                  </span>
+
+                  {/* rating section */}
+                  <span className="text-yellow-500">
+                    ⭐ {product.product_rating}
+                  </span>
+                </div>
+
+                {/* Add to cart button */}
+                <button className="mt-3 w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition">
+                  Add to Cart
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
         <p className="text-center mt-4 text-gray-500">
           The best tech shop in the world
         </p>
       </div>
-    </>
+    </div>
   );
 }

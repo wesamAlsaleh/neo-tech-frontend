@@ -30,32 +30,18 @@ export async function getAllCategories() {
       categories: response.data.categories,
     };
   } catch (error: any) {
+    // Log and return the error
     console.error("Categories fetch error:", error);
+
     return {
       status: "error",
       message:
         error.response?.data?.message ||
         "An error occurred while fetching categories",
-      categories: "Error",
+      categories: [],
     };
   }
 }
-
-// successfull sample response from the API for the getAllCategories function
-// {
-//     "message": "Categories fetched successfully",
-//     "categories": [
-//   {
-//     "id": 38,
-//     "category_name": "Laptop",
-//     "category_slug": "laptop",
-//     "category_description": "testing",
-//     "category_image": "678d973602a96.png",
-//     "is_active": 0,
-//     "created_at": "2025-01-20T00:22:14.000000Z",
-//     "updated_at": "2025-01-20T00:22:14.000000Z",
-//     "category_image_url": "http://127.0.0.1:8000/storage/images/categories_images/678d973602a96.png"
-// },
 
 // Add a new category to the API
 export async function handleCreateCategorySubmit(
@@ -69,7 +55,7 @@ export async function handleCreateCategorySubmit(
 
     // Check if user token exists
     if (!userToken) {
-      throw new Error("Authentication required. Please log in.");
+      console.error("Token not found in cookies");
     }
 
     // API call to create category
@@ -91,27 +77,19 @@ export async function handleCreateCategorySubmit(
       error: null,
     };
   } catch (error: any) {
+    // Log the error
+    console.error("Create category error:", error);
+
     // Parse error and return a user-friendly response
     return {
       success: false,
       message:
         error.response?.data?.message ||
         "An error occurred while creating the category.",
-      error: error.response?.data?.errorMessage || error.message,
+      error: error.response?.data?.errors || error.message,
     };
   }
 }
-
-// Response from the server when a category is created successfully
-// {
-//   "message": "Machine category created successfully"
-// }
-
-// Response from the server when a category is not created successfully
-// {
-//   "message": "An error occurred while creating the category. Please try again later.",
-//   "errorMessage": "SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'machine' for key 'categories_category_slug_unique' (Connection: mysql, SQL: insert into `categories` (`category_name`, `category_slug`, `category_description`, `category_image`, `updated_at`, `created_at`) values (Machine, machine, Machine Section with Laptop image, ?, 2025-01-22 01:37:04, 2025-01-22 01:37:04))"
-// }
 
 // Toggle the category status
 export async function toggleCategoryStatusById(categoryId: number) {
@@ -122,7 +100,7 @@ export async function toggleCategoryStatusById(categoryId: number) {
 
     // Check if user token exists
     if (!userToken) {
-      throw new Error("Authentication required. Please log in.");
+      console.error("Token not found in cookies");
     }
 
     // API call to toggle category status
@@ -143,6 +121,9 @@ export async function toggleCategoryStatusById(categoryId: number) {
       message: response.data.message || "Category status updated successfully!",
     };
   } catch (error: any) {
+    // Log the error
+    console.error("Toggle category status error:", error);
+
     // Parse error and return a user-friendly response
     return {
       success: false,
@@ -153,16 +134,6 @@ export async function toggleCategoryStatusById(categoryId: number) {
   }
 }
 
-// Response from the server when a category status is updated successfully
-// {
-//   "message": "TESTo2 is active"
-// }
-
-// Response from the server when a category status is not updated successfully
-// TODO: Add the response from the server when a category status is not updated successfully
-
-// Update a category by ID
-
 // Delete a category by ID
 export async function deleteCategoryById(categoryId: number) {
   try {
@@ -172,7 +143,7 @@ export async function deleteCategoryById(categoryId: number) {
 
     // Check if user token exists
     if (!userToken) {
-      throw new Error("Authentication required. Please log in.");
+      console.error("Token not found in cookies");
     }
 
     // API call to toggle category status
@@ -192,6 +163,9 @@ export async function deleteCategoryById(categoryId: number) {
       message: response.data.message || "Category deleted successfully!",
     };
   } catch (error: any) {
+    // Log the error
+    console.error("Delete category error:", error);
+
     // Parse error and return a user-friendly response
     return {
       success: false,
@@ -201,11 +175,6 @@ export async function deleteCategoryById(categoryId: number) {
     };
   }
 }
-
-// Response from the server when a category is deleted successfully
-// {
-//   "message": "Mobile category deleted successfully"
-// }
 
 // Handle the category update form submission
 export async function handleUpdateCategorySubmit(
@@ -219,7 +188,7 @@ export async function handleUpdateCategorySubmit(
 
     // Check if user token exists
     if (!userToken) {
-      throw new Error("Authentication required. Please log in.");
+      console.error("Token not found in cookies");
     }
 
     // API call to update category
@@ -240,6 +209,9 @@ export async function handleUpdateCategorySubmit(
       message: response.data.message || "Category updated successfully!",
     };
   } catch (error: any) {
+    // Log the error
+    console.error("Update category error:", error);
+
     // Parse error and return a user-friendly response
     return {
       success: false,

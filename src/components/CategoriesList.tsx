@@ -13,9 +13,10 @@ import {
 // import the Category type
 import { Category } from "@/types/category";
 
-// import the LoadingSpinner component
+// import custom component
 import LoadingSpinner from "./LoadingSpinner";
-import EditModalComponent from "./EditModalComponent";
+import EditCategoryModal from "@/components/EditCategoryModal";
+import DeleteModal from "@/components/DeleteModal";
 
 // import the icons from the public/icons folder
 import { icons } from "../../public/icons";
@@ -41,8 +42,17 @@ export default function CategoryList() {
   const [isSuccessfulResponse, setIsSuccessfulResponse] =
     useState<boolean>(false);
 
+  // Delete Modal states
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  // Selected category to delete
+  const [selectedCategoryToDelete, setSelectedCategoryToDelete] = useState<
+    Category | undefined
+  >(undefined);
+
   // Edit Modal states
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
   const [selectedCategory, setSelectedCategory] = useState<
     Category | undefined
   >(undefined); // Selected category to edit
@@ -221,7 +231,13 @@ export default function CategoryList() {
 
                 <button
                   className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  onClick={() => handleCategoryDelete(category.id)}
+                  onClick={() => {
+                    // Open the delete modal
+                    setIsDeleteModalOpen(true);
+
+                    // Set the selected category to delete
+                    setSelectedCategoryToDelete(category);
+                  }}
                 >
                   <img
                     src={icons.delete50.src}
@@ -262,10 +278,18 @@ export default function CategoryList() {
       </table>
 
       {/* Edit Modal */}
-      <EditModalComponent
+      <EditCategoryModal
         isOpen={isEditModalOpen}
         category={selectedCategory}
         onClose={() => setIsEditModalOpen(false)}
+      />
+
+      {/* Delete Modal */}
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={() => handleCategoryDelete(selectedCategoryToDelete!.id)}
+        name={selectedCategoryToDelete?.category_name || ""}
       />
     </div>
   );

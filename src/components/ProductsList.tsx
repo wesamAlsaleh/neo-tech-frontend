@@ -19,6 +19,7 @@ import LoadingSpinner from "./LoadingSpinner";
 // import icons
 import { icons } from "../../public/icons";
 import EditProductModal from "./EditProductModal";
+import DeleteModal from "./DeleteModal";
 
 // import custom components
 
@@ -56,12 +57,9 @@ export default function ProductsList() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   // Selected product name to delete
-  const [selectedProductNameToDelete, setSelectedProductNameToDelete] =
-    useState<string>("");
-
-  // Selected product id to delete
-  const [selectedProductIdToDelete, setSelectedProductIdToDelete] =
-    useState<number>(0);
+  const [selectedProductToDelete, setSelectedProductToDelete] = useState<
+    Product | undefined
+  >(undefined);
 
   // Fetch Data after the component is mounted
   useEffect(() => {
@@ -101,10 +99,9 @@ export default function ProductsList() {
   };
 
   // Handle delete product
-  const handleDeleteClick = (productId: number, productName: string) => {
-    setSelectedProductNameToDelete(productName); // set the selected product to delete to add it to the delete modal
-    setSelectedProductIdToDelete(productId); // set the selected product id to delete
+  const handleDeleteClick = (product: Product) => {
     setIsDeleteModalOpen(true); // open the delete modal after setting the selected product to delete
+    setSelectedProductToDelete(product); // set the selected product to delete
   };
 
   // Handle confirm delete product
@@ -357,9 +354,7 @@ export default function ProductsList() {
                 {/* Delete button */}
                 <button
                   className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  onClick={() =>
-                    handleDeleteClick(product.id, product.product_name)
-                  }
+                  onClick={() => handleDeleteClick(product)}
                 >
                   {" "}
                   <img
@@ -438,60 +433,12 @@ export default function ProductsList() {
       <DeleteModal
         isOpen={isDeleteModalOpen} // open the modal
         onClose={() => setIsDeleteModalOpen(false)} // close the modal
-        productName={selectedProductNameToDelete} // pass the selected product name to delete
-        onConfirm={() => handleConfirmDelete(selectedProductIdToDelete)} // confirm delete product
+        onConfirm={() =>
+          selectedProductToDelete &&
+          handleConfirmDelete(selectedProductToDelete.id)
+        } // confirm delete
+        name={selectedProductToDelete?.product_name || ""} // pass the selected product name to delete
       />
-    </div>
-  );
-}
-
-// Delete Modal Component
-function DeleteModal({
-  isOpen,
-  onClose,
-  onConfirm,
-  productName,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  productName: string;
-}) {
-  // close the modal if it's not open
-  if (!isOpen) return null;
-
-  return (
-    // Modal Container
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      {/* Modal Content */}
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        {/* Modal Name */}
-        <h2 className="text-lg font-semibold">Confirm Deletion</h2>
-
-        {/* Product Name container*/}
-        <p className="mt-2 text-gray-600">
-          Are you sure you want to delete <strong>{productName}</strong>?
-        </p>
-
-        {/* Buttons Container */}
-        <div className="mt-4 flex justify-end gap-2">
-          {/* Cancel Button */}
-          <button
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded"
-            onClick={onClose}
-          >
-            Cancel
-          </button>
-
-          {/* Delete Button */}
-          <button
-            className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded"
-            onClick={onConfirm}
-          >
-            Delete
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

@@ -21,7 +21,7 @@ export default function LoginForm() {
     if (state?.success) {
       router.push("/home");
     }
-  }, [state?.success, router]);
+  }, [state?.success]);
 
   return (
     <>

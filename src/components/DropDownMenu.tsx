@@ -33,7 +33,7 @@ export default function DropDownMenu() {
   };
 
   // Function to handle the selection of a menu item
-  const handleSelect = (item: string) => {
+  const handleSelect = async (item: string) => {
     // Update the selected item
     setSelectedItem(item);
 
@@ -58,7 +58,15 @@ export default function DropDownMenu() {
         router.push("#"); // TODO: change the route
         break;
       case "Logout":
-        handleLogout(); // Logout the user
+        const logoutResult = await handleLogout(); // Logout the user
+
+        // Check if the logout was successful
+        if (logoutResult.success) {
+          window.location.reload(); // Reload the page to clear the user data
+        } else {
+          console.error("Logout failed:", logoutResult.message);
+        }
+
         break;
       default:
         break;

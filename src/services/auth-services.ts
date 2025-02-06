@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 
 // import axios to make requests to the server
 import axios from "axios";
-import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 type RegisterUserData = {
   first_name: string;
@@ -46,7 +46,7 @@ export async function handleRegisterSubmit(prevState: any, formData: FormData) {
       }
     );
 
-    // Save the token in a cookie  @NOTE: consider adding secure: true and sameSite: "Strict" for better security
+    // Save the token in a cookie
     cookieStore.set({
       name: "userToken", // Cookie name
       value: response.data.userData.token, // Save the token in the cookie
@@ -71,29 +71,6 @@ export async function handleRegisterSubmit(prevState: any, formData: FormData) {
     };
   }
 }
-
-// Response from the server when a user is registered successfully
-// {
-//   "message": "User created successfully",
-//   "userData": {
-//       "user": {
-//           "first_name": "Ali",
-//           "last_name": "Esa",
-//           "email": "wesammuneerali800@gmail.com",
-//           "phone_number": "23232323",
-//           "updated_at": "2025-01-16T00:25:58.000000Z",
-//           "created_at": "2025-01-16T00:25:58.000000Z",
-//           "id": 6
-//       },
-//       "token": "14|D8qNtchclDPec24scFFTp9IzwvYxeNUbp37sk4bic5bc1bbc"
-//   }
-// }
-
-// Response from the server when a user is not registered unsuccessfully
-// {
-//   "message": "User not created",
-//   "errorMessage": "The email has already been taken. (and 1 more error)"
-// }
 
 // Handle login form submission to the server
 export async function handleLoginSubmit(prevState: any, formData: FormData) {
@@ -142,30 +119,6 @@ export async function handleLoginSubmit(prevState: any, formData: FormData) {
     };
   }
 }
-
-// Response from the server when a user is logged in successfully
-// {
-//   "message": "User logged in successfully",
-//   "userData": {
-//       "user": {
-//           "id": 5,
-//           "first_name": "Wesam",
-//           "last_name": "Muneer",
-//           "email": "wesammuneer@gmail.com",
-//           "email_verified_at": null,
-//           "role": "user",
-//           "phone_number": "37234155",
-//           "created_at": "2025-01-13T17:45:12.000000Z",
-//           "updated_at": "2025-01-13T17:45:12.000000Z"
-//       },
-//       "token": "15|bFIVNgp1o95cGOBa5DZOPd8xHpFfD8R4YkSgZbrfff4a287a"
-//   }
-// }
-
-// Response from the server when a user is not logged in successfully
-// {
-//   "message": "Invalid credentials"
-// }
 
 // Handle get user data to the server
 export async function getUser() {
@@ -240,27 +193,6 @@ export async function getUser() {
   }
 }
 
-// Response from the server when a user is retrieved successfully
-// {
-//   "message": "User retrieved successfully",
-//   "userData": {
-//       "id": 5,
-//       "first_name": "Wesam",
-//       "last_name": "Muneer",
-//       "email": "wesammuneer@gmail.com",
-//       "email_verified_at": null,
-//       "role": "user",
-//       "phone_number": "37234155",
-//       "created_at": "2025-01-13T17:45:12.000000Z",
-//       "updated_at": "2025-01-13T17:45:12.000000Z"
-//   }
-// }
-
-// Response from the server when a user is not retrieved successfully
-// {
-//   "message": "Unauthenticated."
-// }
-
 /**
  * Retrieves the user role by accessing the authentication token from cookies
  * and making a request to the user-role endpoint.
@@ -317,17 +249,6 @@ export async function getUserRole(): Promise<{
   }
 }
 
-// Response from the server when a user role is retrieved successfully
-// {
-//   "message": "User role retrieved successfully",
-//   "userRole": "admin"
-// }
-
-// Response from the server when a user role is not retrieved successfully
-// {
-//   "message": "Unauthenticated."
-// }
-
 // Handle logout
 export async function handleLogout() {
   try {
@@ -337,18 +258,10 @@ export async function handleLogout() {
     // Get the user token from the cookies
     const userToken = cookieStore.get("userToken")?.value;
 
-    // Remove the user token from the cookies
-    cookieStore.delete("userToken");
-
-    // Remove the user role from the cookies
-    cookieStore.delete("userRole");
-
-    // Remove the local storage data
-    localStorage.removeItem("user");
-
     // Revoke the user token from the server
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_APP_URI}/logout`,
+      {}, // Empty body
       {
         headers: {
           "Content-Type": "application/json",
@@ -359,6 +272,20 @@ export async function handleLogout() {
       }
     );
 
+    if (response.status !== 200) {
+      return {
+        success: false,
+        message: "An unexpected error occurred. Logout service failed.",
+      };
+    }
+
+    // Remove the user token from the cookies
+    cookieStore.delete("userToken");
+
+    // Remove the user role from the cookies
+    cookieStore.delete("userRole");
+
+    // Return the response data
     return {
       success: true,
       message: response.data.message,
@@ -370,8 +297,3 @@ export async function handleLogout() {
     };
   }
 }
-
-// Response from the server when a user is logged out successfully
-// {
-//   "message": "User logged out successfully"
-// }

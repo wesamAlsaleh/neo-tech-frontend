@@ -8,17 +8,27 @@ import { useFormStatus } from "react-dom";
 import { handleLoginSubmit } from "@/services/auth-services";
 
 // import router from the next/navigation module to redirect the user to the home page after successful login
-import { useRouter } from "next/navigation"; // TODO: check if this is the correct import or react-router should be used instead
+import { useRouter } from "next/navigation";
+
+// import the useAuth hook from the auth context to set the user data in the context after successful login
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginForm() {
   // Get the router object from the useRouter hook
   const router = useRouter();
+
+  // Get the setUser function from the useAuth hook to set the user data in the auth context after successful login
+  const { setUser } = useAuth();
 
   const [state, loginAction] = useActionState(handleLoginSubmit, null);
 
   // Redirect the user to the home page after login is successful
   useEffect(() => {
     if (state?.success) {
+      // Set the user data in the auth context
+      setUser(state.userData);
+
+      // Redirect the user to the home page
       router.push("/home");
     }
   }, [state?.success]);

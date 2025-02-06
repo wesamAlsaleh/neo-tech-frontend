@@ -10,6 +10,9 @@ import { handleRegisterSubmit } from "@/services/auth-services";
 // import router from the next/navigation module to redirect the user to the home page after successful registration
 import { useRouter } from "next/navigation";
 
+// Import the useAuth hook from the AuthContext file in the contexts folder
+import { useAuth } from "@/contexts/AuthContext";
+
 export default function RegisterForm() {
   // Get the router object from the useRouter hook
   const router = useRouter();
@@ -17,10 +20,17 @@ export default function RegisterForm() {
   // useActionState hook to handle the form submission
   const [state, registerAction] = useActionState(handleRegisterSubmit, null);
 
+  // Get the setUser function from the useAuth hook to set the user in the context after registration is successful
+  const { setUser } = useAuth();
+
   // Redirect the user to the home page after registration is successful
   useEffect(() => {
     if (state?.success) {
-      router.push("/");
+      // Set the user in the context after successful registration
+      setUser(state.userData);
+
+      // Redirect the user to the home page
+      router.push("/home");
     }
   }, [state?.success, router]);
 
@@ -128,21 +138,3 @@ function SubmitButton() {
     </button>
   );
 }
-
-// Response from the server when a user is created successfully
-// {
-//   "status": "success",
-//   "message": "User created successfully",
-//   "data": {
-//       "user": {
-//           "first_name": "Ali",
-//           "last_name": "Esa",
-//           "email": "wesammuneerali8003z@gmail.com",
-//           "phone_number": "11111172",
-//           "updated_at": "2025-01-13T01:19:20.000000Z",
-//           "created_at": "2025-01-13T01:19:20.000000Z",
-//           "id": 37
-//       },
-//       "token": "39|wnYwAqIBcJcyUvlHonYvGoNHPZ7hCDwsiFee3bAoa33293fe"
-//   }
-// }

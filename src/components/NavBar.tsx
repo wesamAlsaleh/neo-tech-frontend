@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
+import React, { Suspense } from "react";
 
 // import the auth context to get the user data
 import { useAuth } from "@/contexts/AuthContext";
@@ -88,7 +88,11 @@ export default function NavBar() {
           </button>
 
           {/* if logged in show the profile icon here */}
-          {user ? loading ? null : <DropDownMenu /> : null}
+          {user && (
+            <Suspense fallback={<LoadingSpinner />}>
+              <DropDownMenu />
+            </Suspense>
+          )}
         </div>
       </div>
     </div>

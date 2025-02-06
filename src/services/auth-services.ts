@@ -6,6 +6,7 @@ import { cookies } from "next/headers";
 // import axios to make requests to the server
 import axios from "axios";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 type RegisterUserData = {
   first_name: string;
@@ -60,13 +61,15 @@ export async function handleRegisterSubmit(prevState: any, formData: FormData) {
     return {
       success: true,
       message: response.data.message,
+      userData: response.data.userData.user,
     };
   } catch (error: any) {
+    // log the error
+    console.error(error);
+
     return {
       success: false,
-      message:
-        error.response?.data?.message ||
-        "An error occurred while registering using handleRegisterSubmit",
+      message: "An error occurred while registering",
       error: error.response?.data?.errorMessage || error.message,
     };
   }
@@ -109,13 +112,23 @@ export async function handleLoginSubmit(prevState: any, formData: FormData) {
     return {
       success: true,
       message: response.data.message,
+      userData: response.data.userData,
     };
   } catch (error: any) {
+    // log the error
+    console.error(error);
+
+    // if the error status is 401, it means the email or password is invalid
+    if (error.response?.status === 401) {
+      return {
+        success: false,
+        message: "Invalid email or password",
+      };
+    }
+
     return {
       success: false,
-      message:
-        error.response?.data?.message ||
-        "An error occurred while registering using handleRegisterSubmit",
+      message: "An error occurred while logging in",
     };
   }
 }

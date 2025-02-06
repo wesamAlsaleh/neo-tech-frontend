@@ -3,13 +3,15 @@
 import React, { useState, useEffect } from "react";
 
 // import the auth context to store the user data in it + to prepare it to wrap the whole application
-import { AuthContext } from "@/contexts/AuthContext";
+import { AuthContext, useAuth } from "@/contexts/AuthContext";
 
 // import the getUser function from the auth services file
 import { getUser } from "@/services/auth-services";
 
 // import the User type
 import { User } from "@/types/user";
+
+// import the loading spinner component
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 // Auth provider to wrap the application with the user data
@@ -22,7 +24,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Set the loading state to show the loading spinner when fetching the user data
   const [loading, setLoading] = useState(true);
 
-  // Fetch the user if it doesn't exist in the local storage
+  // Fetch the user data from the server
   useEffect(() => {
     // Fetch the user data from the server
     const fetchUser = async () => {

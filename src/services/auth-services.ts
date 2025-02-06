@@ -177,6 +177,10 @@ export async function getUser() {
     const authToken = cookieStore.get("userToken")?.value;
 
     if (!authToken) {
+      // If the token is not found in the cookies, return an error
+      console.error("Token not found in cookies.");
+
+      // Return an error
       return {
         success: false,
         message: "Token not found in cookies.",
@@ -223,6 +227,10 @@ export async function getUser() {
       userData: response.data.userData,
     };
   } catch (error: any) {
+    // Log the error
+    console.error(error);
+
+    // Return an error
     return {
       success: false,
       message:

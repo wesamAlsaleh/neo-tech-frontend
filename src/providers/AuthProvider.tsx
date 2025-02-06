@@ -22,9 +22,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Set the loading state to show the loading spinner when fetching the user data
   const [loading, setLoading] = useState(true);
 
-  // Detect when the component is mounted
-  const [isMounted, setIsMounted] = useState(false);
-
   // Fetch the user if it doesn't exist in the local storage
   useEffect(() => {
     // Fetch the user data from the server
@@ -37,9 +34,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         if (result.success) {
           // Set the user data in the state
           setUser(result.userData);
-
-          // Set the user data in the local storage TODO: Check if it's necessary to store the user data in the local storage
-          localStorage.setItem("user", JSON.stringify(result.userData));
         }
       } catch (error) {
         setUser(null); // Set the user to null if there is an error
@@ -48,21 +42,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     };
 
-    // Set the isMounted state to true after the component is mounted
-    setIsMounted(true);
-
-    // Fetch the user data if mounted (if the component is rendered)
-    if (isMounted) {
-      fetchUser();
-    }
-  }, [isMounted]);
-
-  // Show a loading spinner until hydration is complete
-  if (!isMounted) return <LoadingSpinner />;
+    fetchUser();
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, setUser, loading, setLoading }}>
-      {children}
+      {loading ? <LoadingSpinner /> : children}
     </AuthContext.Provider>
   );
 };

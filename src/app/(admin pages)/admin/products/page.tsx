@@ -14,10 +14,10 @@ export default function ManageProductsPage() {
         <p className="mb-8">Here you can manage products</p>
 
         {/* products table */}
-        <ProductsList />
+        {/* <ProductsList /> */}
 
         {/* add product form */}
-        <AddProductForm />
+        {/* <AddProductForm /> */}
       </div>
     </div>
   );

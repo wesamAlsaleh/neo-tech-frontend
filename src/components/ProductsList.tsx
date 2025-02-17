@@ -77,7 +77,7 @@ export default function ProductsList() {
 
         const fetchProducts = await getProducts();
 
-        setProducts(fetchProducts);
+        setProducts(fetchProducts.products);
       } catch (error) {
         setFetchingMessage("Failed to load products. Please try again later.");
         console.error(error);

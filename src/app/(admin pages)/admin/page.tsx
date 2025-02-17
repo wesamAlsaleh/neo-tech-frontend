@@ -1,7 +1,11 @@
-import { redirect } from "next/navigation";
-import React from "react";
+"use client";
+
+import { useRouter } from "next/navigation";
 
 export default function page() {
-  //   Redirect to dashboard
-  return redirect("/admin/dashboard");
+  // Router instance
+  const router = useRouter();
+
+  // Redirect to dashboard
+  router.push("/admin/dashboard");
 }

@@ -16,11 +16,27 @@ export const getProducts = async () => {
       `${process.env.NEXT_PUBLIC_APP_URI}/products`
     );
 
+    // if Empty array is returned, return a user-friendly message
+    if (response.data.products.length === 0) {
+      return {
+        status: false,
+        message: "No products found.",
+      };
+    }
+
     // return the data from the response which is an array of products
-    return response.data;
+    return {
+      status: true,
+      products: response.data.products,
+    };
   } catch (error) {
     // if there is an error, log the error
     console.error(error);
+
+    return {
+      status: false,
+      message: "An error occurred while fetching the products.",
+    };
   }
 };
 

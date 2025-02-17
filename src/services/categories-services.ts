@@ -31,6 +31,7 @@ export async function getAllCategories() {
     };
   } catch (error: any) {
     console.error("Categories fetch error:", error);
+
     return {
       status: "error",
       message:

@@ -38,8 +38,13 @@ export default function homePage() {
       setCategories(fetchCategories.categories); // set the data to the state
       setCategoryMessage(fetchCategories.message); // set the message to the state
 
-      setProducts(fetchProducts); // set the data to the state
-      setProductMessage(fetchProducts.message); // set the message to the state
+      //
+      if (fetchProducts.status === false) {
+        setProductMessage(fetchProducts.message!); // set the message to the state
+        setProducts([]); // set the data to the state
+      } else {
+        setProducts(fetchProducts.products); // set the data to the state
+      }
 
       setLoading(false);
     };
@@ -47,6 +52,7 @@ export default function homePage() {
     fetchData();
   }, []);
 
+  // TODO: Add loading page
   if (loading) {
     return <div>{loading && <LoadingSpinner />}</div>;
   }

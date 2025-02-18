@@ -3,15 +3,26 @@
 import Link from "next/link";
 import React from "react";
 
+// import custom components
+import PageTitle from "@/components/PageTitle";
+
 export default function dashboardPage() {
   return (
     <div>
-      {/* page title  */}
-      <h1 className="text-red-500">dashboard page</h1>
+      <PageTitle title="Dashboard" actionButton={<ActionButton />} />
 
-      <Link href={"/"}>
-        <button>Go to Home page</button>
-      </Link>
+      <h2>Content here soon</h2>
     </div>
   );
 }
+
+// Action Button component
+const ActionButton: React.FC = () => {
+  return (
+    <Link href={"/home"}>
+      <button className="px-4 py-2 bg-primary text-white rounded hover:bg-primary/50 transition duration-300">
+        Home
+      </button>
+    </Link>
+  );
+};

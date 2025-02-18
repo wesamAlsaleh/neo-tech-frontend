@@ -1,6 +1,7 @@
 // Import custom components
 import AdminHeader from "@/components/AdminHeader";
 import AdminSidebar from "@/components/AdminSidebar";
+import AdminPageLayout from "@/components/AdminPageLayout";
 
 export default function DashboardLayout({
   children,
@@ -19,7 +20,7 @@ export default function DashboardLayout({
         <AdminHeader />
 
         {/* main content */}
-        <main className="p-6">{children}</main>
+        <AdminPageLayout>{children}</AdminPageLayout>
       </div>
     </div>
   );

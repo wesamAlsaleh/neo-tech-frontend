@@ -3,13 +3,15 @@
 import React, { useState, useEffect } from "react";
 
 // import the auth context to store the user data in it + to prepare it to wrap the whole application
-import { AuthContext } from "@/contexts/AuthContext";
+import { AuthContext, useAuth } from "@/contexts/AuthContext";
 
 // import the getUser function from the auth services file
 import { getUser } from "@/services/auth-services";
 
 // import the User type
-import { User } from "@/types/user";
+import { User } from "@/types/User";
+
+// import the loading spinner component
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 // Auth provider to wrap the application with the user data
@@ -22,10 +24,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Set the loading state to show the loading spinner when fetching the user data
   const [loading, setLoading] = useState(true);
 
-  // Detect when the component is mounted
-  const [isMounted, setIsMounted] = useState(false);
-
-  // Fetch the user if it doesn't exist in the local storage
+  // Fetch the user data from the server
   useEffect(() => {
     // Fetch the user data from the server
     const fetchUser = async () => {
@@ -37,9 +36,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         if (result.success) {
           // Set the user data in the state
           setUser(result.userData);
-
-          // Set the user data in the local storage TODO: Check if it's necessary to store the user data in the local storage
-          localStorage.setItem("user", JSON.stringify(result.userData));
         }
       } catch (error) {
         setUser(null); // Set the user to null if there is an error
@@ -48,21 +44,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       }
     };
 
-    // Set the isMounted state to true after the component is mounted
-    setIsMounted(true);
-
-    // Fetch the user data if mounted (if the component is rendered)
-    if (isMounted) {
-      fetchUser();
-    }
-  }, [isMounted]);
-
-  // Show a loading spinner until hydration is complete
-  if (!isMounted) return <LoadingSpinner />;
+    fetchUser();
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, setUser, loading, setLoading }}>
-      {children}
+      {loading ? <LoadingSpinner /> : children}
     </AuthContext.Provider>
   );
 };

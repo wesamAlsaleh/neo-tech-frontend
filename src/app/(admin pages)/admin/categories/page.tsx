@@ -12,9 +12,6 @@ export default function ManageCategoriesPage() {
 
       {/* Categories List Container */}
       <div className="mb-12">
-        <h2 className="text-2xl font-semibold mb-4">Categories List</h2>
-
-        <p className="mb-4">Here you can see all categories</p>
         {/* Categories table */}
         <CategoryList />
       </div>

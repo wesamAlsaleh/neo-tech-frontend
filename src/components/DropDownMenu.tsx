@@ -5,19 +5,10 @@ import React, { useState } from "react";
 // Import the useRouter hook from the next/navigation module
 import { useRouter } from "next/navigation";
 
-// Import the useAuth hook from the AuthContext
-import { useAuth } from "@/contexts/AuthContext";
-
-// import custom components
-import LoadingSpinner from "./LoadingSpinner";
-
 // Import the handleLogout function from the auth-services
 import { handleLogout } from "@/services/auth-services";
 
 export default function DropDownMenu() {
-  // Get the user data
-  const { user, loading } = useAuth();
-
   // Get the router object
   const router = useRouter();
 
@@ -48,15 +39,6 @@ export default function DropDownMenu() {
       case "My Orders":
         router.push("#"); // TODO: change the route
         break;
-      case "Manage Categories":
-        router.push("/admin/categories"); // Navigate to the categories page
-        break;
-      case "Manage Products":
-        router.push("/admin/products"); // Navigate to the products page
-        break;
-      case "Manage Orders":
-        router.push("#"); // TODO: change the route
-        break;
       case "Logout":
         handleLogout(); // Logout the user
         break;
@@ -66,22 +48,7 @@ export default function DropDownMenu() {
   };
 
   // Menu items based on the user role
-  const menuItems =
-    user?.role === "admin"
-      ? [
-          "Profile",
-          "My Orders",
-          "Manage Categories",
-          "Manage Products",
-          "Manage Orders",
-          "Manage Users",
-          "Logout",
-        ]
-      : ["Profile", "My Orders", "Logout"];
-
-  if (loading) {
-    return <LoadingSpinner />; // Show a loading spinner while the user data is being fetched
-  }
+  const menuItems = ["Profile", "My Orders", "Logout"];
 
   return (
     <div className="relative inline-block">

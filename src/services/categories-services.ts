@@ -8,6 +8,7 @@ import type { Category, CategoryData } from "@/types/category";
 
 // Import the cookies from the next/headers module
 import { cookies } from "next/headers";
+import { error } from "console";
 
 // Get all categories from the API endpoint
 export async function getAllCategories() {
@@ -207,6 +208,7 @@ export async function handleUpdateCategorySubmit(
     return {
       success: true,
       message: response.data.message || "Category updated successfully!",
+      error: null,
     };
   } catch (error: any) {
     // Log the error

@@ -15,7 +15,7 @@ interface CategoryEditModalProps {
   category?: Category; // category to edit
 }
 
-export default function EditModalComponent({
+export default function EditCategoryModal({
   isOpen, // modal open state
   onClose, // set isOpen to false then close the modal
   category, // category to edit

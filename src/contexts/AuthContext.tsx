@@ -14,12 +14,9 @@ interface AuthContextType {
 }
 
 // create a context to store the user data and the setUser function
-export const AuthContext = createContext<AuthContextType>({
-  user: null,
-  setUser: () => {},
-  loading: true,
-  setLoading: () => {},
-});
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
 /**
  * Custom hook to access the authentication context.

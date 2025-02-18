@@ -24,17 +24,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Set the loading state to show the loading spinner when fetching the user data
   const [loading, setLoading] = useState(true);
 
-  // Fetch the user data from the server
   useEffect(() => {
-    // Fetch the user data from the server
     const fetchUser = async () => {
       try {
         // Fetch the user data from the server
         const result = await getUser();
 
-        // If the request is successful set the user data in the local storage
+        // If the request is successful set the user data
         if (result.success) {
-          // Set the user data in the state
           setUser(result.userData);
         }
       } catch (error) {

@@ -32,18 +32,6 @@ export default function AdminSidebar() {
 
           <li>
             <Link
-              href="/admin/products"
-              className={`flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 ${
-                pathname === "/admin/products" ? "bg-gray-800" : ""
-              }`}
-            >
-              {/* <Package size={20} /> */}
-              <span>Products</span>
-            </Link>
-          </li>
-
-          <li>
-            <Link
               href="/admin/categories"
               className={`flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 ${
                 pathname === "/admin/categories" ? "bg-gray-800" : ""
@@ -51,6 +39,18 @@ export default function AdminSidebar() {
             >
               {/* <Grid size={20} /> */}
               <span>Categories</span>
+            </Link>
+          </li>
+
+          <li>
+            <Link
+              href="/admin/products"
+              className={`flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-800 ${
+                pathname === "/admin/products" ? "bg-gray-800" : ""
+              }`}
+            >
+              {/* <Package size={20} /> */}
+              <span>Products</span>
             </Link>
           </li>
         </ul>

@@ -9,7 +9,11 @@ import PageTitle from "@/components/PageTitle";
 export default function dashboardPage() {
   return (
     <div>
-      <PageTitle title="Dashboard" actionButton={<ActionButton />} />
+      <PageTitle
+        title="Dashboard"
+        subtitle="Manage your site settings and view analytics"
+        actionButton={<ActionButton />}
+      />
 
       <h2>Content here soon</h2>
     </div>

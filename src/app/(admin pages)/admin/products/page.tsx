@@ -12,7 +12,7 @@ export default function ManageProductsPage() {
       <PageTitle title="Products" subtitle="Manage products here" />
 
       {/* products table */}
-      {/* <ProductsList /> */}
+      <ProductsList />
 
       {/* add product form */}
       {/* <AddProductForm /> */}

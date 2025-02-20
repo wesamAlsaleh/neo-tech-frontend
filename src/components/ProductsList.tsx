@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 // import types
 import { Product, Products } from "@/types/product";
@@ -9,7 +9,6 @@ import { Product, Products } from "@/types/product";
 import {
   deleteProduct,
   getProducts,
-  toggleProductAvailability,
   toggleProductStatus,
 } from "@/services/products-services";
 
@@ -18,480 +17,408 @@ import LoadingSpinner from "./LoadingSpinner";
 
 // import icons
 import { icons } from "../../public/icons";
-import EditProductModal from "./EditProductModal";
 
 // import custom components
+import EditProductModal from "./EditProductModal";
+import DeleteModal from "./DeleteModal";
 
 export default function ProductsList() {
   // Products state
   const [products, setProducts] = useState<Products[]>([]);
 
-  // Message state
-  const [fetchingMessage, setFetchingMessage] = useState<string>("");
+  // Pagination state
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    lastPage: 1,
+    perPage: 10,
+    total: 0,
+  });
 
-  // Edit message state
-  const [editMessage, setEditMessage] = useState<string>("");
-
-  // Delete message state
-  const [deleteMessage, setDeleteMessage] = useState<string>("");
-
-  // Toggle product status message state
-  const [toggleProductStatusMessage, setToggleProductStatusMessage] =
-    useState<string>("");
-
-  // Loading state
-  const [loading, setLoading] = useState<boolean>(true);
-
-  // Form submission response status
+  // Message states
+  const [actionMessage, setActionMessage] = useState<string>(""); // to show success or error message
   const [isSuccessfulResponse, setIsSuccessfulResponse] =
-    useState<boolean>(false);
+    useState<boolean>(false); // to show success or error message color
 
-  // Edit Modal states
+  // Modal states
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [selectedProductToEdit, setSelectedProductToEdit] = useState<
-    Product | undefined
-  >(undefined); // Selected product to edit
-
-  // Delete Modal states
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  // Selected product name to delete
-  const [selectedProductNameToDelete, setSelectedProductNameToDelete] =
-    useState<string>("");
+  // Selected product state for actions
+  const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(
+    undefined
+  );
 
-  // Selected product id to delete
-  const [selectedProductIdToDelete, setSelectedProductIdToDelete] =
-    useState<number>(0);
+  // Fetch Data function
+  const fetchProductsData = async (page = 1) => {
+    try {
+      // Fetch products
+      const response = await getProducts();
 
-  // Fetch Data after the component is mounted
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
+      if (response.status) {
+        setProducts(response.products.data || []);
 
-        // clear the message states
-        setFetchingMessage("");
-        setEditMessage("");
-        setDeleteMessage("");
-        setToggleProductStatusMessage("");
+        setIsSuccessfulResponse(true);
 
-        const fetchProducts = await getProducts();
-
-        setProducts(fetchProducts.products);
-      } catch (error) {
-        setFetchingMessage("Failed to load products. Please try again later.");
-        console.error(error);
-      } finally {
-        setLoading(false);
+        // Set pagination data
+        if (response.products) {
+          setPagination({
+            currentPage: response.products.current_page,
+            lastPage: response.products.last_page,
+            perPage: response.products.per_page,
+            total: response.products.total,
+          });
+        }
       }
-    };
-
-    fetchData();
-  }, []);
-
-  // Render loading spinner or message
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
-  // Handle edit product
-  const handleEditClick = (product: Product) => {
-    setIsEditModalOpen(true); // open the edit modal after setting the selected product to edit
-    setSelectedProductToEdit(product); // set the selected product to edit
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
   };
 
-  // Handle delete product
-  const handleDeleteClick = (productId: number, productName: string) => {
-    setSelectedProductNameToDelete(productName); // set the selected product to delete to add it to the delete modal
-    setSelectedProductIdToDelete(productId); // set the selected product id to delete
-    setIsDeleteModalOpen(true); // open the delete modal after setting the selected product to delete
+  // Fetch on mount
+  useEffect(() => {
+    fetchProductsData();
+  }, []);
+
+  // Handle edit product (to open modal with product data)
+  const handleEditClick = (product: Product) => {
+    setSelectedProduct(product);
+    setIsEditModalOpen(true);
+  };
+
+  // Handle delete product (to open modal with product data)
+  const handleDeleteClick = (product: Product) => {
+    setSelectedProduct(product);
+    setIsDeleteModalOpen(true);
   };
 
   // Handle confirm delete product
-  const handleConfirmDelete = async (productId: number) => {
+  const handleConfirmDelete = async () => {
     try {
-      // If there is no product id, return
-      if (!productId) return;
+      if (!selectedProduct) return;
 
-      // Delete product
-      const response = await deleteProduct(productId);
+      const response = await deleteProduct(String(selectedProduct.id));
+
+      // Set action message
+      setActionMessage(response.message);
+
+      // Set response status
+      setIsSuccessfulResponse(response.status === "success");
 
       if (response.status === "success") {
-        // Set the success background color to true
-        setIsSuccessfulResponse(true);
+        // Refresh products list by fetching data again
+        fetchProductsData(pagination.currentPage);
 
-        // Set delete message
-        setDeleteMessage(response.message);
-
-        // Reload the page to update the products list
-        window.location.reload();
-      } else {
-        // Set the success background color to false
-        setIsSuccessfulResponse(false);
-
-        // Set delete message
-        setDeleteMessage(response.message);
+        // Close the modal after successful delete
+        setIsDeleteModalOpen(false);
       }
     } catch (error) {
-      setDeleteMessage("Failed to delete product. Please try again later.");
-      console.error(error);
+      console.error("Delete error:", error);
+
+      // Set action message
+      setActionMessage("Failed to delete product. Please try again later.");
+
+      // Set response status
+      setIsSuccessfulResponse(false);
     }
   };
 
   // Handle toggle product status
-  const handleToggleProductStatus = async (productId: number) => {
+  const handleToggleProductStatus = async (productId: string) => {
     try {
-      // If there is no product id, return
       if (!productId) return;
 
       // Toggle product status
       const response = await toggleProductStatus(productId);
 
+      // Set action message
+      setActionMessage(response.message);
+
+      // Set response status
+      setIsSuccessfulResponse(response.status === "success");
+
       if (response.status === "success") {
-        // Set the success background color to true
-        setIsSuccessfulResponse(true);
-
-        // Set toggle product status message
-        setToggleProductStatusMessage(response.message);
-
-        // Reload the page to update the products list
-        window.location.reload();
-      } else {
-        // Set the success background color to false
-        setIsSuccessfulResponse(false);
-
-        // Set toggle product status message
-        setToggleProductStatusMessage(response.message);
+        // Refetch products data with current page and updated data
+        fetchProductsData(pagination.currentPage);
       }
     } catch (error) {
-      setToggleProductStatusMessage(
+      console.error("Toggle status error:", error);
+
+      setActionMessage(
         "Failed to toggle product status. Please try again later."
       );
-      console.error(error);
+      setIsSuccessfulResponse(false);
     }
   };
 
-  // Handle toggle product availability
-  const handleToggleProductAvailability = async (productId: number) => {
-    try {
-      // If there is no product id, return
-      if (!productId) return;
-
-      // Toggle product availability
-      const response = await toggleProductAvailability(productId);
-
-      if (response.status === "success") {
-        // Set the success background color to true
-        setIsSuccessfulResponse(true);
-
-        // Set toggle product status message
-        setToggleProductStatusMessage(response.message);
-
-        // Reload the page to update the products list
-        window.location.reload();
-      } else {
-        // Set the success background color to false
-        setIsSuccessfulResponse(false);
-
-        // Set toggle product status message
-        setToggleProductStatusMessage(response.message);
-      }
-    } catch (error) {
-      setToggleProductStatusMessage(
-        "Failed to toggle product availability. Please try again later."
-      );
-      console.error(error);
-    }
+  // Handle pagination change
+  const handlePageChange = (page: number) => {
+    fetchProductsData(page); // Refetch data with new page number to update the table
   };
-
-  // Render message if there are no products
-  if (!products.length) {
-    return <p>No Products in the system</p>;
-  }
 
   return (
-    // Categories Table Container
     <div className="overflow-x-auto">
-      {/* Delete product message */}
-      {deleteMessage && (
-        <div
-          className={`px-4 py-3 rounded relative mb-4 ${
-            isSuccessfulResponse
-              ? "bg-green-100 border border-green-400 text-green-700"
-              : "bg-red-100 border border-red-400 text-red-700 "
-          }`}
-          role="alert"
-        >
-          {isSuccessfulResponse ? (
-            <strong className="font-bold">Success! </strong>
-          ) : (
-            <strong className="font-bold">Error! </strong>
-          )}
-          <span className="block sm:inline">{deleteMessage}</span>
-        </div>
-      )}
+      <Suspense fallback={<LoadingSpinner />}>
+        {/* action message */}
+        {actionMessage && (
+          <div
+            className={`px-4 py-3 rounded relative mb-4 ${
+              isSuccessfulResponse
+                ? "bg-green-100 border border-green-400 text-green-700"
+                : "bg-red-100 border border-red-400 text-red-700 "
+            }`}
+            role="alert"
+          >
+            {isSuccessfulResponse ? (
+              <strong className="font-bold">Success! </strong>
+            ) : (
+              <strong className="font-bold">Error! </strong>
+            )}
+            <span className="block sm:inline">{actionMessage}</span>
+          </div>
+        )}
 
-      {/* Toggle product message */}
-      {toggleProductStatusMessage && (
-        <div
-          className={`px-4 py-3 rounded relative mb-4 ${
-            isSuccessfulResponse
-              ? "bg-green-100 border border-green-400 text-green-700"
-              : "bg-red-100 border border-red-400 text-red-700 "
-          }`}
-          role="alert"
-        >
-          {isSuccessfulResponse ? (
-            <strong className="font-bold">Success! </strong>
-          ) : (
-            <strong className="font-bold">Error! </strong>
-          )}
-          <span className="block sm:inline">{toggleProductStatusMessage}</span>
-        </div>
-      )}
-
-      {/* Products Table */}
-      <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
-        <thead>
-          <tr className="bg-gray-100 border-b border-gray-300">
-            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-              Product Name
-            </th>
-
-            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-              Product Image
-            </th>
-
-            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-              Is Active
-            </th>
-
-            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-              In Stock
-            </th>
-
-            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-              Product Price
-            </th>
-
-            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-              Product Rating
-            </th>
-
-            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-              Created At
-            </th>
-
-            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-              Actions
-            </th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {products.map((product) => (
-            <tr key={product.id} className="hover:bg-gray-100 even:bg-gray-50">
-              {/* Product Name */}
-              <td className="px-4 py-2 border border-gray-300">
-                {product.product_name}
-              </td>
-
-              {/* Product first image*/}
-              <td className="px-4 py-2 border border-gray-300">
-                <img
-                  className="h-10 w-10 object-cover"
-                  src={product.images[0] || undefined}
-                  alt={product.product_name}
-                />
-              </td>
-
-              {/* Product Status */}
-              <td className="px-4 py-2 border border-gray-300">
-                {product.is_active ? (
-                  <span className="text-green-600 font-medium">Active</span>
-                ) : (
-                  <span className="text-red-600 font-medium">Inactive</span>
-                )}
-              </td>
-
-              {/* Product Availability */}
-              <td className="px-4 py-2 border border-gray-300">
-                {product.in_stock ? (
-                  <span className="text-green-600 font-medium">In Stock</span>
-                ) : (
-                  <span className="text-red-600 font-medium">Out of Stock</span>
-                )}
-              </td>
-
-              {/* Product Price */}
-              <td className="px-4 py-2 border border-gray-300">
-                {product.product_price} BHD
-              </td>
-
-              {/* Product Rating */}
-              <td className="px-4 py-2 border border-gray-300">
-                {product.product_rating} ⭐
-              </td>
-
-              {/* Product Created Date */}
-              <td className="px-4 py-2 border border-gray-300">
-                {new Date(product.created_at).toLocaleDateString()}
-              </td>
-
-              {/* Product Edit*/}
-              <td className="px-4 py-2 border border-gray-300 flex gap-2">
-                {/* Edit button */}
-                <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  onClick={() => handleEditClick(product)}
-                >
-                  {" "}
-                  <img
-                    src={icons.edit50.src}
-                    alt="Add to Basket"
-                    width={35}
-                    height={35}
-                  />
-                </button>
-
-                {/* Delete button */}
-                <button
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  onClick={() =>
-                    handleDeleteClick(product.id, product.product_name)
-                  }
-                >
-                  {" "}
-                  <img
-                    src={icons.delete50.src}
-                    alt="Add to Basket"
-                    width={35}
-                    height={35}
-                  />
-                </button>
-
-                {/* Toggle status button */}
-                <button
-                  className={`${
-                    product.is_active
-                      ? "bg-orange-400 hover:bg-orange-400"
-                      : `bg-green-500 hover:bg-green-700`
-                  } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
-                  onClick={() => handleToggleProductStatus(product.id)}
-                >
-                  {product.is_active ? (
-                    <img
-                      src={icons.removeBasket50.src}
-                      alt="Add to Basket"
-                      width={35}
-                      height={35}
-                    />
-                  ) : (
-                    <img
-                      src={icons.addBasket50.src}
-                      alt="Add to Basket"
-                      width={35}
-                      height={35}
-                    />
-                  )}
-                </button>
-
-                {/* Toggle availability button */}
-                <button
-                  className={`${
-                    product.in_stock
-                      ? "bg-rose-400 hover:bg-rose-400"
-                      : `bg-fuchsia-500 hover:bg-fuchsia-700`
-                  } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
-                  onClick={() => handleToggleProductAvailability(product.id)}
-                >
-                  {product.in_stock ? (
-                    <img
-                      src={icons.unavailableIcon50.src}
-                      alt="Add to Basket"
-                      width={35}
-                      height={35}
-                    />
-                  ) : (
-                    <img
-                      src={icons.availableIcon50.src}
-                      alt="Add to Basket"
-                      width={35}
-                      height={35}
-                    />
-                  )}
-                </button>
-              </td>
+        {/* Products Table */}
+        <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
+          <thead>
+            <tr className="bg-gray-100 border-b border-gray-300">
+              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+                Product Name
+              </th>
+              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+                Product Image
+              </th>
+              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+                Is Active
+              </th>
+              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+                In Stock
+              </th>
+              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+                Product Price
+              </th>
+              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+                Product Rating
+              </th>
+              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+                Created At
+              </th>
+              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+                Actions
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {products.length === 0 ? (
+              <tr>
+                <td colSpan={8} className="px-4 py-6 text-center text-red-600">
+                  No products found.
+                </td>
+              </tr>
+            ) : (
+              products.map((product) => (
+                <tr
+                  key={product.id}
+                  className="hover:bg-gray-100 even:bg-gray-50"
+                >
+                  {/* Product Name */}
+                  <td className="px-4 py-2 border border-gray-300">
+                    {product.product_name}
+                  </td>
+
+                  {/* Product first image*/}
+                  <td className="px-4 py-2 border border-gray-300">
+                    {product.images && product.images.length > 0 ? (
+                      <img
+                        className="h-10 w-10 object-cover rounded"
+                        src={product.images[0]} // first image
+                        alt={product.product_name}
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            "https://placehold.co/100x100?text=No+Image";
+                        }}
+                      />
+                    ) : (
+                      <div className="h-10 w-10 bg-gray-200 flex items-center justify-center rounded">
+                        <span className="text-xs text-gray-500">No image</span>
+                      </div>
+                    )}
+                  </td>
+
+                  {/* Product Status */}
+                  <td className="px-4 py-2 border border-gray-300">
+                    <span
+                      className={`${
+                        product.is_active ? "text-green-600" : "text-red-600"
+                      } font-medium`}
+                    >
+                      {product.is_active ? "Active" : "Inactive"}
+                    </span>
+                  </td>
+
+                  {/* Product Availability */}
+                  <td className="px-4 py-2 border border-gray-300">
+                    <span
+                      className={`${
+                        Number(product.product_stock) > 0
+                          ? "text-green-600"
+                          : "text-red-600"
+                      } font-medium`}
+                    >
+                      {Number(product.product_stock) > 0
+                        ? `In Stock (${product.product_stock})`
+                        : "Out of Stock"}
+                    </span>
+                  </td>
+
+                  {/* Product Price */}
+                  <td className="px-4 py-2 border border-gray-300">
+                    {parseFloat(product.product_price).toFixed(2)} BHD
+                  </td>
+
+                  {/* Product Rating */}
+                  <td className="px-4 py-2 border border-gray-300">
+                    {product.product_rating} ⭐
+                  </td>
+
+                  {/* Product Created Date */}
+                  <td className="px-4 py-2 border border-gray-300">
+                    {new Date(product.created_at).toLocaleDateString()}
+                  </td>
+
+                  {/* Action buttons */}
+                  <td className="px-4 py-2 border border-gray-300">
+                    <div className="flex gap-2">
+                      {/* Edit button */}
+                      <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
+                        onClick={() => handleEditClick(product)}
+                        title="Edit product"
+                      >
+                        <img
+                          src={icons.edit50.src}
+                          alt="Edit"
+                          width={24}
+                          height={24}
+                        />
+                      </button>
+
+                      {/* Delete button */}
+                      <button
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
+                        onClick={() => handleDeleteClick(product)}
+                        title="Delete product"
+                      >
+                        <img
+                          src={icons.delete50.src}
+                          alt="Delete"
+                          width={24}
+                          height={24}
+                        />
+                      </button>
+
+                      {/* Toggle status button */}
+                      <button
+                        className={`${
+                          product.is_active
+                            ? "bg-orange-400 hover:bg-orange-500"
+                            : "bg-green-500 hover:bg-green-600"
+                        } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
+                        onClick={() =>
+                          handleToggleProductStatus(String(product.id))
+                        }
+                        title={
+                          product.is_active
+                            ? "Deactivate product"
+                            : "Activate product"
+                        }
+                      >
+                        <img
+                          src={
+                            product.is_active
+                              ? icons.removeBasket50.src
+                              : icons.addBasket50.src
+                          }
+                          alt={product.is_active ? "Deactivate" : "Activate"}
+                          width={24}
+                          height={24}
+                        />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+
+        {/* Pagination */}
+        {pagination.lastPage > 1 && (
+          <div className="flex justify-center mt-4">
+            <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+              {/* Previous Page Button */}
+              <button
+                onClick={() => handlePageChange(pagination.currentPage - 1)}
+                disabled={pagination.currentPage === 1}
+                className={`relative inline-flex items-center px-2 py-2 rounded-l-md border ${
+                  pagination.currentPage === 1
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-white text-gray-500 hover:bg-gray-50"
+                } text-sm font-medium`}
+              >
+                &laquo; Previous
+              </button>
+
+              {/* Page Numbers */}
+              {[...Array(pagination.lastPage)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => handlePageChange(i + 1)}
+                  className={`relative inline-flex items-center px-4 py-2 border ${
+                    pagination.currentPage === i + 1
+                      ? "bg-blue-50 border-blue-500 text-blue-600 z-10"
+                      : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50"
+                  } text-sm font-medium`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+
+              {/* Next Page Button */}
+              <button
+                onClick={() => handlePageChange(pagination.currentPage + 1)}
+                disabled={pagination.currentPage === pagination.lastPage}
+                className={`relative inline-flex items-center px-2 py-2 rounded-r-md border ${
+                  pagination.currentPage === pagination.lastPage
+                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    : "bg-white text-gray-500 hover:bg-gray-50"
+                } text-sm font-medium`}
+              >
+                Next &raquo;
+              </button>
+            </nav>
+          </div>
+        )}
+      </Suspense>
 
       {/* Edit Modal */}
       <EditProductModal
         isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        product={selectedProductToEdit}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          // Refresh data after edit modal closes
+          fetchProductsData(pagination.currentPage);
+        }}
+        product={selectedProduct}
       />
 
       {/* Delete Modal */}
       <DeleteModal
         isOpen={isDeleteModalOpen} // open the modal
         onClose={() => setIsDeleteModalOpen(false)} // close the modal
-        productName={selectedProductNameToDelete} // pass the selected product name to delete
-        onConfirm={() => handleConfirmDelete(selectedProductIdToDelete)} // confirm delete product
+        onConfirm={() => handleConfirmDelete()} // confirm delete
+        name={selectedProduct?.product_name || ""} // pass the selected product name to delete
       />
-    </div>
-  );
-}
-
-// Delete Modal Component
-function DeleteModal({
-  isOpen,
-  onClose,
-  onConfirm,
-  productName,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  productName: string;
-}) {
-  // close the modal if it's not open
-  if (!isOpen) return null;
-
-  return (
-    // Modal Container
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      {/* Modal Content */}
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        {/* Modal Name */}
-        <h2 className="text-lg font-semibold">Confirm Deletion</h2>
-
-        {/* Product Name container*/}
-        <p className="mt-2 text-gray-600">
-          Are you sure you want to delete <strong>{productName}</strong>?
-        </p>
-
-        {/* Buttons Container */}
-        <div className="mt-4 flex justify-end gap-2">
-          {/* Cancel Button */}
-          <button
-            className="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded"
-            onClick={onClose}
-          >
-            Cancel
-          </button>
-
-          {/* Delete Button */}
-          <button
-            className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded"
-            onClick={onConfirm}
-          >
-            Delete
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

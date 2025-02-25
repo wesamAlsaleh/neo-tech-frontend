@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 
 // import handle form submission function
 import { createProduct } from "@/services/products-services";
@@ -13,175 +13,189 @@ import { Category } from "@/types/category";
 
 // import custom components
 import ProductImageUpload from "@/components/ProductImageUpload";
+import { useRouter } from "next/navigation";
+
+// Form status interface
+interface FormStatus {
+  success: boolean;
+  message: string;
+  error: string;
+}
 
 export default function AddProductForm() {
-  // State to store the product name
-  const [productName, setProductName] = useState<string>("");
+  const [productName, setProductName] = useState<string>(""); // State to store the product name
+  const [productDescription, setProductDescription] = useState<string>(""); // State to store the product description
+  const [productPrice, setProductPrice] = useState<number>(0); // State to store the product price
+  // const [productRating, setProductRating] = useState<number>(0); // State to store the product rating
+  const [productImages, setProductImages] = useState<FileList | null>(null); // State to store the product images
+  const [productStatus, setProductStatus] = useState<string | number>(""); // State to store the product status 'active' or 'inactive'
+  const [productCategory, setProductCategory] = useState<string | number>(""); // State to store the product category
+  const [productStock, setProductStock] = useState<number>(0); // State to store the product stock
+  const [productBarcode, setProductBarcode] = useState<string>(""); // State to store the product barcode
+  const [categories, setCategories] = useState<Category[]>([]); // State to store the fetched categories
+  const [serverResponse, setServerResponse] = useState<FormStatus>({
+    success: false,
+    message: "",
+    error: "",
+  }); // State to store the response status to display to the user after form submission
+  const [isSubmitting, setIsSubmitting] = useState(false); // State to store the form submission status
 
-  // State to store the product description
-  const [productDescription, setProductDescription] = useState<string>("");
+  // Router instance
+  const router = useRouter();
 
-  // State to store the product price
-  const [productPrice, setProductPrice] = useState<number>(0);
+  // Function to fetch the categories list from the API
+  const fetchCategoriesData = async () => {
+    try {
+      // Fetch the categories
+      const fetchCategories = await getAllCategories();
 
-  // State to store the product images
-  const [productImages, setProductImages] = useState<FileList | null>(null);
+      // Extract the categories from the response
+      const { categories } = fetchCategories;
 
-  // State to store the product rating
-  const [productRating, setProductRating] = useState<number>(0);
-
-  // State to store the product category
-  const [productCategory, setProductCategory] = useState<string | number>("");
-
-  // State to store the product status 'active' or 'inactive'
-  const [productStatus, setProductStatus] = useState<string | number>("");
-
-  // State to store the product availability 'in stock' or 'out of stock'
-  const [productAvailability, setProductAvailability] = useState<
-    string | number
-  >("");
-
-  // State to store the categories list
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  // State to store the response status to display to the user after form submission
-  const [status, setStatus] = useState<string>("");
-
-  // Loading state
-  const [loading, setLoading] = useState<boolean>(false);
-
-  //
-  const [isSuccessfulResponse, setIsSuccessfulResponse] =
-    useState<boolean>(false);
-
-  // handle image change function to update the product images state when the user uploads images on the form
-  const handleImageChange = (files: FileList) => {
-    setProductImages(files);
+      // Set the categories state
+      setCategories(categories);
+    } catch (error) {
+      // Log the error to the console
+      console.error("Error fetching categories:", error);
+    }
   };
 
   // Fetch the categories list from the API
   useEffect(() => {
-    const fetchCategoriesData = async () => {
-      try {
-        // Set loading state to true
-        setLoading(true);
-
-        // Fetch the categories
-        const fetchCategories = await getAllCategories();
-
-        // Extract the categories from the response
-        const { categories } = fetchCategories;
-
-        // Set the categories state
-        setCategories(categories);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchCategoriesData();
   }, []);
 
+  // Function to reset the form fields after submission
+  const resetFormFields = () => {
+    // Reset all the form fields
+    setProductName("");
+    setProductDescription("");
+    setProductPrice(0);
+    setProductStatus(0);
+    setProductCategory("");
+    setProductStock(0);
+    setProductBarcode("");
+    setProductImages(null);
+  };
+
   // Function to handle the form submission
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent, resetForm = false) => {
     // Prevent the default form submission
     e.preventDefault();
 
+    // Set the form submission status to true to disable the submit button
+    setIsSubmitting(true);
+
+    console.log();
+
     // Prepare form data
     const formData = new FormData();
+
+    // If any field is empty, display an error message and return
+    if (!productName || !productCategory || !productImages || !productBarcode) {
+      setServerResponse({
+        success: false,
+        message: `${!productName ? "Product Name, " : ""}${
+          !productCategory ? "Category, " : ""
+        }${!productStatus ? "Status, " : ""}${
+          !productImages ? "Images, " : ""
+        } ${!productBarcode ? "Barcode" : ""} cannot be empty*`,
+        error: "client error",
+      });
+
+      setIsSubmitting(false); // Reset the form submission status
+
+      return;
+    }
+
+    // If the product barcode is not 13 digits or is not a number, display an error message and return
+    if (productBarcode.length !== 13 || isNaN(Number(productBarcode))) {
+      setServerResponse({
+        success: false,
+        message: "Product barcode must be 13 digits*",
+        error: "client error",
+      });
+
+      setIsSubmitting(false); // Reset the form submission status
+
+      return;
+    }
 
     // Append text fields
     formData.append("product_name", productName);
     formData.append("product_description", productDescription);
     formData.append("product_price", String(productPrice));
-    formData.append("product_rating", String(productRating));
+    // formData.append("product_rating", String(productRating));
     formData.append("is_active", String(productStatus));
-    formData.append("in_stock", String(productAvailability));
     formData.append("category_id", String(productCategory));
+    formData.append("product_stock", String(productStock));
+    formData.append("product_barcode", productBarcode);
 
-    // Append image files
+    // Append image files (in other words, put the images in array format called 'product_images[]')
     if (productImages) {
       // Convert FileList to Array for easier handling
-      const filesArray = Array.from(productImages);
+      const productImagesArray = Array.from(productImages);
 
       // Append each file with the same field name 'product_images[]'
-      filesArray.forEach((file) => {
-        formData.append("product_images[]", file);
+      productImagesArray.forEach((image) => {
+        formData.append("product_images[]", image);
       });
     }
 
     try {
-      // Display the form data in the console
-      formData.forEach((value, key) => {
-        console.log(`${key}:`, value);
-      });
-
       // Submit the form data using the service
       const result = await createProduct(formData);
 
-      // Reload the page after second if the category is created successfully
-      if (result?.status === "success") {
-        // Set the response status to true to display the success message with a green background
-        setIsSuccessfulResponse(true);
+      // Update UI with the response message
+      setServerResponse({
+        success: result.status,
+        message: result.message,
+        error: "",
+      });
 
-        // Update UI with the response message
-        setStatus(result?.message);
-
-        // Clear form after successful submission
-        setProductName("");
-        setProductDescription("");
-        setProductPrice(0);
-        setProductImages(null);
-        setProductRating(0);
-        setProductCategory(0);
-        setProductStatus(0);
-        setProductAvailability(0);
-
-        // Reload the page after successful submission
-        window.location.reload();
-      } else {
-        // Set error response
-        setIsSuccessfulResponse(false);
-
-        // Update UI with the error message
-        setStatus(result.message);
+      // If the form submission is successful, reload the page or reset the form fields if the resetForm parameter is true
+      if (result.status) {
+        // Reset the form fields if the resetForm parameter is true
+        if (resetForm) {
+          resetFormFields();
+        } else {
+          router.push("/admin/products"); // Redirect to the categories page
+        }
       }
-    } catch (error) {
-      // Set error response
-      setIsSuccessfulResponse(false);
-
+    } catch (error: any) {
       // Update UI with the error message
-      setStatus("Error creating product. Please try again. 😕");
+      setServerResponse({
+        success: false,
+        message: error.response.data.message,
+        error: "server error",
+      });
+    } finally {
+      setIsSubmitting(false); // Reset the form submission
     }
   };
 
-  // If the data is still loading, display a loading message
-  if (loading) {
-    return <p>Loading Dynamic Data...</p>;
-  }
-
   return (
-    // form container
-    <div className="max-w-2xl mx-auto mt-8 bg-white shadow-lg rounded-lg p-6">
-      {/* Form title */}
-      <h2 className="text-2xl font-semibold text-gray-800 mb-6 text-center">
-        Add a New Product
-      </h2>
-
-      {/* Display the response message */}
-      {status && (
+    <>
+      {/* Display the status message */}
+      {serverResponse.message && (
         <div
-          className={`p-3 rounded-lg text-center my-3 ${
-            isSuccessfulResponse
+          className={`p-3 rounded-lg  my-3 ${
+            serverResponse.success
               ? "bg-green-100 text-green-600" // Success styles
               : "bg-red-100 text-red-600" // Error styles
           }`}
+          role="alert"
         >
-          {status}
+          {serverResponse.success ? (
+            <strong className="font-bold">Success! </strong>
+          ) : (
+            <strong className="font-bold">Error! </strong>
+          )}
+          <span className="block sm:inline">{serverResponse.message}</span>
         </div>
       )}
 
-      {/* Form */}
+      {/* Form container */}
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Name & Price Fields container*/}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -191,16 +205,16 @@ export default function AddProductForm() {
               htmlFor="product_name"
               className="block text-sm font-medium text-gray-700"
             >
-              Product Name*
+              Product Name<span className="text-red-600">*</span>
             </label>
 
             <input
               type="text"
+              placeholder="Product Name"
               id="product_name"
               value={productName}
               onChange={(event) => setProductName(event.target.value)}
               className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2"
-              required
             />
           </div>
 
@@ -210,7 +224,7 @@ export default function AddProductForm() {
               htmlFor="product_price"
               className="block text-sm font-medium text-gray-700"
             >
-              Product Price (BHD)*
+              Product Price (BHD)
             </label>
 
             <input
@@ -219,7 +233,6 @@ export default function AddProductForm() {
               value={productPrice}
               onChange={(event) => setProductPrice(Number(event.target.value))}
               className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2"
-              required
               min="0"
               step="0.01"
             />
@@ -232,72 +245,82 @@ export default function AddProductForm() {
             htmlFor="product_description"
             className="block text-sm font-medium text-gray-700"
           >
-            Product Description*
+            Product Description
           </label>
 
           <textarea
             id="product_description"
+            placeholder="Product Description"
             value={productDescription}
             onChange={(event) => setProductDescription(event.target.value)}
-            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
             rows={3}
           />
         </div>
 
         {/* Image Upload field container */}
-        <ProductImageUpload onChange={handleImageChange} required />
+        <ProductImageUpload
+          onChange={(files: FileList) => setProductImages(files)} // set the product images state when the user uploads images
+        />
 
-        {/* Category, Status, Availability */}
+        {/* Product details container */}
+        {/* Product details container */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Category field container */}
-          <div>
-            <label
-              htmlFor="product_category"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Category*
-            </label>
+          <Suspense fallback={<p>Loading categories...</p>}>
+            <div>
+              {/* Label for category selection */}
+              <label
+                htmlFor="product_category"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Category<span className="text-red-600">*</span>
+              </label>
 
-            <select
-              id="product_category"
-              value={productCategory}
-              onChange={(event) => {
-                // Set the selected category id for the product
-                setProductCategory(Number(event.target.value));
-              }}
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2"
-              required
-            >
-              {/* Start up option */}
-              <option value="" disabled>
-                Select a category
-              </option>
-
-              {/* list the categories in the select */}
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.category_name}
+              {/* Dropdown to select a product category */}
+              <select
+                id="product_category"
+                value={productCategory}
+                onChange={(event) =>
+                  setProductCategory(Number(event.target.value))
+                }
+                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm 
+                   focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2"
+              >
+                {/* Default disabled option prompting selection */}
+                <option value="" disabled>
+                  Select a category
                 </option>
-              ))}
-            </select>
-          </div>
+
+                {/* Dynamically listing available categories */}
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.category_name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </Suspense>
 
           {/* Status field container */}
           <div>
+            {/* Label for product status selection */}
             <label
               htmlFor="product_status"
               className="block text-sm font-medium text-gray-700"
             >
-              Product Status*
+              Product Status
             </label>
 
+            {/* Dropdown to set product status (Active/Inactive) */}
             <select
               id="product_status"
-              value={productStatus}
+              value={productStatus} // Default value is 0 (Inactive)
               onChange={(event) => setProductStatus(Number(event.target.value))}
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2"
-              required
+              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm 
+                 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2"
             >
+              {/* Default disabled option prompting selection */}
               <option value="" disabled>
                 Select a status
               </option>
@@ -306,35 +329,57 @@ export default function AddProductForm() {
             </select>
           </div>
 
-          {/* Availability field container */}
+          {/* Product Stock field container */}
           <div>
+            {/* Label for product stock input */}
             <label
-              htmlFor="product_availability"
+              htmlFor="product_stock"
               className="block text-sm font-medium text-gray-700"
             >
-              Product Availability*
+              Product Stock
             </label>
 
-            <select
-              id="product_availability"
-              value={productAvailability}
+            {/* Input field for entering product stock quantity */}
+            <input
+              type="number"
+              id="product_stock"
+              min="0" // Ensures no negative stock values
+              value={productStock}
               onChange={(event) =>
-                setProductAvailability(Number(event.target.value))
+                setProductStock(Number(event.target.value) || 0)
               }
-              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2"
-              required
+              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm 
+                 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2"
+            />
+          </div>
+
+          {/* Product Barcode field container */}
+          <div>
+            {/* Label for barcode input field */}
+            <label
+              htmlFor="product_barcode"
+              className="block text-sm font-medium text-gray-700"
             >
-              <option value="" disabled>
-                Select availability
-              </option>
-              <option value="1">In Stock</option>
-              <option value="0">Out of Stock</option>
-            </select>
+              Product Barcode (13 digits)<span className="text-red-600">*</span>
+            </label>
+
+            {/* Input field for barcode entry */}
+            <input
+              type="text"
+              pattern="[0-9]*" // Restricts input to numeric values only
+              maxLength={13} // Limits input length to 13 digits
+              placeholder="1234567890123"
+              id="product_barcode"
+              value={productBarcode}
+              onChange={(event) => setProductBarcode(event.target.value)}
+              className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm 
+                 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2"
+            />
           </div>
         </div>
 
         {/* Star Rating field container */}
-        <div>
+        {/* <div>
           <label
             htmlFor="product_rating"
             className="block text-sm font-medium text-gray-700"
@@ -345,13 +390,7 @@ export default function AddProductForm() {
           <select
             id="product_rating"
             value={productRating}
-            onChange={(event) => {
-              // Get the selected rating
-              const selectedRating = Number(event.target.value);
-
-              // Set the selected rating for the product
-              setProductRating(selectedRating);
-            }}
+            onChange={(event) => setProductRating(Number(event.target.value))} // set the product rating state when the user selects a rating
             className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2"
             required
           >
@@ -362,18 +401,28 @@ export default function AddProductForm() {
             <option value="4">⭐⭐⭐⭐</option>
             <option value="5">⭐⭐⭐⭐⭐</option>
           </select>
-        </div>
+        </div> */}
 
-        {/* submit button container */}
-        <div className="text-center">
+        {/* Action buttons container */}
+        <div className="flex gap-2">
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition shadow-md"
+            disabled={isSubmitting}
+            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Add Product
+            {isSubmitting ? "Adding..." : "Add Category"}
+          </button>
+
+          <button
+            type="button"
+            onClick={(e) => handleSubmit(e, true)}
+            disabled={isSubmitting}
+            className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Create Another Category
           </button>
         </div>
       </form>
-    </div>
+    </>
   );
 }

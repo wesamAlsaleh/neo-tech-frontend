@@ -196,9 +196,13 @@ export default function CategoryList() {
                 {/* Category Status */}
                 <td className="px-4 py-2 border border-gray-300">
                   {category.is_active ? (
-                    <span className="text-green-600 font-medium">Active</span>
+                    <span className="text-green-600 bg-green-100 px-2 py-1 rounded-md font-bold">
+                      Active
+                    </span>
                   ) : (
-                    <span className="text-red-600 font-medium">Inactive</span>
+                    <span className="text-red-600 bg-green-100 px-2 py-1 rounded-md font-bold">
+                      Inactive
+                    </span>
                   )}
                 </td>
 

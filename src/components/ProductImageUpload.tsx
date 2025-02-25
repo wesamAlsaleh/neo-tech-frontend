@@ -2,7 +2,7 @@ import React, { useState, ChangeEvent, useEffect } from "react";
 
 // image upload interface for file and url
 interface ImageFile {
-  file: File;
+  image: File;
   url: string;
 }
 
@@ -24,34 +24,43 @@ export default function ProductImageUpload({
 
   //   function to handle image change
   const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
+    const submittedImages = event.target.files;
 
     // If no files selected, return
-    if (!files) return;
+    if (!submittedImages) return;
 
     // Convert FileList to array e.g. [File, File, File]
-    const fileArray = Array.from(files);
+    const imagesArray = Array.from(submittedImages);
 
     // If no files selected, return an error message
-    if (fileArray.length === 0) {
+    if (imagesArray.length === 0) {
       setError("Please select at least one image");
       return;
     }
 
     // If more than 4 files selected, return an error message
-    if (fileArray.length > 4) {
+    if (imagesArray.length > 4) {
       setError("You can only upload up to 4 images");
       return;
     }
 
     // Validate file types (only images allowed)
-    const invalidFiles = fileArray.filter(
-      (file) => !file.type.startsWith("image/")
+    const invalidFiles = imagesArray.filter(
+      (image) => !image.type.startsWith("image/") // e.g. image/png, image/jpeg etc. otherwise null e.g. application/pdf etc.
     );
 
     // If any invalid files found, return an error message
     if (invalidFiles.length > 0) {
-      setError("Please upload only image files");
+      setError("Please upload only image files (png, jpeg, jpg, gif, webp)");
+      return;
+    }
+
+    // Validate file sizes (max 4MB)
+    const totalSize = imagesArray.reduce((acc, image) => acc + image.size, 0);
+
+    // If the total size of all images exceeds 4MB, return an error message
+    if (totalSize > 4 * 1024 * 1024) {
+      setError("Total size of images should not exceed 4MB");
       return;
     }
 
@@ -59,16 +68,16 @@ export default function ProductImageUpload({
     setError("");
 
     // Create preview URLs e.g. [ { file: File, url: 'blob:http://localhost:3000/1234' }, ... ]
-    const imageUrls: ImageFile[] = fileArray.map((file) => ({
-      file,
-      url: URL.createObjectURL(file),
+    const imageUrls: ImageFile[] = imagesArray.map((image) => ({
+      image, // image: File
+      url: URL.createObjectURL(image), // url: (preview URL)
     }));
 
     // Set the selected images
     setSelectedImages(imageUrls);
 
     // Pass the FileList to the parent component, which is the AddProductForm component
-    onChange(files);
+    onChange(submittedImages);
   };
 
   // Function to remove an image from the selected images
@@ -85,15 +94,15 @@ export default function ProductImageUpload({
       newImages.splice(index, 1);
 
       // Create new FileList from remaining files
-      const remainingFiles = newImages.map((img) => img.file);
+      const remainingFiles = newImages.map((img) => img.image);
 
-      // Create a new DataTransfer object
+      // Create a new DataTransfer object to pass the new FileList to the parent component (AddProductForm)
       const dt = new DataTransfer();
 
       // Add the remaining files to the DataTransfer object
-      remainingFiles.forEach((file) => dt.items.add(file));
+      remainingFiles.forEach((image) => dt.items.add(image));
 
-      // Pass the new FileList to the parent component
+      // Pass the new FileList to the parent component (on change ===> setImages)
       onChange(dt.files);
 
       // Return the new images array
@@ -116,7 +125,8 @@ export default function ProductImageUpload({
           htmlFor="product_images"
           className="block text-sm font-medium text-gray-700"
         >
-          Product Images (1-4 images){required && " *"}
+          Product Images (1-4 images)
+          {required && <span className="text-red-600"> *</span>}
         </label>
 
         <input

@@ -8,7 +8,6 @@ import type { Category, CategoryData } from "@/types/category";
 
 // Import the cookies from the next/headers module
 import { cookies } from "next/headers";
-import { error } from "console";
 
 // Get all categories from the API endpoint
 export async function getAllCategories() {
@@ -26,7 +25,7 @@ export async function getAllCategories() {
 
     // Return the categories
     return {
-      status: "success",
+      status: true,
       message: "Categories fetched successfully",
       categories: response.data.categories,
     };
@@ -35,11 +34,10 @@ export async function getAllCategories() {
     console.error("Categories fetch error:", error);
 
     return {
-      status: "error",
+      status: false,
       message:
         error.response?.data?.message ||
         "An error occurred while fetching categories",
-      categories: [],
     };
   }
 }

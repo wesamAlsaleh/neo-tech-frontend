@@ -3,6 +3,7 @@ import React from "react";
 
 interface ActionButtonProps {
   text: string;
+  buttonTitle?: string;
   href: string;
   className?: string;
   color?: string;
@@ -11,6 +12,7 @@ interface ActionButtonProps {
 
 export const ActionButton: React.FC<ActionButtonProps> = ({
   text,
+  buttonTitle,
   href,
   className,
   color,
@@ -29,6 +31,8 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
       <button
         className={className || defaultClassName}
         style={color || textColor ? buttonStyle : undefined}
+        title={buttonTitle || text}
+        aria-label={buttonTitle || text}
       >
         {text}
       </button>

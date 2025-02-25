@@ -1,3 +1,4 @@
+// Admin action icons
 import addBasket50 from "../public/assets/button-icons/icons8-add-basket-50.png";
 import addBasket100 from "../public/assets/button-icons/icons8-add-basket-100.png";
 import removeBasket50 from "../public/assets/button-icons/icons8-shopping-basket-remove-50.png";
@@ -6,6 +7,12 @@ import edit50 from "../public/assets/button-icons/icons8-edit-50.png";
 import edit100 from "../public/assets/button-icons/icons8-edit-100.png";
 import delete50 from "../public/assets/button-icons/icons8-remove-50.png";
 import delete100 from "../public/assets/button-icons/icons8-remove-100.png";
+import viewIcon48 from "../public/assets/button-icons/icons8-view-delivery-48.png";
+import viewIcon96 from "../public/assets/button-icons/icons8-view-delivery-96.png";
+
+// recycle icons
+import recycleIcon48 from "../public/assets/button-icons/icons8-recycle-48.png";
+import recycleIcon96 from "../public/assets/button-icons/icons8-recycle-96.png";
 
 // available and unavailable icons
 import availableIcon50 from "../public/assets/button-icons/icons8-check-mark-50.png";
@@ -14,6 +21,8 @@ import availableIcon500 from "../public/assets/button-icons/icons8-check-mark-50
 import unavailableIcon50 from "../public/assets/button-icons/icons8-unavailable-50.png";
 import unavailableIcon100 from "../public/assets/button-icons/icons8-unavailable-100.png";
 import unavailableIcon500 from "../public/assets/button-icons/icons8-unavailable-500.png";
+
+// Admin sidebar icons
 
 export const icons = {
   addBasket50,
@@ -30,4 +39,8 @@ export const icons = {
   unavailableIcon50,
   unavailableIcon100,
   unavailableIcon500,
+  recycleIcon48,
+  recycleIcon96,
+  viewIcon48,
+  viewIcon96,
 };

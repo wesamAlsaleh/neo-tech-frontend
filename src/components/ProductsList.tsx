@@ -21,23 +21,14 @@ import { icons } from "../../public/icons";
 // import custom components
 import EditProductModal from "./EditProductModal";
 import DeleteModal from "./DeleteModal";
+import Link from "next/link";
 
 export default function ProductsList() {
-  // Products state
-  const [products, setProducts] = useState<Products[]>([]);
-
-  // Pagination state
-  const [pagination, setPagination] = useState({
-    currentPage: 1,
-    lastPage: 1,
-    perPage: 10,
-    total: 0,
-  });
-
-  // Message states
-  const [actionMessage, setActionMessage] = useState<string>(""); // to show success or error message
-  const [isSuccessfulResponse, setIsSuccessfulResponse] =
-    useState<boolean>(false); // to show success or error message color
+  const [products, setProducts] = useState<Products[]>([]); // Products state
+  const [serverResponse, setServerResponse] = useState({
+    status: false,
+    message: "",
+  }); // Server response state
 
   // Modal states
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -54,23 +45,20 @@ export default function ProductsList() {
       // Fetch products
       const response = await getProducts();
 
+      // Update the UI with the fetched data
+      setServerResponse({
+        status: response.status,
+        message: response.message!,
+      });
+
       if (response.status) {
-        setProducts(response.products.data || []);
-
-        setIsSuccessfulResponse(true);
-
-        // Set pagination data
-        if (response.products) {
-          setPagination({
-            currentPage: response.products.current_page,
-            lastPage: response.products.last_page,
-            perPage: response.products.per_page,
-            total: response.products.total,
-          });
-        }
+        setProducts(response.products.data);
       }
     } catch (error) {
-      console.error("Error fetching products:", error);
+      setServerResponse({
+        status: false,
+        message: "Failed to fetch products. Please try again later.",
+      });
     }
   };
 
@@ -94,59 +82,61 @@ export default function ProductsList() {
   // Handle confirm delete product
   const handleConfirmDelete = async () => {
     try {
+      // If no product is selected, return
       if (!selectedProduct) return;
 
+      // Delete the product
       const response = await deleteProduct(String(selectedProduct.id));
 
-      // Set action message
-      setActionMessage(response.message);
+      // Update the UI with the response
+      setServerResponse({
+        status: response.status,
+        message: response.message,
+      });
 
-      // Set response status
-      setIsSuccessfulResponse(response.status === "success");
-
-      if (response.status === "success") {
+      // Refresh products list by fetching data again
+      if (response.status) {
         // Refresh products list by fetching data again
-        fetchProductsData(pagination.currentPage);
+        fetchProductsData();
 
         // Close the modal after successful delete
         setIsDeleteModalOpen(false);
       }
     } catch (error) {
-      console.error("Delete error:", error);
-
-      // Set action message
-      setActionMessage("Failed to delete product. Please try again later.");
-
-      // Set response status
-      setIsSuccessfulResponse(false);
+      // Update the UI with the error message
+      setServerResponse({
+        status: false,
+        message: "Failed to delete product. Please try again later.",
+      });
     }
   };
 
   // Handle toggle product status
   const handleToggleProductStatus = async (productId: string) => {
     try {
+      // If no product id is provided, return
       if (!productId) return;
 
       // Toggle product status
       const response = await toggleProductStatus(productId);
 
-      // Set action message
-      setActionMessage(response.message);
+      // Update the UI with the response
+      setServerResponse({
+        status: response.status,
+        message: response.message,
+      });
 
-      // Set response status
-      setIsSuccessfulResponse(response.status === "success");
-
-      if (response.status === "success") {
-        // Refetch products data with current page and updated data
-        fetchProductsData(pagination.currentPage);
+      // Refresh products list by fetching data again
+      if (response.status) {
+        // Refetch products data
+        fetchProductsData();
       }
     } catch (error) {
-      console.error("Toggle status error:", error);
-
-      setActionMessage(
-        "Failed to toggle product status. Please try again later."
-      );
-      setIsSuccessfulResponse(false);
+      // Update the UI with the error message
+      setServerResponse({
+        status: false,
+        message: "Failed to toggle product status. Please try again later.",
+      });
     }
   };
 
@@ -159,21 +149,21 @@ export default function ProductsList() {
     <div className="overflow-x-auto">
       <Suspense fallback={<LoadingSpinner />}>
         {/* action message */}
-        {actionMessage && (
+        {serverResponse.message && (
           <div
             className={`px-4 py-3 rounded relative mb-4 ${
-              isSuccessfulResponse
+              serverResponse.status
                 ? "bg-green-100 border border-green-400 text-green-700"
                 : "bg-red-100 border border-red-400 text-red-700 "
             }`}
             role="alert"
           >
-            {isSuccessfulResponse ? (
+            {serverResponse.status ? (
               <strong className="font-bold">Success! </strong>
             ) : (
               <strong className="font-bold">Error! </strong>
             )}
-            <span className="block sm:inline">{actionMessage}</span>
+            <span className="block sm:inline">{serverResponse.message}</span>
           </div>
         )}
 
@@ -201,6 +191,9 @@ export default function ProductsList() {
               </th>
               <th className="px-4 py-2 text-left text-gray-700 font-semibold">
                 Created At
+              </th>
+              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+                Updated At
               </th>
               <th className="px-4 py-2 text-left text-gray-700 font-semibold">
                 Actions
@@ -249,23 +242,25 @@ export default function ProductsList() {
                   <td className="px-4 py-2 border border-gray-300">
                     <span
                       className={`${
-                        product.is_active ? "text-green-600" : "text-red-600"
+                        product.is_active
+                          ? "text-green-600 bg-green-100 px-2 py-1 rounded-md"
+                          : "text-red-600 bg-red-100 px-2 py-1 rounded-md"
                       } font-medium`}
                     >
                       {product.is_active ? "Active" : "Inactive"}
                     </span>
                   </td>
 
-                  {/* Product Availability */}
+                  {/* Product stock */}
                   <td className="px-4 py-2 border border-gray-300">
                     <span
                       className={`${
-                        Number(product.product_stock) > 0
-                          ? "text-green-600"
-                          : "text-red-600"
+                        product.product_stock > 0
+                          ? "text-green-600 bg-green-100 px-2 py-1 rounded-md"
+                          : "text-red-600 bg-red-100 px-2 py-1 rounded-md"
                       } font-medium`}
                     >
-                      {Number(product.product_stock) > 0
+                      {product.product_stock > 0
                         ? `In Stock (${product.product_stock})`
                         : "Out of Stock"}
                     </span>
@@ -284,6 +279,11 @@ export default function ProductsList() {
                   {/* Product Created Date */}
                   <td className="px-4 py-2 border border-gray-300">
                     {new Date(product.created_at).toLocaleDateString()}
+                  </td>
+
+                  {/* Product updated Date */}
+                  <td className="px-4 py-2 border border-gray-300">
+                    {new Date(product.updated_at).toLocaleDateString()}
                   </td>
 
                   {/* Action buttons */}
@@ -344,6 +344,21 @@ export default function ProductsList() {
                           height={24}
                         />
                       </button>
+
+                      {/* View product button */}
+                      <Link href={`/products/${product.slug}`} passHref>
+                        <button
+                          className={`bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
+                          title={`View ${product.product_name}`}
+                        >
+                          <img
+                            src={icons.viewIcon48.src}
+                            alt={`View ${product.product_name}`}
+                            width={24}
+                            height={24}
+                          />
+                        </button>
+                      </Link>
                     </div>
                   </td>
                 </tr>
@@ -352,64 +367,18 @@ export default function ProductsList() {
           </tbody>
         </table>
 
-        {/* Pagination */}
-        {pagination.lastPage > 1 && (
-          <div className="flex justify-center mt-4">
-            <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-              {/* Previous Page Button */}
-              <button
-                onClick={() => handlePageChange(pagination.currentPage - 1)}
-                disabled={pagination.currentPage === 1}
-                className={`relative inline-flex items-center px-2 py-2 rounded-l-md border ${
-                  pagination.currentPage === 1
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "bg-white text-gray-500 hover:bg-gray-50"
-                } text-sm font-medium`}
-              >
-                &laquo; Previous
-              </button>
-
-              {/* Page Numbers */}
-              {[...Array(pagination.lastPage)].map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => handlePageChange(i + 1)}
-                  className={`relative inline-flex items-center px-4 py-2 border ${
-                    pagination.currentPage === i + 1
-                      ? "bg-blue-50 border-blue-500 text-blue-600 z-10"
-                      : "bg-white border-gray-300 text-gray-500 hover:bg-gray-50"
-                  } text-sm font-medium`}
-                >
-                  {i + 1}
-                </button>
-              ))}
-
-              {/* Next Page Button */}
-              <button
-                onClick={() => handlePageChange(pagination.currentPage + 1)}
-                disabled={pagination.currentPage === pagination.lastPage}
-                className={`relative inline-flex items-center px-2 py-2 rounded-r-md border ${
-                  pagination.currentPage === pagination.lastPage
-                    ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                    : "bg-white text-gray-500 hover:bg-gray-50"
-                } text-sm font-medium`}
-              >
-                Next &raquo;
-              </button>
-            </nav>
-          </div>
-        )}
+        {/* TODO: Pagination */}
       </Suspense>
 
       {/* Edit Modal */}
       <EditProductModal
+        product={selectedProduct}
         isOpen={isEditModalOpen}
         onClose={() => {
           setIsEditModalOpen(false);
           // Refresh data after edit modal closes
-          fetchProductsData(pagination.currentPage);
+          fetchProductsData();
         }}
-        product={selectedProduct}
       />
 
       {/* Delete Modal */}

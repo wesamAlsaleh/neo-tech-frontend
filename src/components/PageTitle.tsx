@@ -4,12 +4,14 @@ interface PageTitleProps {
   title: string;
   subtitle?: string;
   actionButton?: React.ReactNode;
+  recycleButton?: React.ReactNode;
 }
 
 export default function PageTitle({
   title,
   subtitle,
   actionButton,
+  recycleButton,
 }: PageTitleProps) {
   return (
     <div className="mb-6">
@@ -21,8 +23,13 @@ export default function PageTitle({
           {subtitle && <p className="mt-1 text-gray-600">{subtitle}</p>}
         </div>
 
-        {/* action button */}
-        {actionButton && <div>{actionButton}</div>}
+        <div className="flex items-center space-x-2">
+          {/* recycle button */}
+          {recycleButton && <>{recycleButton}</>}
+
+          {/* action button */}
+          {actionButton && <>{actionButton}</>}
+        </div>
       </div>
 
       {/* separator */}

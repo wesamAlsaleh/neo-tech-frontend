@@ -41,8 +41,8 @@ export default function EditCategoryModal({
 
   // Fetch the category data when the modal is opened
   useEffect(() => {
-    setCategoryName(category?.category_name || "");
-    setCategoryDescription(category?.category_description || "");
+    setCategoryName(category?.category_name!);
+    setCategoryDescription(category?.category_description!);
   }, [category]);
 
   // Close the modal if it's not open
@@ -75,7 +75,7 @@ export default function EditCategoryModal({
         error: result.message, // set error to the result message
       });
 
-      // Reload the page after second if the category is created successfully
+      // Reload the page after second if the category is updated successfully
       if (result.success) {
         setTimeout(() => window.location.reload(), 1000);
       }
@@ -91,7 +91,7 @@ export default function EditCategoryModal({
         {/* Header container */}
         <div className="flex justify-between items-center mb-4">
           {/* Modal title */}
-          <h2 className="text-xl font-bold">Edit Category</h2>
+          <h2 className="text-xl font-bold">Edit {category?.category_name}</h2>
         </div>
 
         {/* Display the status message */}

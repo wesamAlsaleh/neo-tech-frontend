@@ -43,7 +43,7 @@ export const getProduct = async (productId: string) => {
     );
 
     return {
-      status: "success",
+      status: true,
       message: response.data.message,
       product: response.data.product,
     };
@@ -51,7 +51,7 @@ export const getProduct = async (productId: string) => {
     console.error(error);
 
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while fetching the product.",
     };
   }
@@ -68,7 +68,7 @@ export const createProduct = async (productData: FormData) => {
 
     if (!userToken) {
       return {
-        status: "failed",
+        status: false,
         message: "Authentication token not found.",
       };
     }
@@ -85,20 +85,16 @@ export const createProduct = async (productData: FormData) => {
     );
 
     return {
-      status: "success",
+      status: true,
       message: response.data.message,
       productData: response.data.productData,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error creating product:", error);
-    console.error(
-      "Server error response:",
-      (error as any).response?.data?.errors
-    );
 
     return {
-      status: "failed",
-      message: "An error occurred while creating the product.",
+      status: false,
+      message: error.response.data.message,
     };
   }
 };
@@ -109,7 +105,7 @@ export const createProduct = async (productData: FormData) => {
  */
 export const updateProduct = async (
   productData: FormData,
-  productId: string
+  productId: number
 ) => {
   try {
     const cookieStore = await cookies();
@@ -127,20 +123,18 @@ export const updateProduct = async (
     );
 
     return {
-      status: "success",
+      status: true,
       message: response.data.message,
       productData: response.data.productData,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    console.error(
-      "Server error response:",
-      (error as any).response?.data?.errors
-    );
+    console.error(error.response);
 
     return {
-      status: "failed",
-      message: "An error occurred while updating the product.",
+      status: false,
+      message: error.response.data.message,
+      error: error.response.data.error,
     };
   }
 };
@@ -163,14 +157,14 @@ export const deleteProduct = async (productId: string) => {
     );
 
     return {
-      status: "success",
+      status: true,
       message: response.data.message,
     };
   } catch (error) {
     console.error(error);
 
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while deleting the product.",
     };
   }
@@ -195,14 +189,14 @@ export const toggleProductStatus = async (productId: string) => {
     );
 
     return {
-      status: "success",
+      status: true,
       message: response.data.message,
     };
   } catch (error) {
     console.error(error);
 
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while toggling the product status.",
     };
   }
@@ -218,7 +212,7 @@ export const searchProductByName = async (searchTerm: string) => {
     );
 
     return {
-      status: "success",
+      status: true,
       message: response.data.message,
       products: response.data.products,
     };
@@ -226,7 +220,7 @@ export const searchProductByName = async (searchTerm: string) => {
     console.error(error);
 
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while searching for the product.",
     };
   }
@@ -242,14 +236,14 @@ export const searchProductByCategory = async (searchTerm: string) => {
     );
 
     return {
-      status: "success",
+      status: true,
       products: response.data.products,
     };
   } catch (error) {
     console.error(error);
 
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while searching for the product.",
     };
   }
@@ -265,14 +259,14 @@ export const searchProductByPrice = async (min: string, max: string) => {
     );
 
     return {
-      status: "success",
+      status: true,
       products: response.data.products,
     };
   } catch (error) {
     console.error(error);
 
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while searching for the product.",
     };
   }
@@ -288,14 +282,14 @@ export const searchProductByRating = async (rating: string) => {
     );
 
     return {
-      status: "success",
+      status: true,
       products: response.data.products,
     };
   } catch (error) {
     console.error(error);
 
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while searching for the product.",
     };
   }
@@ -311,14 +305,14 @@ export const searchProductBySlug = async (slug: string) => {
     );
 
     return {
-      status: "success",
+      status: true,
       products: response.data.products,
     };
   } catch (error) {
     console.error(error);
 
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while searching for the product.",
     };
   }
@@ -335,14 +329,14 @@ export const searchProductByStock = async (stock: string) => {
     );
 
     return {
-      status: "success",
+      status: true,
       products: response.data.products,
     };
   } catch (error) {
     console.error(error);
 
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while searching for the product.",
     };
   }
@@ -359,14 +353,14 @@ export const searchProductByStatus = async (status: string) => {
     );
 
     return {
-      status: "success",
+      status: true,
       products: response.data.products,
     };
   } catch (error) {
     console.error(error);
 
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while searching for the product.",
     };
   }

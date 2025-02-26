@@ -37,7 +37,9 @@ export default function AdminSidebar() {
     <aside className="w-64 bg-gray-900 text-gray-300 p-4">
       {/* nav title container */}
       <div className="mb-8">
-        <h1 className="text-xl font-bold text-white">NeoTech Admin Panel</h1>
+        <Link href={"/home"}>
+          <h1 className="text-xl font-bold text-white">NeoTech Admin Panel</h1>
+        </Link>
       </div>
 
       {/* content container */}

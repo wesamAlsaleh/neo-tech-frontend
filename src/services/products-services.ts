@@ -1,9 +1,6 @@
 "use server";
 
-// import axios to make http requests
 import axios from "axios";
-
-// import cookies from next/headers
 import { cookies } from "next/headers";
 
 /**
@@ -11,12 +8,10 @@ import { cookies } from "next/headers";
  */
 export const getProducts = async () => {
   try {
-    // make a get request to the server
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_APP_URI}/products`
     );
 
-    // if Empty array is returned, return a user-friendly message
     if (response.data.products.length === 0) {
       return {
         status: false,
@@ -24,13 +19,11 @@ export const getProducts = async () => {
       };
     }
 
-    // return the data from the response which is an array of products
     return {
       status: true,
       products: response.data.products,
     };
   } catch (error) {
-    // if there is an error, log the error
     console.error(error);
 
     return {
@@ -45,24 +38,20 @@ export const getProducts = async () => {
  */
 export const getProduct = async (productId: string) => {
   try {
-    // make a get request to the server
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_APP_URI}/products/${productId}`
     );
 
-    // return the response data
     return {
-      status: "success",
+      status: true,
       message: response.data.message,
       product: response.data.product,
     };
   } catch (error) {
-    // if there is an error, log the error
     console.error(error);
 
-    // return a user-friendly error message
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while fetching the product.",
     };
   }
@@ -74,47 +63,38 @@ export const getProduct = async (productId: string) => {
  */
 export const createProduct = async (productData: FormData) => {
   try {
-    // Get user token from cookies
     const cookieStore = await cookies();
     const userToken = cookieStore.get("userToken")?.value;
 
     if (!userToken) {
       return {
-        status: "failed",
+        status: false,
         message: "Authentication token not found.",
       };
     }
 
-    // Make a POST request to the server
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_APP_URI}/admin/create-product`,
       productData,
       {
         headers: {
-          "Content-Type": "multipart/form-data", // Required for file uploads
+          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${userToken}`,
         },
       }
     );
 
-    // Return the response data
     return {
-      status: "success",
+      status: true,
       message: response.data.message,
-      productData: response.data.product,
+      productData: response.data.productData,
     };
-  } catch (error) {
-    // Log the error for debugging
+  } catch (error: any) {
     console.error("Error creating product:", error);
-    console.error(
-      "Server error response:",
-      (error as any).response?.data?.errors
-    );
 
-    // Return a user-friendly error message
     return {
-      status: "failed",
-      message: "An error occurred while creating the product.",
+      status: false,
+      message: error.response.data.message,
     };
   }
 };
@@ -128,38 +108,33 @@ export const updateProduct = async (
   productId: number
 ) => {
   try {
-    // Get user token from cookies
     const cookieStore = await cookies();
     const userToken = cookieStore.get("userToken")?.value;
 
-    // make a post request to the server
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_APP_URI}/admin/update-product/${productId}`,
       productData,
       {
         headers: {
-          "Content-Type": "multipart/form-data", // Required for file uploads
+          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${userToken}`,
         },
       }
     );
 
     return {
-      status: "success",
+      status: true,
       message: response.data.message,
       productData: response.data.productData,
     };
-  } catch (error) {
-    // if there is an error, log the error
+  } catch (error: any) {
     console.error(error);
-    console.error(
-      "Server error response:",
-      (error as any).response?.data?.errors
-    );
+    console.error(error.response);
 
     return {
-      status: "failed",
-      message: "An error occurred while updating the product.",
+      status: false,
+      message: error.response.data.message,
+      error: error.response.data.error,
     };
   }
 };
@@ -167,13 +142,11 @@ export const updateProduct = async (
 /**
  * @function deleteProduct to delete a product
  */
-export const deleteProduct = async (productId: number) => {
+export const deleteProduct = async (productId: string) => {
   try {
-    // Get user token from cookies
     const cookieStore = await cookies();
     const userToken = cookieStore.get("userToken")?.value;
 
-    // make a delete request to the server
     const response = await axios.delete(
       `${process.env.NEXT_PUBLIC_APP_URI}/admin/delete-product/${productId}`,
       {
@@ -183,18 +156,81 @@ export const deleteProduct = async (productId: number) => {
       }
     );
 
-    // return the response data
     return {
-      status: "success",
+      status: true,
       message: response.data.message,
     };
   } catch (error) {
-    // if there is an error, log the error
     console.error(error);
 
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while deleting the product.",
+    };
+  }
+};
+
+/**
+ * @function getTrashedProducts to get all trashed products
+ */
+export const getTrashedProducts = async () => {
+  try {
+    // Get the user token from the cookie
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/products/trashed`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return {
+      status: true,
+      trashedProducts: response.data.products,
+    };
+  } catch (error: any) {
+    console.error(error);
+
+    return {
+      status: false,
+      message: error.response.data.message,
+    };
+  }
+};
+
+/**
+ * @function restoreProduct to restore a trashed product
+ */
+export const restoreProduct = async (productId: string) => {
+  try {
+    // Get the user token from the cookie
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    const response = await axios.put(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/products/restore/${productId}`,
+      {}, // Empty data
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+    };
+  } catch (error: any) {
+    console.error(error);
+
+    return {
+      status: false,
+      message: error.response.data.message,
     };
   }
 };
@@ -202,13 +238,11 @@ export const deleteProduct = async (productId: number) => {
 /**
  * @function toggleProductStatus to toggle a product status between active and inactive
  */
-export const toggleProductStatus = async (productId: number) => {
+export const toggleProductStatus = async (productId: string) => {
   try {
-    // Get user token from cookies
     const cookieStore = await cookies();
     const userToken = cookieStore.get("userToken")?.value;
 
-    // make a post request to the server
     const response = await axios.patch(
       `${process.env.NEXT_PUBLIC_APP_URI}/admin/toggle-product-status/${productId}`,
       {},
@@ -219,58 +253,16 @@ export const toggleProductStatus = async (productId: number) => {
       }
     );
 
-    // return the response data
     return {
-      status: "success",
+      status: true,
       message: response.data.message,
     };
   } catch (error) {
-    // if there is an error, log the error
     console.error(error);
 
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while toggling the product status.",
-    };
-  }
-};
-
-/**
- * @function toggleProductAvailability to toggle a product stock between in stock and out of stock
- * @param {string} productId
- * @returns {Promise<any>}
- */
-export const toggleProductAvailability = async (
-  productId: number
-): Promise<any> => {
-  try {
-    // Get user token from cookies
-    const cookieStore = await cookies();
-    const userToken = cookieStore.get("userToken")?.value;
-
-    // make a post request to the server
-    const response = await axios.patch(
-      `${process.env.NEXT_PUBLIC_APP_URI}/admin/toggle-product-availability/${productId}`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      }
-    );
-
-    // return the response data
-    return {
-      status: "success",
-      message: response.data.message,
-    };
-  } catch (error) {
-    // if there is an error, log the error
-    console.error(error);
-
-    return {
-      status: "failed",
-      message: "An error occurred while toggling the product availability.",
     };
   }
 };
@@ -280,23 +272,20 @@ export const toggleProductAvailability = async (
  */
 export const searchProductByName = async (searchTerm: string) => {
   try {
-    // make a get request to the server
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_APP_URI}/products-by-name/${searchTerm}`
     );
 
-    // return the response data
     return {
-      status: "success",
+      status: true,
       message: response.data.message,
       products: response.data.products,
     };
   } catch (error) {
-    // if there is an error, log the error
     console.error(error);
 
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while searching for the product.",
     };
   }
@@ -307,22 +296,19 @@ export const searchProductByName = async (searchTerm: string) => {
  */
 export const searchProductByCategory = async (searchTerm: string) => {
   try {
-    // make a get request to the server
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_APP_URI}/products-by-category/${searchTerm}`
     );
 
-    // return the response data
     return {
-      status: "success",
+      status: true,
       products: response.data.products,
     };
   } catch (error) {
-    // if there is an error, log the error
     console.error(error);
 
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while searching for the product.",
     };
   }
@@ -333,22 +319,19 @@ export const searchProductByCategory = async (searchTerm: string) => {
  */
 export const searchProductByPrice = async (min: string, max: string) => {
   try {
-    // make a get request to the server
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_APP_URI}/products-by-price/${min}/${max}`
     );
 
-    // return the response data
     return {
-      status: "success",
+      status: true,
       products: response.data.products,
     };
   } catch (error) {
-    // if there is an error, log the error
     console.error(error);
 
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while searching for the product.",
     };
   }
@@ -359,22 +342,19 @@ export const searchProductByPrice = async (min: string, max: string) => {
  */
 export const searchProductByRating = async (rating: string) => {
   try {
-    // make a get request to the server
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_APP_URI}/products-by-rating/${rating}`
     );
 
-    // return the response data
     return {
-      status: "success",
+      status: true,
       products: response.data.products,
     };
   } catch (error) {
-    // if there is an error, log the error
     console.error(error);
 
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while searching for the product.",
     };
   }
@@ -385,22 +365,19 @@ export const searchProductByRating = async (rating: string) => {
  */
 export const searchProductBySlug = async (slug: string) => {
   try {
-    // make a get request to the server
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_APP_URI}/products-by-slug/${slug}`
     );
 
-    // return the response data
     return {
-      status: "success",
+      status: true,
       products: response.data.products,
     };
   } catch (error) {
-    // if there is an error, log the error
     console.error(error);
 
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while searching for the product.",
     };
   }
@@ -412,22 +389,19 @@ export const searchProductBySlug = async (slug: string) => {
  */
 export const searchProductByStock = async (stock: string) => {
   try {
-    // make a get request to the server
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_APP_URI}/products-by-availability/${stock}`
     );
 
-    // return the response data
     return {
-      status: "success",
+      status: true,
       products: response.data.products,
     };
   } catch (error) {
-    // if there is an error, log the error
     console.error(error);
 
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while searching for the product.",
     };
   }
@@ -439,22 +413,19 @@ export const searchProductByStock = async (stock: string) => {
  */
 export const searchProductByStatus = async (status: string) => {
   try {
-    // make a get request to the server
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_APP_URI}/products-by-status/${status}`
     );
 
-    // return the response data
     return {
-      status: "success",
+      status: true,
       products: response.data.products,
     };
   } catch (error) {
-    // if there is an error, log the error
     console.error(error);
 
     return {
-      status: "failed",
+      status: false,
       message: "An error occurred while searching for the product.",
     };
   }

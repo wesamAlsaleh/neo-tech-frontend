@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import { Suspense, useEffect, useState } from "react";
 
@@ -7,9 +8,8 @@ import { Product, Products } from "@/types/product";
 
 // Services import
 import {
-  deleteProduct,
-  getProducts,
-  toggleProductStatus,
+  restoreProduct,
+  getTrashedProducts,
 } from "@/services/products-services";
 
 // import the LoadingSpinner component
@@ -19,11 +19,9 @@ import LoadingSpinner from "./LoadingSpinner";
 import { icons } from "../../public/icons";
 
 // import custom components
-import EditProductModal from "./EditProductModal";
-import DeleteModal from "./DeleteModal";
-import Link from "next/link";
+import ConfirmationModal from "@/components/ConfirmationModal";
 
-export default function ProductsList() {
+export default function TrashedProductsList() {
   const [products, setProducts] = useState<Products[]>([]); // Products state
   const [serverResponse, setServerResponse] = useState({
     status: false,
@@ -31,8 +29,7 @@ export default function ProductsList() {
   }); // Server response state
 
   // Modal states
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isRestoreModalOpen, setIsRestoreModalOpen] = useState(false);
 
   // Selected product state for actions
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(
@@ -43,21 +40,21 @@ export default function ProductsList() {
   const fetchProductsData = async (page = 1) => {
     try {
       // Fetch products
-      const response = await getProducts();
+      const { status, trashedProducts } = await getTrashedProducts();
 
       // Update the UI with the fetched data
       setServerResponse({
-        status: response.status,
-        message: response.message!,
+        status: status,
+        message: "",
       });
 
-      if (response.status) {
-        setProducts(response.products.data);
+      if (status) {
+        setProducts(trashedProducts);
       }
-    } catch (error) {
+    } catch (error: any) {
       setServerResponse({
         status: false,
-        message: "Failed to fetch products. Please try again later.",
+        message: error.response?.data.message || "Failed to fetch products.",
       });
     }
   };
@@ -67,26 +64,20 @@ export default function ProductsList() {
     fetchProductsData();
   }, []);
 
-  // Handle edit product (to open modal with product data)
-  const handleEditClick = (product: Product) => {
+  // Handle restore product (to open modal with product data)
+  const handleRestoreClick = (product: Product) => {
     setSelectedProduct(product);
-    setIsEditModalOpen(true);
+    setIsRestoreModalOpen(true);
   };
 
-  // Handle delete product (to open modal with product data)
-  const handleDeleteClick = (product: Product) => {
-    setSelectedProduct(product);
-    setIsDeleteModalOpen(true);
-  };
-
-  // Handle confirm delete product
-  const handleConfirmDelete = async () => {
+  // Handle confirm restore product (to restore the product)
+  const handleConfirmRestore = async () => {
     try {
       // If no product is selected, return
       if (!selectedProduct) return;
 
       // Delete the product
-      const response = await deleteProduct(String(selectedProduct.id));
+      const response = await restoreProduct(String(selectedProduct.id));
 
       // Update the UI with the response
       setServerResponse({
@@ -100,7 +91,7 @@ export default function ProductsList() {
         fetchProductsData();
 
         // Close the modal after successful delete
-        setIsDeleteModalOpen(false);
+        setIsRestoreModalOpen(false);
       }
     } catch (error) {
       // Update the UI with the error message
@@ -109,40 +100,6 @@ export default function ProductsList() {
         message: "Failed to delete product. Please try again later.",
       });
     }
-  };
-
-  // Handle toggle product status
-  const handleToggleProductStatus = async (productId: string) => {
-    try {
-      // If no product id is provided, return
-      if (!productId) return;
-
-      // Toggle product status
-      const response = await toggleProductStatus(productId);
-
-      // Update the UI with the response
-      setServerResponse({
-        status: response.status,
-        message: response.message,
-      });
-
-      // Refresh products list by fetching data again
-      if (response.status) {
-        // Refetch products data
-        fetchProductsData();
-      }
-    } catch (error) {
-      // Update the UI with the error message
-      setServerResponse({
-        status: false,
-        message: "Failed to toggle product status. Please try again later.",
-      });
-    }
-  };
-
-  // Handle pagination change
-  const handlePageChange = (page: number) => {
-    fetchProductsData(page); // Refetch data with new page number to update the table
   };
 
   return (
@@ -187,13 +144,19 @@ export default function ProductsList() {
                 Product Price
               </th>
               <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Product Rating
+                Product View Count
+              </th>
+              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+                Product Sold Count
               </th>
               <th className="px-4 py-2 text-left text-gray-700 font-semibold">
                 Created At
               </th>
               <th className="px-4 py-2 text-left text-gray-700 font-semibold">
                 Updated At
+              </th>
+              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+                Deleted At
               </th>
               <th className="px-4 py-2 text-left text-gray-700 font-semibold">
                 Actions
@@ -271,9 +234,14 @@ export default function ProductsList() {
                     {parseFloat(product.product_price).toFixed(2)} BHD
                   </td>
 
-                  {/* Product Rating */}
+                  {/* Product View count */}
                   <td className="px-4 py-2 border border-gray-300">
-                    {product.product_rating} ⭐
+                    {product.product_view}
+                  </td>
+
+                  {/* Product Sold count */}
+                  <td className="px-4 py-2 border border-gray-300">
+                    {product.product_sold}
                   </td>
 
                   {/* Product Created Date */}
@@ -286,79 +254,27 @@ export default function ProductsList() {
                     {new Date(product.updated_at).toLocaleDateString()}
                   </td>
 
+                  {/* Product Delete Date */}
+                  <td className="px-4 py-2 border border-gray-300">
+                    {new Date(product.deleted_at).toLocaleDateString()}
+                  </td>
+
                   {/* Action buttons */}
                   <td className="px-4 py-2 border border-gray-300">
                     <div className="flex gap-2">
-                      {/* Edit button */}
+                      {/* Restore button */}
                       <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
-                        onClick={() => handleEditClick(product)}
-                        title={`Edit ${product.product_name}`}
+                        className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
+                        onClick={() => handleRestoreClick(product)}
+                        title={`Restore ${product.product_name}`}
                       >
                         <img
-                          src={icons.edit50.src}
-                          alt="Edit"
+                          src={icons.restoreIcon48.src}
+                          alt="Restore"
                           width={24}
                           height={24}
                         />
                       </button>
-
-                      {/* Delete button */}
-                      <button
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
-                        onClick={() => handleDeleteClick(product)}
-                        title={`Delete product ${product.product_name}`}
-                      >
-                        <img
-                          src={icons.delete50.src}
-                          alt="Delete"
-                          width={24}
-                          height={24}
-                        />
-                      </button>
-
-                      {/* Toggle status button */}
-                      <button
-                        className={`${
-                          product.is_active
-                            ? "bg-orange-400 hover:bg-orange-500"
-                            : "bg-green-500 hover:bg-green-600"
-                        } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
-                        onClick={() =>
-                          handleToggleProductStatus(String(product.id))
-                        }
-                        title={
-                          product.is_active
-                            ? `Deactivate ${product.product_name}`
-                            : `Activate product ${product.product_name}`
-                        }
-                      >
-                        <img
-                          src={
-                            product.is_active
-                              ? icons.removeBasket50.src
-                              : icons.addBasket50.src
-                          }
-                          alt={product.is_active ? "Deactivate" : "Activate"}
-                          width={24}
-                          height={24}
-                        />
-                      </button>
-
-                      {/* View product button */}
-                      <Link href={`/products/${product.slug}`} passHref>
-                        <button
-                          className={`bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
-                          title={`View ${product.product_name}`}
-                        >
-                          <img
-                            src={icons.viewIcon48.src}
-                            alt={`View ${product.product_name}`}
-                            width={24}
-                            height={24}
-                          />
-                        </button>
-                      </Link>
                     </div>
                   </td>
                 </tr>
@@ -370,23 +286,14 @@ export default function ProductsList() {
         {/* TODO: Pagination */}
       </Suspense>
 
-      {/* Edit Modal */}
-      <EditProductModal
-        product={selectedProduct}
-        isOpen={isEditModalOpen}
-        onClose={() => {
-          setIsEditModalOpen(false);
-          // Refresh data after edit modal closes
-          fetchProductsData();
-        }}
-      />
-
-      {/* Delete Modal */}
-      <DeleteModal
-        isOpen={isDeleteModalOpen} // open the modal
-        onClose={() => setIsDeleteModalOpen(false)} // close the modal
-        onConfirm={() => handleConfirmDelete()} // confirm delete
-        name={selectedProduct?.product_name || ""} // pass the selected product name to delete
+      {/* Restore Confirmation Modal */}
+      <ConfirmationModal
+        title={`Restore ${selectedProduct?.product_name}`}
+        subTitle="Are you sure you want to restore this product?"
+        isOpen={isRestoreModalOpen} // open the modal
+        onClose={() => setIsRestoreModalOpen(false)} // close the modal
+        onConfirm={() => handleConfirmRestore()} // confirm restore
+        buttonName="Restore" // button name
       />
     </div>
   );

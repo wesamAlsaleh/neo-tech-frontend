@@ -2,23 +2,28 @@ import React from "react";
 
 // import custom components
 import ProductsList from "@/components/ProductsList";
-import AddProductForm from "@/components/AddProductForm";
+import PageTitle from "@/components/PageTitle";
+import { ActionButton } from "@/components/ActionButton";
+import { RecycleButton } from "@/components/RecycleButton";
 
 export default function ManageProductsPage() {
   return (
-    // Page Container to handle scrolling
-    <div className="max-h-screen overflow-y-auto">
-      {/* Layout container 'main' */}
-      <div className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6">Manage Products</h1>
-        <p className="mb-8">Here you can manage products</p>
+    <>
+      <PageTitle
+        title="Products"
+        subtitle="Manage products here"
+        actionButton={
+          <ActionButton
+            href="/admin/products/create-product"
+            text="Add Product"
+            buttonTitle="Add a new product"
+          />
+        }
+        recycleButton={<RecycleButton href="/admin/products/recycle-bin" />}
+      />
 
-        {/* products table */}
-        {/* <ProductsList /> */}
-
-        {/* add product form */}
-        {/* <AddProductForm /> */}
-      </div>
-    </div>
+      {/* products table */}
+      <ProductsList />
+    </>
   );
 }

@@ -7,7 +7,6 @@ import React from "react";
 import { useAuth } from "@/contexts/AuthContext";
 
 // import custom components
-import LoadingSpinner from "@/components/LoadingSpinner";
 import DropDownMenu from "./DropDownMenu";
 
 export default function NavBar() {
@@ -52,7 +51,6 @@ export default function NavBar() {
             )
           ) : null}
 
-          {/* TODO: change the place of this button */}
           {user?.role === "admin" ? (
             loading ? null : (
               <button>

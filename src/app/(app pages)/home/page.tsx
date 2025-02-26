@@ -15,6 +15,7 @@ import { Categories } from "@/types/category";
 
 // import custom components
 import LoadingSpinner from "@/components/LoadingSpinner";
+import ClientPageLayout from "@/components/ClientPageLayout";
 
 export default function homePage() {
   // data state
@@ -31,12 +32,16 @@ export default function homePage() {
   // TODO: Add loading page
 
   return (
-    <div>
+    <>
       {/* Navigation Bar */}
       <NavBar />
 
       {/* Main content */}
-      <div>Main content here</div>
-    </div>
+      <ClientPageLayout>
+        <div>
+          <h1>hello world</h1>
+        </div>
+      </ClientPageLayout>
+    </>
   );
 }

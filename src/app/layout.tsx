@@ -4,6 +4,7 @@ import "./globals.css";
 
 // import the auth provider to wrap the application within the user data
 import { AuthProvider } from "@/providers/AuthProvider";
+import ClientPageLayout from "@/components/ClientPageLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

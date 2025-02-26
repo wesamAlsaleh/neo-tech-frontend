@@ -171,6 +171,71 @@ export const deleteProduct = async (productId: string) => {
 };
 
 /**
+ * @function getTrashedProducts to get all trashed products
+ */
+export const getTrashedProducts = async () => {
+  try {
+    // Get the user token from the cookie
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/products/trashed`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return {
+      status: true,
+      trashedProducts: response.data.products,
+    };
+  } catch (error: any) {
+    console.error(error);
+
+    return {
+      status: false,
+      message: error.response.data.message,
+    };
+  }
+};
+
+/**
+ * @function restoreProduct to restore a trashed product
+ */
+export const restoreProduct = async (productId: string) => {
+  try {
+    // Get the user token from the cookie
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    const response = await axios.put(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/products/restore/${productId}`,
+      {}, // Empty data
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+    };
+  } catch (error: any) {
+    console.error(error);
+
+    return {
+      status: false,
+      message: error.response.data.message,
+    };
+  }
+};
+
+/**
  * @function toggleProductStatus to toggle a product status between active and inactive
  */
 export const toggleProductStatus = async (productId: string) => {

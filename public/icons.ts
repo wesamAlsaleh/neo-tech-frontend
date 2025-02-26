@@ -13,6 +13,8 @@ import viewIcon96 from "../public/assets/button-icons/icons8-view-delivery-96.pn
 // recycle icons
 import recycleIcon48 from "../public/assets/button-icons/icons8-recycle-48.png";
 import recycleIcon96 from "../public/assets/button-icons/icons8-recycle-96.png";
+import restoreIcon48 from "../public/assets/button-icons/icons8-restore-48.png";
+import restoreIcon96 from "../public/assets/button-icons/icons8-restore-96.png";
 
 // available and unavailable icons
 import availableIcon50 from "../public/assets/button-icons/icons8-check-mark-50.png";
@@ -43,4 +45,6 @@ export const icons = {
   recycleIcon96,
   viewIcon48,
   viewIcon96,
+  restoreIcon48,
+  restoreIcon96,
 };

@@ -371,14 +371,16 @@ export const searchProductBySlug = async (slug: string) => {
 
     return {
       status: true,
-      products: response.data.products,
+      message: response.data.message,
+      product: response.data.product,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
+    console.log(error.response.data.developerMessage);
 
     return {
       status: false,
-      message: "An error occurred while searching for the product.",
+      message: error.response.data.message,
     };
   }
 };

@@ -1,7 +1,7 @@
 export type Products = {
   id: number;
   product_name: string;
-  product_description: string;
+  product_description: string | null;
   product_price: string;
   product_rating: number;
   product_stock: number;
@@ -14,10 +14,29 @@ export type Products = {
   category_id: number;
   created_at: string;
   updated_at: string;
-  deleted_at: string;
+  deleted_at: string | null;
 };
 
 export type Product = {
+  id: number;
+  product_name: string;
+  product_description: string | null;
+  product_price: string;
+  product_rating: number;
+  product_stock: number;
+  product_barcode: string;
+  product_view: number;
+  product_sold: number;
+  slug: string;
+  images: string[];
+  is_active: boolean;
+  category_id: number;
+  created_at: string;
+  updated_at: string;
+  deleted_at: string | null;
+};
+
+export type SingleProduct = {
   id: number;
   product_name: string;
   product_description: string;
@@ -30,8 +49,18 @@ export type Product = {
   slug: string;
   images: string[];
   is_active: boolean;
-  category_id: number;
+  category_id: {
+    id: number;
+    category_name: string;
+    category_slug: string;
+    category_description: string | null;
+    category_image: string;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+    deleted_at: string | null;
+  };
   created_at: string;
   updated_at: string;
-  deleted_at: string;
+  deleted_at: string | null;
 };

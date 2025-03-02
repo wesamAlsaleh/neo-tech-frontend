@@ -64,3 +64,8 @@ export type SingleProduct = {
   updated_at: string;
   deleted_at: string | null;
 };
+
+// function to convert the product price to a number in BHD format with 3 decimal places and a currency symbol
+export const convertPriceToBHD = (price: string) => {
+  return `BD ${parseFloat(price).toFixed(3)}`;
+};

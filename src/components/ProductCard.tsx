@@ -3,8 +3,8 @@
 import React, { useState } from "react";
 import Image from "next/image";
 
-// import types
-import { SingleProduct } from "@/types/product";
+// import types and functions from the product file
+import { convertPriceToBHD, SingleProduct } from "@/types/product";
 
 // import custom components
 
@@ -35,11 +35,13 @@ export default function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    //  Product card
+    //  Product card layout
     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-      {/* Product Images */}
+      {/* Image and Thumbnails */}
       <div className="flex flex-col space-y-4">
+        {/* Main Image */}
         <div className="relative h-96 w-full border rounded-lg overflow-hidden">
+          {/* check if there are images */}
           {product.images && product.images.length > 0 ? (
             <img
               src={product.images[currentImageIndex]}
@@ -52,14 +54,18 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
           )}
 
+          {/* Navigation Buttons */}
           {product.images && product.images.length > 1 && (
             <>
+              {/* left button */}
               <button
                 className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full"
                 onClick={handlePrevImage}
               >
                 &#10094;
               </button>
+
+              {/* right button */}
               <button
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-50 p-2 rounded-full"
                 onClick={handleNextImage}
@@ -72,8 +78,11 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Thumbnails */}
         {product.images && product.images.length > 1 && (
+          // Thumbnails container
           <div className="flex space-x-2 overflow-x-auto">
             {product.images.map((image, index) => (
+              // Thumbnail image container
+              // Check if the current image index is equal to the thumbnail index
               <div
                 key={index}
                 className={`h-16 w-16 border rounded cursor-pointer ${
@@ -96,42 +105,40 @@ export default function ProductCard({ product }: ProductCardProps) {
 
       {/* Product Details */}
       <div className="flex flex-col space-y-4">
+        {/* product title */}
         <h1 className="text-3xl font-bold">{product.product_name}</h1>
 
-        <div className="flex items-center space-x-4">
+        {/* Price and Rating */}
+        <div className="flex space-y-1 flex-col">
+          {/* product price */}
           <span className="text-2xl font-semibold">
-            ${parseFloat(product.product_price).toFixed(2)}
+            {convertPriceToBHD(product.product_price)}
           </span>
-          <div className="flex items-center">
-            {[...Array(5)].map((_, i) => (
-              <span key={i} className="text-yellow-400 text-xl">
-                {i < Math.floor(product.product_rating) ? "★" : "☆"}
-              </span>
-            ))}
-            <span className="ml-1 text-gray-600">
-              ({product.product_rating})
-            </span>
-          </div>
+
+          {/* Rating count */}
+          <span className=" text-gray-600">⭐{product.product_rating} </span>
         </div>
 
+        {/* Product description */}
         <div className="py-2">
           <p className="text-gray-700">{product.product_description}</p>
         </div>
 
+        {/* Stock */}
         <div className="flex items-center space-x-4 py-2">
+          {/* Stock counter in text */}
           <span
             className={`px-3 py-1 rounded-full ${
-              product.product_stock > 0
+              product.product_stock > 5
                 ? "bg-green-100 text-green-800"
                 : "bg-red-100 text-red-800"
             }`}
           >
-            {product.product_stock > 0 ? "In Stock" : "Out of Stock"}
+            {product.product_stock > 5 ? "In Stock" : "Out of Stock"}
           </span>
-          <span className="text-gray-600">Views: {product.product_view}</span>
-          <span className="text-gray-600">Sold: {product.product_sold}</span>
         </div>
 
+        {/* Quantity and Add to Cart */}
         <div className="pt-4">
           <div className="flex items-center space-x-4">
             <div className="flex items-center border rounded-md">
@@ -145,6 +152,7 @@ export default function ProductCard({ product }: ProductCardProps) {
               />
               <button className="px-3 py-2 text-xl border-l">+</button>
             </div>
+
             <button
               className={`px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 ${
                 product.product_stock === 0
@@ -158,10 +166,11 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         </div>
 
+        {/* Additional Information */}
         <div className="pt-4 border-t mt-4">
           <div className="grid grid-cols-2 gap-2 text-sm">
             <div className="text-gray-600">Category:</div>
-            <div>{product.category_id.category_name} Category</div>
+            <div>{product.category_id.category_name}</div>
 
             <div className="text-gray-600">Barcode:</div>
             <div>{product.product_barcode}</div>

@@ -72,8 +72,10 @@ const ProductPage = ({ params }: { params: Promise<{ slug: string }> }) => {
       <Suspense fallback={<LoadingSpinner />}>
         {/* Breadcrumb */}
         <Breadcrumb
-          firstTitle={product.product_name}
-          firstLink={`/products/${product.slug}`}
+          firstTitle={product.category_id.category_name}
+          firstLink={`/categories/${product.category_id.category_slug}`}
+          secondTitle={product.product_name}
+          secondLink={`/products/${product.slug}`}
         />
 
         {/* Product Card */}

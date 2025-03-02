@@ -12,13 +12,6 @@ export const getProducts = async () => {
       `${process.env.NEXT_PUBLIC_APP_URI}/products`
     );
 
-    if (response.data.products.length === 0) {
-      return {
-        status: false,
-        message: "No products found.",
-      };
-    }
-
     return {
       status: true,
       products: response.data.products,

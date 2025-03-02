@@ -1,40 +1,40 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-
-// Import custom components
-import NavBar from "@/components/NavBar";
-
-// Services import
-import { getProducts } from "@/services/products-services";
-import { getAllCategories } from "@/services/categories-services";
-
-// import types
-import { Products } from "@/types/product";
-import { Categories } from "@/types/category";
+import React from "react";
+import dynamic from "next/dynamic"; // dynamic import for custom components
 
 // import custom components
 import LoadingSpinner from "@/components/LoadingSpinner";
 
+// import custom components with dynamic import for better performance
+const HeroSection = dynamic(() => import("@/components/HeroSection"), {});
+
+const FlashSalesSection = dynamic(
+  () => import("@/components/FlashSalesSection")
+);
+
+const BrowseByCategorySection = dynamic(
+  () => import("@/components/BrowseByCategorySection"),
+  { ssr: false }
+);
+
+const BestSellingProductsSection = dynamic(
+  () => import("@/components/BestSellingProductsSection"),
+  { ssr: false }
+);
+
 export default function homePage() {
-  // data state
-  const [categories, setCategories] = useState<Categories[]>([]);
-  const [products, setProducts] = useState<Products[]>([]);
-
-  // loading state
-  const [loading, setLoading] = useState<boolean>(true);
-
-  // UI messages states
-  const [categoryMessage, setCategoryMessage] = useState<string>("");
-  const [productMessage, setProductMessage] = useState<string>("");
-
-  // TODO: Add loading page
+  // Fetch critical data with ISR (revalidate every 60 seconds)
 
   return (
     <>
-      <div>
-        <h1>hello world</h1>
-      </div>
+      <HeroSection />
+
+      <FlashSalesSection />
+
+      <BrowseByCategorySection />
+
+      <BestSellingProductsSection />
     </>
   );
 }

@@ -24,16 +24,18 @@ const BestSellingProductsSection = dynamic(
 );
 
 export default function homePage() {
-  // Fetch critical data with ISR (revalidate every 60 seconds)
-
   return (
     <>
+      {/* Hero section with side bar */}
       <HeroSection />
 
+      {/* TODO: flash sales section, require productsManagement update */}
       <FlashSalesSection />
 
+      {/* Browse Category Section  */}
       <BrowseByCategorySection />
 
+      {/* Best Selling Section */}
       <BestSellingProductsSection />
     </>
   );

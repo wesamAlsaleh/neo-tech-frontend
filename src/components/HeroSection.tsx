@@ -25,7 +25,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <div>
+    <>
       {/* categories */}
       <Suspense fallback={<div>Loading...</div>}>
         <ul>
@@ -34,6 +34,6 @@ export default function HeroSection() {
           ))}
         </ul>
       </Suspense>
-    </div>
+    </>
   );
 }

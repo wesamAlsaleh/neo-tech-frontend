@@ -1,5 +1,16 @@
 import React from "react";
 
+// import custom components
+import HomeComponentTitle from "./HomeComponentTitle";
+
 export default function BestSellingProductsSection() {
-  return <div>Best Selling Products Section</div>;
+  return (
+    <>
+      {/* component info  */}
+      <HomeComponentTitle
+        title=" Best Selling Products"
+        subtitle="This Month"
+      />
+    </>
+  );
 }

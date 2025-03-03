@@ -1,17 +1,25 @@
+"use client";
+
 import React from "react";
+import { useRouter } from "next/navigation";
 
 // interface
 interface HomeComponentTitleProps {
   title: string;
   subtitle: string;
-  navigationButtons?: boolean;
+  viewAllButton?: boolean;
+  url?: string;
 }
 
 export default function HomeComponentTitle({
   title,
   subtitle,
-  navigationButtons,
+  viewAllButton,
+  url,
 }: HomeComponentTitleProps) {
+  // router instance
+  const router = useRouter();
+
   return (
     <>
       {/* component sub-name container */}
@@ -33,6 +41,14 @@ export default function HomeComponentTitle({
         <h1 className="font-bold text-3xl">{title}</h1>
 
         {/* actions */}
+        {viewAllButton && url && (
+          <button
+            className="bg-primary text-white font-bold px-4 py-1 rounded-md"
+            onClick={() => router.push(url!)}
+          >
+            View All
+          </button>
+        )}
       </div>
     </>
   );

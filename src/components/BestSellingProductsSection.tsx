@@ -19,6 +19,7 @@ export default function BestSellingProductsSection() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
+  // Fetch best selling products
   useEffect(() => {
     const fetchSellingProducts = async () => {
       const serverResponse = await getBestSellingProducts(currentPage);
@@ -44,37 +45,12 @@ export default function BestSellingProductsSection() {
       <HomeComponentTitle
         title=" Best Selling Products"
         subtitle="This Month"
-        navigationButtons={true}
+        viewAllButton={true}
+        url="/products"
       />
 
-      {/* Pagination Controls */}
-      <div className="flex justify-center mt-4">
-        {/* previous button */}
-        <button
-          onClick={() => handlePageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="px-4 py-2 bg-gray-200 rounded-md"
-        >
-          Previous
-        </button>
-
-        {/* page info */}
-        <span className="mx-4">
-          Page {currentPage} of {totalPages}
-        </span>
-
-        {/* next button */}
-        <button
-          onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-gray-200 rounded-md"
-        >
-          Next
-        </button>
-      </div>
-
-      {/* products container */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 w-[50%] ">
+      {/* Product Cards Grid */}
+      <div className="grid grid-cols-8 gap-2 w-[85%] ">
         {products.map((product) => {
           return <ProductCardShowcase key={product.id} product={product} />;
         })}

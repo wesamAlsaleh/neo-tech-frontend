@@ -425,3 +425,61 @@ export const searchProductByStatus = async (status: string) => {
     };
   }
 };
+
+/**
+ * @function getBestSellingProducts to get best selling products, with pagination
+ */
+export const getBestSellingProducts = async (currentPage: number) => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/best-selling-products?page=${currentPage}`
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+      products: response.data.products,
+      paginationInfo: {
+        currentPage: response.data.pagination.current_page,
+        totalPages: response.data.pagination.total_pages,
+        totalItems: response.data.pagination.total_items,
+      },
+    };
+  } catch (error: any) {
+    console.error("Error fetching best-selling products:", error);
+    console.log(error.response.data.developerMessage || "d@q");
+
+    return {
+      status: false,
+      message:
+        error.response.data.message ||
+        "An error occurred while fetching the best selling products.",
+    };
+  }
+};
+
+/**
+ * @function getTopBestSellingProducts to get 4 top best selling products
+ */
+export const getTopBestSellingProducts = async () => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/top-best-selling-products`
+    );
+
+    return {
+      status: true,
+      products: response.data.products,
+    };
+  } catch (error: any) {
+    console.error(error);
+    console.log(error.response.data.developerMessage || "d@q");
+
+    return {
+      status: false,
+      message:
+        error.response.data.message ||
+        "An error occurred while fetching the best selling products.",
+    };
+  }
+};

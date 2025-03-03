@@ -1,6 +1,7 @@
 "use client";
 
 import React, { Suspense, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 // import types
 import { Category } from "@/types/category";
@@ -10,7 +11,6 @@ import { getAllCategories } from "@/services/categories-services";
 
 // import custom components
 import HomeComponentTitle from "@/components/HomeComponentTitle";
-import { useRouter } from "next/navigation";
 
 export default function BrowseByCategorySection() {
   // Router instance
@@ -28,6 +28,7 @@ export default function BrowseByCategorySection() {
 
     fetchCategories();
   }, []);
+
   return (
     <div className="mb-4">
       {/* component info  */}

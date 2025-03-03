@@ -4,7 +4,7 @@ import React from "react";
 interface HomeComponentTitleProps {
   title: string;
   subtitle: string;
-  navigationButtons?: false;
+  navigationButtons?: boolean;
 }
 
 export default function HomeComponentTitle({
@@ -28,8 +28,11 @@ export default function HomeComponentTitle({
       </div>
 
       {/* component main name container + navigation buttons if available */}
-      <div className="mb-4">
+      <div className="mb-4 flex items-center justify-between">
+        {/* title */}
         <h1 className="font-bold text-3xl">{title}</h1>
+
+        {/* actions */}
       </div>
     </>
   );

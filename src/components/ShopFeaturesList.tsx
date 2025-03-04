@@ -65,7 +65,24 @@ export default function ShopFeaturesList() {
   };
 
   // Handle delete feature
-  const handleDeleteFeature = async (featureId: string) => {};
+  const handleDeleteFeature = async (featureId: string) => {
+    try {
+      // Set loading to true to display loading spinner while request is in progress
+      setLoading(true);
+
+      const response = await deleteShopFeature(featureId);
+
+      if (response.status) {
+        // Refetch the features list
+        fetchFeatures();
+      } else {
+        setError(response.message);
+      }
+    } finally {
+      setLoading(false);
+      setShowModal(false);
+    }
+  };
 
   // Fetch all features
   useEffect(() => {

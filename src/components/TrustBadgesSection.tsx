@@ -32,9 +32,8 @@ export default function TrustBadgesSection() {
   return (
     <>
       {/* Badges Grid */}
-      <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2">
+      <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-2 my-8">
         {trustBadges.map((badge) => (
-          // Badge Card Container
           <TrustBadgeCard key={badge.id} badge={badge} />
         ))}
       </div>

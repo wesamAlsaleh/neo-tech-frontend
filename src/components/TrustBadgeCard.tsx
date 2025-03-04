@@ -9,7 +9,8 @@ interface TrustBadgeCardProps {
 
 export default function TrustBadgeCard({ badge }: TrustBadgeCardProps) {
   return (
-    <div className="flex flex-col items-center text-center p-4 my-8">
+    // Badge Card Container
+    <div className="flex flex-col items-center text-center p-4">
       {/* Badge Icon Container */}
       <div
         className="w-20 h-20 flex items-center justify-center rounded-full"

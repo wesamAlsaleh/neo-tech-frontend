@@ -41,6 +41,14 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
 
   return (
     <div className="flex items-center my-4 text-sm">
+      {/* Go back button */}
+      <button
+        onClick={() => router.back()}
+        className="flex items-center font-bold mr-2 border border-gray-200 px-3 py-1 rounded-md hover:bg-gray-100"
+      >
+        Back{" "}
+      </button>
+
       {/* First link */}
       {createBreadcrumbItem("Home", "/home")}
 

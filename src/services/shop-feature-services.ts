@@ -31,7 +31,7 @@ export const getShopFeatures = async () => {
 /**
  * @function getShopFeaturesAdmin to get all shop features from the server for admin (active and inactive)
  */
-export const getShopFeaturesAdmin = async () => {
+export const getShopFeaturesAdmin = async (currentPage: number) => {
   try {
     // get user token from cookies
     const cookieStore = await cookies();
@@ -58,6 +58,8 @@ export const getShopFeaturesAdmin = async () => {
       status: true,
       message: response.data.message,
       features: response.data.features,
+      currentPage: response.data.pagination.current_page,
+      totalPages: response.data.pagination.total_pages,
     };
   } catch (error: any) {
     console.error(error.response.data.message);

@@ -14,14 +14,20 @@ export default function ShopFeaturesList() {
   const [features, setFeatures] = useState<Feature[]>();
   const [loading, setLoading] = useState<boolean>(true);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+
   // Fetch all features from the database
   useEffect(() => {
     const fetchFeatures = async () => {
       try {
-        const response = await getShopFeaturesAdmin();
+        const response = await getShopFeaturesAdmin(currentPage);
 
         if (response.status) {
           setFeatures(response.features);
+          setCurrentPage(response.currentPage);
+          setTotalPages(response.totalPages);
         }
       } finally {
         setLoading(false);
@@ -36,7 +42,7 @@ export default function ShopFeaturesList() {
   }
 
   return (
-    <div>
+    <>
       <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
         <thead>
           <tr>
@@ -84,7 +90,7 @@ export default function ShopFeaturesList() {
               </td>
 
               <td className="px-4 py-2 border border-gray-300 text-center">
-                {/* bg color */}
+                {/* bg color condition */}
                 <span
                   className={`inline-block px-3 py-1 rounded-full font-semibold ${
                     feature.is_active
@@ -92,7 +98,7 @@ export default function ShopFeaturesList() {
                       : "bg-red-100 text-red-800"
                   }`}
                 >
-                  {/* text */}
+                  {/* text color condition */}
                   {feature.is_active ? "Active" : "Inactive"}
                 </span>
               </td>
@@ -115,6 +121,27 @@ export default function ShopFeaturesList() {
           ))}
         </tbody>
       </table>
-    </div>
+
+      {/* Pagination Control */}
+      <div className="flex items-center mt-4 gap-x-4">
+        {/* back button */}
+        <button
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+          disabled={currentPage === 1}
+        >
+          Previous
+        </button>
+
+        <span>{`${currentPage} of ${totalPages}`}</span>
+
+        {/* next button */}
+        <button
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+          disabled={currentPage === 10 || totalPages === 1}
+        >
+          Next
+        </button>
+      </div>
+    </>
   );
 }

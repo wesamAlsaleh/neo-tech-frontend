@@ -15,6 +15,7 @@ import LoadingSpinner from "./LoadingSpinner";
 import { icons } from "../../public/icons";
 
 // import custom components
+import DeleteModal from "./DeleteModal";
 
 export default function ShopFeaturesList() {
   const [features, setFeatures] = useState<Feature[]>();
@@ -24,6 +25,10 @@ export default function ShopFeaturesList() {
   // Pagination state
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+
+  // Modal state
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [selectedFeature, setSelectedFeature] = useState<Feature | null>(null);
 
   // Fetch all features from the database
   const fetchFeatures = async () => {
@@ -94,19 +99,22 @@ export default function ShopFeaturesList() {
         </div>
       )}
 
+      {/* TODO: Activated Badges Preview */}
+      <div></div>
+
       {/* Features Table */}
       <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
         <thead>
           <tr>
-            <th className="px-4 py-2 border border-gray-300">Feature Name</th>
+            <th className="px-4 py-2 border border-gray-300">Badge Name</th>
             <th className="px-4 py-2 border border-gray-300">
-              Feature Description
+              Badge Description
             </th>
             <th className="px-4 py-2 border border-gray-300">
-              Feature Theme Color
+              Badge Theme Color
             </th>
-            <th className="px-4 py-2 border border-gray-300">Feature Icon</th>
-            <th className="px-4 py-2 border border-gray-300">Feature Status</th>
+            <th className="px-4 py-2 border border-gray-300">Badge Icon</th>
+            <th className="px-4 py-2 border border-gray-300">Badge Status</th>
             <th className="px-4 py-2 border border-gray-300">Actions</th>
           </tr>
         </thead>
@@ -190,7 +198,10 @@ export default function ShopFeaturesList() {
                   {/* Delete button */}
                   <button
                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
-                    onClick={() => {}}
+                    onClick={() => {
+                      setSelectedFeature(feature); // set selected feature to delete
+                      setShowModal(true); // show delete modal
+                    }}
                     title={`Delete product ${feature.name}`}
                   >
                     <img
@@ -269,6 +280,15 @@ export default function ShopFeaturesList() {
           </button>
         </div>
       )}
+
+      {/* Delete Modal */}
+      <DeleteModal
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        name={selectedFeature?.name || ""}
+        onConfirm={() => handleDeleteFeature(String(selectedFeature?.id))}
+        permanentAlert
+      />
     </>
   );
 }

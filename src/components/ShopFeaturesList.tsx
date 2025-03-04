@@ -35,7 +35,7 @@ export default function ShopFeaturesList() {
     };
 
     fetchFeatures();
-  }, []);
+  }, [currentPage]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -124,20 +124,32 @@ export default function ShopFeaturesList() {
 
       {/* Pagination Control */}
       <div className="flex items-center mt-4 gap-x-4">
-        {/* back button */}
+        {/* Previous Button */}
         <button
-          onClick={() => setCurrentPage((prev) => prev - 1)}
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
+          className={`px-4 py-2 border rounded ${
+            currentPage === 1
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-blue-500 text-white"
+          }`}
         >
           Previous
         </button>
 
-        <span>{`${currentPage} of ${totalPages}`}</span>
+        <span className="font-semibold">{`${currentPage} of ${totalPages}`}</span>
 
-        {/* next button */}
+        {/* Next Button */}
         <button
-          onClick={() => setCurrentPage((prev) => prev + 1)}
-          disabled={currentPage === 10 || totalPages === 1}
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+          }
+          disabled={currentPage === totalPages}
+          className={`px-4 py-2 border rounded ${
+            currentPage === totalPages
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-blue-500 text-white"
+          }`}
         >
           Next
         </button>

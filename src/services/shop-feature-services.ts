@@ -46,7 +46,7 @@ export const getShopFeaturesAdmin = async (currentPage: number) => {
     }
 
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_APP_URI}/admin/features`,
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/features?page=${currentPage}`,
       {
         headers: {
           Authorization: `Bearer ${userToken}`,
@@ -111,7 +111,7 @@ export const createShopFeature = async (formData: FormData) => {
     console.error(error.response.data.message);
 
     // log dev message
-    console.log("d@q" + error.response.data.devMessage);
+    console.error(error.response.data);
 
     return {
       status: false,

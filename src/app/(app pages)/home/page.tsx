@@ -37,23 +37,21 @@ const ExploreProductsSection = dynamic(
 export default function homePage() {
   return (
     <>
-      {/* Hero section with side bar */}
+      {/* TODO: Hero Section */}
       <HeroSection />
-
-      {/* TODO: flash sales section, require productsManagement update */}
+      {/* TODO: Flash Sales Section, require productsManagement update */}
       <FlashSalesSection />
-
       {/* Browse Category Section  */}
       <BrowseByCategorySection />
-
       {/* Best Selling Section */}
       <BestSellingProductsSection />
-
-      {/* TODO: Special Banner */}
+      {/* TODO: Special Banner Section */}
       <AdBannerSection />
-
-      {/* Explore Products */}
+      {/* Explore Products Section */}
       <ExploreProductsSection />
+      {/* TODO: New Arrival Section */}
+
+      {/* TODO: 3 Shop Features */}
     </>
   );
 }

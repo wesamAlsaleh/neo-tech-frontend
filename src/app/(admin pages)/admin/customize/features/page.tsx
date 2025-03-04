@@ -22,7 +22,6 @@ export default function page() {
       />
 
       {/* Feature list table */}
-      <ShopFeaturesList />
     </div>
   );
 }

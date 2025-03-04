@@ -23,6 +23,17 @@ const BestSellingProductsSection = dynamic(
   { ssr: false }
 );
 
+const AdBannerSection = dynamic(() => import("@/components/AdBannerSection"), {
+  ssr: false,
+});
+
+const ExploreProductsSection = dynamic(
+  () => import("@/components/ExploreProductsSection"),
+  {
+    ssr: false,
+  }
+);
+
 export default function homePage() {
   return (
     <>
@@ -37,6 +48,12 @@ export default function homePage() {
 
       {/* Best Selling Section */}
       <BestSellingProductsSection />
+
+      {/* TODO: Special Banner */}
+      <AdBannerSection />
+
+      {/* Explore Products */}
+      <ExploreProductsSection />
     </>
   );
 }

@@ -34,11 +34,6 @@ export default function BestSellingProductsSection() {
     fetchSellingProducts();
   }, [currentPage]); // fetch products based on the current page
 
-  // function to handle page change
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
   return (
     <>
       {/* component info  */}

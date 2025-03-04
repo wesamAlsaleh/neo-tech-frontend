@@ -13,7 +13,7 @@ export default function ProductCardShowcase({ product }: { product: Product }) {
   const router = useRouter();
   return (
     // product container
-    <div className="relative  p-4 bg-white shadow-lg rounded-lg">
+    <div className="relative p-4 bg-white shadow-lg rounded-lg">
       {/* Wishlist & View Icons container */}
       <div className="absolute top-3 right-3 flex flex-col space-y-2">
         {/* whishlist button */}

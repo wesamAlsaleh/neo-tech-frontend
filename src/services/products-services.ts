@@ -459,27 +459,28 @@ export const getBestSellingProducts = async (currentPage: number) => {
 };
 
 /**
- * @function getTopBestSellingProducts to get 4 top best selling products
+ * @function getExploreProducts to get explore products
  */
-export const getTopBestSellingProducts = async () => {
+export const getExploreProducts = async () => {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_APP_URI}/top-best-selling-products`
+      `${process.env.NEXT_PUBLIC_APP_URI}/explore-products`
     );
 
     return {
       status: true,
+      message: response.data.message,
       products: response.data.products,
     };
   } catch (error: any) {
-    console.error(error);
+    console.error("Error fetching explore products:", error);
     console.log(error.response.data.developerMessage || "d@q");
 
     return {
       status: false,
       message:
         error.response.data.message ||
-        "An error occurred while fetching the best selling products.",
+        "An error occurred while fetching the explore products.",
     };
   }
 };

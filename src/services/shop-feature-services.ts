@@ -30,6 +30,8 @@ export const getShopFeatures = async () => {
 
 /**
  * @function getShopFeaturesAdmin to get all shop features from the server for admin (active and inactive)
+ * @param {number} currentPage - current page number to fetch features
+ * @returns {object} - object containing status, message, features, currentPage, totalPages
  */
 export const getShopFeaturesAdmin = async (currentPage: number) => {
   try {

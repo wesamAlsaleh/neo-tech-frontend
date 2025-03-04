@@ -59,6 +59,16 @@ export default function ShopFeaturesList() {
           </tr>
         </thead>
 
+        {features?.length === 0 && (
+          <tbody>
+            <tr>
+              <td colSpan={6} className="text-center py-4">
+                No features found.
+              </td>
+            </tr>
+          </tbody>
+        )}
+
         <tbody>
           {features?.map((feature) => (
             <tr key={feature.id} className="hover:bg-gray-100 even:bg-gray-50">
@@ -79,7 +89,7 @@ export default function ShopFeaturesList() {
 
               <td className="px-4 py-2 border border-gray-300 flex justify-center items-center border-none">
                 <img
-                  className="object-cover rounded w-14 h-14"
+                  className="object-cover rounded w-12 h-12"
                   src={feature.icon}
                   alt={feature.name}
                   onError={(e) => {
@@ -123,37 +133,39 @@ export default function ShopFeaturesList() {
       </table>
 
       {/* Pagination Control */}
-      <div className="flex items-center mt-4 gap-x-4">
-        {/* Previous Button */}
-        <button
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          disabled={currentPage === 1}
-          className={`px-4 py-2 border rounded ${
-            currentPage === 1
-              ? "bg-gray-300 cursor-not-allowed"
-              : "bg-blue-500 text-white"
-          }`}
-        >
-          Previous
-        </button>
+      {totalPages > 1 && (
+        <div className="flex items-center mt-4 gap-x-4">
+          {/* Previous Button */}
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className={`px-4 py-2 border rounded ${
+              currentPage === 1
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-blue-500 text-white"
+            }`}
+          >
+            Previous
+          </button>
 
-        <span className="font-semibold">{`${currentPage} of ${totalPages}`}</span>
+          <span className="font-semibold">{`${currentPage} of ${totalPages}`}</span>
 
-        {/* Next Button */}
-        <button
-          onClick={() =>
-            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-          }
-          disabled={currentPage === totalPages}
-          className={`px-4 py-2 border rounded ${
-            currentPage === totalPages
-              ? "bg-gray-300 cursor-not-allowed"
-              : "bg-blue-500 text-white"
-          }`}
-        >
-          Next
-        </button>
-      </div>
+          {/* Next Button */}
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className={`px-4 py-2 border rounded ${
+              currentPage === totalPages
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-blue-500 text-white"
+            }`}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </>
   );
 }

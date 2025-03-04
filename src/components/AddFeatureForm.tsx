@@ -75,10 +75,25 @@ export default function AddFeatureForm() {
 
   // Function to reset the form fields
   const resetFormFields = () => {
+    // Reset the form status after 2 seconds
+    setTimeout(() => {
+      setStatus({
+        success: false,
+        message: "",
+      });
+    }, 2000);
+
+    // Reset the form state
     setName("");
     setDescription("");
     setColor("");
     setIcon(null);
+
+    // Reset the file input field
+    const fileInput = document.getElementById("icon") as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = "";
+    }
   };
 
   return (

@@ -34,24 +34,38 @@ const ExploreProductsSection = dynamic(
   }
 );
 
+const TrustBadgesSection = dynamic(
+  () => import("@/components/TrustBadgesSection"),
+  {
+    ssr: false,
+  }
+);
+
 export default function homePage() {
   return (
     <>
       {/* TODO: Hero Section */}
       <HeroSection />
+
       {/* TODO: Flash Sales Section, require productsManagement update */}
       <FlashSalesSection />
+
       {/* Browse Category Section  */}
       <BrowseByCategorySection />
+
       {/* Best Selling Section */}
       <BestSellingProductsSection />
+
       {/* TODO: Special Banner Section */}
       <AdBannerSection />
+
       {/* Explore Products Section */}
       <ExploreProductsSection />
+
       {/* TODO: New Arrival Section */}
 
-      {/* TODO: 3 Shop Features */}
+      {/* Trust Badges Section */}
+      <TrustBadgesSection />
     </>
   );
 }

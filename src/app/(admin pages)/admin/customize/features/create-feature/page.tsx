@@ -19,7 +19,11 @@ export default function page() {
         title="Add New Feature"
         subtitle="Here you can add a new feature to the system. Note that only active features will be displayed to the users. And only 3 features can be activated to the system."
         actionButton={
-          <ActionButton href="/admin/features" text="Cancel" color="red" />
+          <ActionButton
+            href="/admin/customize/features"
+            text="Cancel"
+            color="red"
+          />
         }
       />
 

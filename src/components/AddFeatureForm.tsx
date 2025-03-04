@@ -64,7 +64,7 @@ export default function AddFeatureForm() {
         if (resetForm) {
           resetFormFields();
         } else {
-          router.push("/admin/features"); // Redirect to the parent page
+          router.push("/admin/customize/features"); // Redirect to the parent page
         }
       }
     } finally {

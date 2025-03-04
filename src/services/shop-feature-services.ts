@@ -33,8 +33,25 @@ export const getShopFeatures = async () => {
  */
 export const getShopFeaturesAdmin = async () => {
   try {
+    // get user token from cookies
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    // Check if user token is not found
+    if (!userToken) {
+      return {
+        status: false,
+        message: "Authentication token not found.",
+      };
+    }
+
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_APP_URI}/features`
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/features`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
     );
 
     return {

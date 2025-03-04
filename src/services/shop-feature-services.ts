@@ -19,7 +19,7 @@ export const getShopFeatures = async () => {
     };
   } catch (error: any) {
     console.error(error.response.data.message);
-    console.log("d@q" + error.response.data.devMessage);
+    console.error(error.response.data.devMessage);
 
     return {
       status: false,
@@ -65,7 +65,7 @@ export const getShopFeaturesAdmin = async (currentPage: number) => {
     };
   } catch (error: any) {
     console.error(error.response.data.message);
-    console.log("d@q" + error.response.data.devMessage);
+    console.error(error.response.data.devMessage);
 
     return {
       status: false,
@@ -143,7 +143,7 @@ export const updateShopFeature = async (
       };
     }
 
-    const response = await axios.put(
+    const response = await axios.post(
       `${process.env.NEXT_PUBLIC_APP_URI}/admin/update-feature/${featureId}`,
       featureData,
       {
@@ -164,7 +164,7 @@ export const updateShopFeature = async (
     console.error(error.response.data.message);
 
     // log dev message
-    console.log("d@q" + error.response.data.devMessage);
+    console.error(error.response.data.devMessage);
 
     return {
       status: false,
@@ -210,7 +210,7 @@ export const deleteShopFeature = async (featureId: string) => {
     console.error(error.response.data.message);
 
     // log dev message
-    console.log("d@q" + error.response.data.devMessage);
+    console.error(error.response.data.devMessage);
 
     return {
       status: false,
@@ -237,7 +237,7 @@ export const toggleShopFeatureStatus = async (featureId: string) => {
       };
     }
 
-    const response = await axios.put(
+    const response = await axios.patch(
       `${process.env.NEXT_PUBLIC_APP_URI}/admin/toggle-feature-status/${featureId}`,
       {},
       {
@@ -257,7 +257,7 @@ export const toggleShopFeatureStatus = async (featureId: string) => {
     console.error(error.response.data.message);
 
     // log dev message
-    console.log("d@q" + error.response.data.devMessage);
+    console.error(error.response.data.devMessage);
 
     return {
       status: false,

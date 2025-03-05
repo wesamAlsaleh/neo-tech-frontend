@@ -125,7 +125,7 @@ export default function AddFeatureForm() {
             htmlFor="name"
             className="block text-sm font-medium text-gray-700"
           >
-            Feature Name<span className="text-red-600">*</span>
+            Badge Name<span className="text-red-600">*</span>
           </label>
 
           <input
@@ -144,7 +144,7 @@ export default function AddFeatureForm() {
             htmlFor="description"
             className="block text-sm font-medium text-gray-700"
           >
-            Feature description<span className="text-red-600">*</span>
+            Badge description<span className="text-red-600">*</span>
           </label>
 
           <input
@@ -163,7 +163,7 @@ export default function AddFeatureForm() {
             htmlFor="color"
             className="block text-sm font-medium text-gray-700"
           >
-            Select The Feature Color Theme
+            Select The Badge Color Theme
             <span className="text-red-600">*</span>
           </label>
 
@@ -180,10 +180,10 @@ export default function AddFeatureForm() {
         {/* Image field container */}
         <div className="space-y-2">
           <label
-            htmlFor="category_image"
+            htmlFor="icon"
             className="block text-sm font-medium text-gray-700"
           >
-            Feature Icon<span className="text-red-600">*</span>
+            Badge Icon<span className="text-red-600">*</span>
           </label>
 
           <input
@@ -207,7 +207,7 @@ export default function AddFeatureForm() {
             disabled={isSubmitting}
             className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? "Adding..." : "Add Feature"}
+            {isSubmitting ? "Adding..." : "Add Badge"}
           </button>
 
           <button
@@ -216,7 +216,7 @@ export default function AddFeatureForm() {
             disabled={isSubmitting}
             className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Create Another Feature
+            Create Another Badge
           </button>
         </div>
       </form>

@@ -16,6 +16,7 @@ import { icons } from "../../public/icons";
 
 // import custom components
 import DeleteModal from "./DeleteModal";
+import EditTrustBadgeModal from "./EditTrustBadgeModal";
 
 export default function TrustBadgeList() {
   const [features, setFeatures] = useState<Feature[]>();
@@ -27,7 +28,8 @@ export default function TrustBadgeList() {
   const [totalPages, setTotalPages] = useState<number>(1);
 
   // Modal state
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [deleteModal, setDeleteModalVisible] = useState<boolean>(false);
+  const [editModal, setEditModalVisible] = useState<boolean>(false);
   const [selectedFeature, setSelectedFeature] = useState<Feature | null>(null);
 
   // Fetch all features from the database
@@ -80,7 +82,7 @@ export default function TrustBadgeList() {
       }
     } finally {
       setLoading(false);
-      setShowModal(false);
+      setDeleteModalVisible(false);
     }
   };
 
@@ -198,7 +200,10 @@ export default function TrustBadgeList() {
                   {/* Edit button */}
                   <button
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
-                    onClick={() => {}}
+                    onClick={() => {
+                      setSelectedFeature(feature); // set selected feature to delete
+                      setEditModalVisible(true); // show delete modal
+                    }}
                     title={`Edit ${feature.name}`}
                   >
                     <img
@@ -214,7 +219,7 @@ export default function TrustBadgeList() {
                     className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
                     onClick={() => {
                       setSelectedFeature(feature); // set selected feature to delete
-                      setShowModal(true); // show delete modal
+                      setDeleteModalVisible(true); // show delete modal
                     }}
                     title={`Delete product ${feature.name}`}
                   >
@@ -295,10 +300,17 @@ export default function TrustBadgeList() {
         </div>
       )}
 
+      {/* Edit Modal */}
+      <EditTrustBadgeModal
+        isOpen={editModal}
+        onClose={() => setEditModalVisible(false)}
+        badge={selectedFeature!}
+      />
+
       {/* Delete Modal */}
       <DeleteModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        isOpen={deleteModal}
+        onClose={() => setDeleteModalVisible(false)}
         name={selectedFeature?.name || ""}
         onConfirm={() => handleDeleteFeature(String(selectedFeature?.id))}
         permanentAlert

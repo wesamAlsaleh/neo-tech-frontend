@@ -35,7 +35,7 @@ export default function BrowseByCategorySection() {
       <HomeComponentTitle title="Browse By Categories" subtitle="Categories" />
 
       {/* Categories Grid */}
-      <div className="flex flex-wrap justify-start gap-4">
+      <div className="grid lg:grid-cols-10 md:grid-cols-5 sm:grid-cols-2 gap-4">
         {categories.map((category) => (
           // category card container (name + image)
           <div

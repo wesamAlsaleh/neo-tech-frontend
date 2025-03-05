@@ -45,7 +45,7 @@ export default function BestSellingProductsSection() {
       />
 
       {/* Product Cards Grid */}
-      <div className="grid grid-cols-8 gap-2 w-[85%] ">
+      <div className="grid lg:grid-cols-8 md:grid-cols-4 sm:grid-cols-1 gap-2 w-[100%] ">
         {products.map((product) => {
           return <ProductCardShowcase key={product.id} product={product} />;
         })}

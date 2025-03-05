@@ -4,7 +4,11 @@ import React from "react";
 import { useRouter } from "next/navigation";
 
 // import types
-import { Product, convertPriceToBHD } from "@/types/product";
+import {
+  Product,
+  convertPriceToBHD,
+  convertSalePercentage,
+} from "@/types/product";
 
 // import custom components
 
@@ -14,6 +18,13 @@ export default function ProductCardShowcase({ product }: { product: Product }) {
   return (
     // product container
     <div className="relative p-4 bg-white shadow-lg rounded-lg">
+      {product.onSale ? (
+        // Discount Badge container
+        <div className="absolute top-3 left-3 bg-red-500 text-white text-sm font-semibold px-2 py-1 rounded-full">
+          {`${convertSalePercentage(product.discount)}% OFF`}
+        </div>
+      ) : null}
+
       {/* Wishlist & View Icons container */}
       <div className="absolute top-3 right-3 flex flex-col space-y-2">
         {/* whishlist button */}
@@ -47,7 +58,13 @@ export default function ProductCardShowcase({ product }: { product: Product }) {
         {/* product price container */}
         <div className="flex items-center space-x-2">
           <p className="text-gray-500 font-bold">
-            {convertPriceToBHD(product.product_price)}
+            {product.onSale ? (
+              <span className="text-orange-500">
+                {convertPriceToBHD(product.product_price_after_discount)}
+              </span>
+            ) : (
+              convertPriceToBHD(product.product_price)
+            )}
           </p>
         </div>
 

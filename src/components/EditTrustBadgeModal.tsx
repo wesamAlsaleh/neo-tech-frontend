@@ -45,8 +45,8 @@ export default function EditTrustBadgeModal({
   useEffect(() => {
     // Set the item data to the form fields when the modal is opened
     setBadgeName(badge?.name || "");
-    setBadgeDescription(badge!.description || "");
-    setBadgeColor(badge!.color || "#000000");
+    setBadgeDescription(badge?.description || "");
+    setBadgeColor(badge?.color || "#000000");
     setBadgeIcon(null); // The initial icon is available as a string, so set it to null because the input field requires a File object
   }, [badge]); // Re-run the effect when the data changes
 
@@ -132,7 +132,6 @@ export default function EditTrustBadgeModal({
               id="name"
               value={badgeName}
               onChange={(event) => setBadgeName(event.target.value)}
-              required
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
             />
           </div>
@@ -169,7 +168,6 @@ export default function EditTrustBadgeModal({
               id="color"
               value={badgeColor}
               onChange={(e) => setBadgeColor(e.target.value)}
-              required
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm "
             />
           </div>

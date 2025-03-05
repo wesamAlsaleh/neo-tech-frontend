@@ -16,8 +16,12 @@ export const getProducts = async () => {
       status: true,
       products: response.data.products,
     };
-  } catch (error) {
+  } catch (error: any) {
+    // Debugging error
     console.error(error);
+
+    // Log the Developer message
+    console.log(error.response.data.developerMessage);
 
     return {
       status: false,

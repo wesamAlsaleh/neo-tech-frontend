@@ -112,7 +112,9 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="flex space-y-1 flex-col">
           {/* product price */}
           <span className="text-2xl font-semibold">
-            {convertPriceToBHD(product.product_price)}
+            {product.onSale
+              ? convertPriceToBHD(product.product_price)
+              : convertPriceToBHD(product.product_price)}
           </span>
 
           {/* Rating count */}

@@ -1,9 +1,10 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 
 // import types
-import { Product, Products } from "@/types/product";
+import { Product, convertPriceToBHD } from "@/types/product";
 
 // Services import
 import {
@@ -21,10 +22,9 @@ import { icons } from "../../public/icons";
 // import custom components
 import EditProductModal from "./EditProductModal";
 import DeleteModal from "./DeleteModal";
-import Link from "next/link";
 
 export default function ProductsList() {
-  const [products, setProducts] = useState<Products[]>([]); // Products state
+  const [products, setProducts] = useState<Product[]>([]); // Products state
   const [loading, setLoading] = useState(true); // Loading state
 
   const [serverResponse, setServerResponse] = useState({
@@ -55,7 +55,6 @@ export default function ProductsList() {
 
       if (response.status) {
         setProducts(response.products.data);
-        console.log(products);
       }
     } catch (error) {
       setServerResponse({
@@ -175,33 +174,16 @@ export default function ProductsList() {
       <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
         <thead>
           <tr className="bg-gray-100 border-b border-gray-300">
-            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-              Product Name
-            </th>
-            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-              Product Image
-            </th>
-            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-              Is Active
-            </th>
-            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-              In Stock
-            </th>
-            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-              Product Price
-            </th>
-            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-              Product Rating
-            </th>
-            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-              Created At
-            </th>
-            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-              Updated At
-            </th>
-            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-              Actions
-            </th>
+            <th className="px-4 py-2 border border-gray-300">Product Name</th>
+            <th className="px-4 py-2 border border-gray-300">Product Image</th>
+            <th className="px-4 py-2 border border-gray-300">Is Active</th>
+            <th className="px-4 py-2 border border-gray-300">In Stock</th>
+            <th className="px-4 py-2 border border-gray-300">On Sale</th>
+            <th className="px-4 py-2 border border-gray-300">Product Price</th>
+            <th className="px-4 py-2 border border-gray-300">Product Rating</th>
+            <th className="px-4 py-2 border border-gray-300">Created At</th>
+            <th className="px-4 py-2 border border-gray-300">Updated At</th>
+            <th className="px-4 py-2 border border-gray-300">Actions</th>
           </tr>
         </thead>
 
@@ -242,37 +224,61 @@ export default function ProductsList() {
                   )}
                 </td>
 
-                {/* Product Status */}
+                {/* Product Active Status */}
                 <td className="px-4 py-2 border border-gray-300">
-                  <span
-                    className={`${
-                      product.is_active
-                        ? "text-green-600 bg-green-100 px-2 py-1 rounded-md"
-                        : "text-red-600 bg-red-100 px-2 py-1 rounded-md"
-                    } font-medium`}
-                  >
-                    {product.is_active ? "Active" : "Inactive"}
-                  </span>
+                  {product.is_active ? (
+                    <span className="bg-green-100 text-green-600 px-2 py-1 rounded-md font-bold">
+                      Active
+                    </span>
+                  ) : (
+                    <span className="bg-red-100 text-red-600 px-2 py-1 rounded-md font-bold">
+                      Inactive
+                    </span>
+                  )}
                 </td>
 
-                {/* Product stock */}
+                {/* Product stock Status */}
                 <td className="px-4 py-2 border border-gray-300">
-                  <span
-                    className={`${
-                      product.product_stock > 0
-                        ? "text-green-600 bg-green-100 px-2 py-1 rounded-md"
-                        : "text-red-600 bg-red-100 px-2 py-1 rounded-md"
-                    } font-medium`}
-                  >
-                    {product.product_stock > 0
-                      ? `In Stock (${product.product_stock})`
-                      : "Out of Stock"}
-                  </span>
+                  {product.product_stock > 0 ? (
+                    <span className="bg-green-100 text-green-600 px-2 py-1 rounded-md font-bold">
+                      {product.product_stock} in stock
+                    </span>
+                  ) : (
+                    <span className="bg-red-100 text-red-600 px-2 py-1 rounded-md font-bold">
+                      Out of stock
+                    </span>
+                  )}
                 </td>
 
-                {/* Product Price */}
+                {/* Product On Sale Status */}
                 <td className="px-4 py-2 border border-gray-300">
-                  {parseFloat(product.product_price).toFixed(2)} BHD
+                  {product.onSale ? (
+                    <span className="bg-green-100 text-green-600 px-2 py-1 rounded-md font-bold">
+                      Yes
+                    </span>
+                  ) : (
+                    <span className="bg-red-100 text-red-600 px-2 py-1 rounded-md font-bold">
+                      No
+                    </span>
+                  )}
+                </td>
+
+                {/* Product Original Price */}
+                <td className="px-4 py-2 border border-gray-300">
+                  {product.onSale ? (
+                    <>
+                      <span className="line-through text-gray-500 mr-2">
+                        {convertPriceToBHD(product.product_price)}
+                      </span>
+                      <span>
+                        {convertPriceToBHD(
+                          product.product_price_after_discount
+                        )}
+                      </span>
+                    </>
+                  ) : (
+                    <span>{convertPriceToBHD(product.product_price)}</span>
+                  )}
                 </td>
 
                 {/* Product Rating */}

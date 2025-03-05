@@ -25,6 +25,8 @@ import Link from "next/link";
 
 export default function ProductsList() {
   const [products, setProducts] = useState<Products[]>([]); // Products state
+  const [loading, setLoading] = useState(true); // Loading state
+
   const [serverResponse, setServerResponse] = useState({
     status: false,
     message: "",
@@ -40,7 +42,7 @@ export default function ProductsList() {
   );
 
   // Fetch Data function
-  const fetchProductsData = async (page = 1) => {
+  const fetchProductsData = async () => {
     try {
       // Fetch products
       const response = await getProducts();
@@ -59,6 +61,8 @@ export default function ProductsList() {
         status: false,
         message: "Failed to fetch products. Please try again later.",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -140,235 +144,231 @@ export default function ProductsList() {
     }
   };
 
-  // Handle pagination change
-  const handlePageChange = (page: number) => {
-    fetchProductsData(page); // Refetch data with new page number to update the table
-  };
+  // If loading, show loading spinner
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="overflow-x-auto">
-      <Suspense fallback={<LoadingSpinner />}>
-        {/* action message */}
-        {serverResponse.message && (
-          <div
-            className={`px-4 py-3 rounded relative mb-4 ${
-              serverResponse.status
-                ? "bg-green-100 border border-green-400 text-green-700"
-                : "bg-red-100 border border-red-400 text-red-700 "
-            }`}
-            role="alert"
-          >
-            {serverResponse.status ? (
-              <strong className="font-bold">Success! </strong>
-            ) : (
-              <strong className="font-bold">Error! </strong>
-            )}
-            <span className="block sm:inline">{serverResponse.message}</span>
-          </div>
-        )}
+      {/* action message */}
+      {serverResponse.message && (
+        <div
+          className={`px-4 py-3 rounded relative mb-4 ${
+            serverResponse.status
+              ? "bg-green-100 border border-green-400 text-green-700"
+              : "bg-red-100 border border-red-400 text-red-700 "
+          }`}
+          role="alert"
+        >
+          {serverResponse.status ? (
+            <strong className="font-bold">Success! </strong>
+          ) : (
+            <strong className="font-bold">Error! </strong>
+          )}
+          <span className="block sm:inline">{serverResponse.message}</span>
+        </div>
+      )}
 
-        {/* Products Table */}
-        <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
-          <thead>
-            <tr className="bg-gray-100 border-b border-gray-300">
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Product Name
-              </th>
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Product Image
-              </th>
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Is Active
-              </th>
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                In Stock
-              </th>
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Product Price
-              </th>
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Product Rating
-              </th>
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Created At
-              </th>
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Updated At
-              </th>
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Actions
-              </th>
+      {/* Products Table */}
+      <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
+        <thead>
+          <tr className="bg-gray-100 border-b border-gray-300">
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Product Name
+            </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Product Image
+            </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Is Active
+            </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              In Stock
+            </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Product Price
+            </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Product Rating
+            </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Created At
+            </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Updated At
+            </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Actions
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {products.length === 0 ? (
+            <tr>
+              <td colSpan={8} className="px-4 py-6 text-center text-red-600">
+                No products found.
+              </td>
             </tr>
-          </thead>
-
-          <tbody>
-            {products.length === 0 ? (
-              <tr>
-                <td colSpan={8} className="px-4 py-6 text-center text-red-600">
-                  No products found.
+          ) : (
+            products.map((product) => (
+              <tr
+                key={product.id}
+                className="hover:bg-gray-100 even:bg-gray-50"
+              >
+                {/* Product Name */}
+                <td className="px-4 py-2 border border-gray-300">
+                  {product.product_name}
                 </td>
-              </tr>
-            ) : (
-              products.map((product) => (
-                <tr
-                  key={product.id}
-                  className="hover:bg-gray-100 even:bg-gray-50"
-                >
-                  {/* Product Name */}
-                  <td className="px-4 py-2 border border-gray-300">
-                    {product.product_name}
-                  </td>
 
-                  {/* Product first image*/}
-                  <td className="px-4 py-2 border border-gray-300">
-                    {product.images && product.images.length > 0 ? (
+                {/* Product first image*/}
+                <td className="px-4 py-2 border border-gray-300">
+                  {product.images && product.images.length > 0 ? (
+                    <img
+                      className="h-10 w-10 object-cover rounded"
+                      src={product.images[0]} // first image
+                      alt={product.product_name}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          "https://placehold.co/100x100?text=No+Image";
+                      }}
+                    />
+                  ) : (
+                    <div className="h-10 w-10 bg-gray-200 flex items-center justify-center rounded">
+                      <span className="text-xs text-gray-500">No image</span>
+                    </div>
+                  )}
+                </td>
+
+                {/* Product Status */}
+                <td className="px-4 py-2 border border-gray-300">
+                  <span
+                    className={`${
+                      product.is_active
+                        ? "text-green-600 bg-green-100 px-2 py-1 rounded-md"
+                        : "text-red-600 bg-red-100 px-2 py-1 rounded-md"
+                    } font-medium`}
+                  >
+                    {product.is_active ? "Active" : "Inactive"}
+                  </span>
+                </td>
+
+                {/* Product stock */}
+                <td className="px-4 py-2 border border-gray-300">
+                  <span
+                    className={`${
+                      product.product_stock > 0
+                        ? "text-green-600 bg-green-100 px-2 py-1 rounded-md"
+                        : "text-red-600 bg-red-100 px-2 py-1 rounded-md"
+                    } font-medium`}
+                  >
+                    {product.product_stock > 0
+                      ? `In Stock (${product.product_stock})`
+                      : "Out of Stock"}
+                  </span>
+                </td>
+
+                {/* Product Price */}
+                <td className="px-4 py-2 border border-gray-300">
+                  {parseFloat(product.product_price).toFixed(2)} BHD
+                </td>
+
+                {/* Product Rating */}
+                <td className="px-4 py-2 border border-gray-300">
+                  {product.product_rating} ⭐
+                </td>
+
+                {/* Product Created Date */}
+                <td className="px-4 py-2 border border-gray-300">
+                  {new Date(product.created_at).toLocaleDateString()}
+                </td>
+
+                {/* Product updated Date */}
+                <td className="px-4 py-2 border border-gray-300">
+                  {new Date(product.updated_at).toLocaleDateString()}
+                </td>
+
+                {/* Action buttons */}
+                <td className="px-4 py-2 border border-gray-300">
+                  <div className="flex gap-2">
+                    {/* Edit button */}
+                    <button
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
+                      onClick={() => handleEditClick(product)}
+                      title={`Edit ${product.product_name}`}
+                    >
                       <img
-                        className="h-10 w-10 object-cover rounded"
-                        src={product.images[0]} // first image
-                        alt={product.product_name}
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src =
-                            "https://placehold.co/100x100?text=No+Image";
-                        }}
+                        src={icons.edit50.src}
+                        alt="Edit"
+                        width={24}
+                        height={24}
                       />
-                    ) : (
-                      <div className="h-10 w-10 bg-gray-200 flex items-center justify-center rounded">
-                        <span className="text-xs text-gray-500">No image</span>
-                      </div>
-                    )}
-                  </td>
+                    </button>
 
-                  {/* Product Status */}
-                  <td className="px-4 py-2 border border-gray-300">
-                    <span
+                    {/* Delete button */}
+                    <button
+                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
+                      onClick={() => handleDeleteClick(product)}
+                      title={`Delete product ${product.product_name}`}
+                    >
+                      <img
+                        src={icons.delete50.src}
+                        alt="Delete"
+                        width={24}
+                        height={24}
+                      />
+                    </button>
+
+                    {/* Toggle status button */}
+                    <button
                       className={`${
                         product.is_active
-                          ? "text-green-600 bg-green-100 px-2 py-1 rounded-md"
-                          : "text-red-600 bg-red-100 px-2 py-1 rounded-md"
-                      } font-medium`}
+                          ? "bg-orange-400 hover:bg-orange-500"
+                          : "bg-green-500 hover:bg-green-600"
+                      } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
+                      onClick={() =>
+                        handleToggleProductStatus(String(product.id))
+                      }
+                      title={
+                        product.is_active
+                          ? `Deactivate ${product.product_name}`
+                          : `Activate product ${product.product_name}`
+                      }
                     >
-                      {product.is_active ? "Active" : "Inactive"}
-                    </span>
-                  </td>
-
-                  {/* Product stock */}
-                  <td className="px-4 py-2 border border-gray-300">
-                    <span
-                      className={`${
-                        product.product_stock > 0
-                          ? "text-green-600 bg-green-100 px-2 py-1 rounded-md"
-                          : "text-red-600 bg-red-100 px-2 py-1 rounded-md"
-                      } font-medium`}
-                    >
-                      {product.product_stock > 0
-                        ? `In Stock (${product.product_stock})`
-                        : "Out of Stock"}
-                    </span>
-                  </td>
-
-                  {/* Product Price */}
-                  <td className="px-4 py-2 border border-gray-300">
-                    {parseFloat(product.product_price).toFixed(2)} BHD
-                  </td>
-
-                  {/* Product Rating */}
-                  <td className="px-4 py-2 border border-gray-300">
-                    {product.product_rating} ⭐
-                  </td>
-
-                  {/* Product Created Date */}
-                  <td className="px-4 py-2 border border-gray-300">
-                    {new Date(product.created_at).toLocaleDateString()}
-                  </td>
-
-                  {/* Product updated Date */}
-                  <td className="px-4 py-2 border border-gray-300">
-                    {new Date(product.updated_at).toLocaleDateString()}
-                  </td>
-
-                  {/* Action buttons */}
-                  <td className="px-4 py-2 border border-gray-300">
-                    <div className="flex gap-2">
-                      {/* Edit button */}
-                      <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
-                        onClick={() => handleEditClick(product)}
-                        title={`Edit ${product.product_name}`}
-                      >
-                        <img
-                          src={icons.edit50.src}
-                          alt="Edit"
-                          width={24}
-                          height={24}
-                        />
-                      </button>
-
-                      {/* Delete button */}
-                      <button
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
-                        onClick={() => handleDeleteClick(product)}
-                        title={`Delete product ${product.product_name}`}
-                      >
-                        <img
-                          src={icons.delete50.src}
-                          alt="Delete"
-                          width={24}
-                          height={24}
-                        />
-                      </button>
-
-                      {/* Toggle status button */}
-                      <button
-                        className={`${
+                      <img
+                        src={
                           product.is_active
-                            ? "bg-orange-400 hover:bg-orange-500"
-                            : "bg-green-500 hover:bg-green-600"
-                        } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
-                        onClick={() =>
-                          handleToggleProductStatus(String(product.id))
+                            ? icons.removeBasket50.src
+                            : icons.addBasket50.src
                         }
-                        title={
-                          product.is_active
-                            ? `Deactivate ${product.product_name}`
-                            : `Activate product ${product.product_name}`
-                        }
+                        alt={product.is_active ? "Deactivate" : "Activate"}
+                        width={24}
+                        height={24}
+                      />
+                    </button>
+
+                    {/* View product button */}
+                    <Link href={`/products/${product.slug}`} passHref>
+                      <button
+                        className={`bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
+                        title={`View ${product.product_name}`}
                       >
                         <img
-                          src={
-                            product.is_active
-                              ? icons.removeBasket50.src
-                              : icons.addBasket50.src
-                          }
-                          alt={product.is_active ? "Deactivate" : "Activate"}
+                          src={icons.viewIcon48.src}
+                          alt={`View ${product.product_name}`}
                           width={24}
                           height={24}
                         />
                       </button>
-
-                      {/* View product button */}
-                      <Link href={`/products/${product.slug}`} passHref>
-                        <button
-                          className={`bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
-                          title={`View ${product.product_name}`}
-                        >
-                          <img
-                            src={icons.viewIcon48.src}
-                            alt={`View ${product.product_name}`}
-                            width={24}
-                            height={24}
-                          />
-                        </button>
-                      </Link>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-
-        {/* TODO: Pagination */}
-      </Suspense>
+                    </Link>
+                  </div>
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
 
       {/* Edit Modal */}
       <EditProductModal

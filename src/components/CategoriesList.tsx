@@ -106,6 +106,11 @@ export default function CategoryList() {
     }
   };
 
+  // If the categories are still being fetched, display the loading spinner
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     // Categories Table Container
     <div className="overflow-x-auto">

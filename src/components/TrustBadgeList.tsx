@@ -56,8 +56,8 @@ export default function TrustBadgeList() {
       const response = await toggleShopFeatureStatus(featureId);
 
       if (response.status) {
-        // Refetch the features list
-        fetchFeatures();
+        // Reload the page to reflect the changes
+        window.location.reload();
       } else {
         setError(response.message);
       }
@@ -75,8 +75,8 @@ export default function TrustBadgeList() {
       const response = await deleteShopFeature(featureId);
 
       if (response.status) {
-        // Refetch the features list
-        fetchFeatures();
+        // Reload the page after 1 second to reflect the changes
+        setTimeout(() => window.location.reload(), 1000);
       } else {
         setError(response.message);
       }

@@ -112,9 +112,18 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="flex space-y-1 flex-col">
           {/* product price */}
           <span className="text-2xl font-semibold">
-            {product.onSale
-              ? convertPriceToBHD(product.product_price)
-              : convertPriceToBHD(product.product_price)}
+            {product.onSale ? (
+              <>
+                <span className="line-through text-gray-500 mr-2">
+                  {convertPriceToBHD(product.product_price)}
+                </span>
+                <span className="text-red-500">
+                  {convertPriceToBHD(product.product_price_after_discount)}
+                </span>
+              </>
+            ) : (
+              convertPriceToBHD(product.product_price)
+            )}
           </span>
 
           {/* Rating count */}
@@ -129,15 +138,15 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Stock */}
         <div className="flex items-center space-x-4 py-2">
           {/* Stock counter in text */}
-          <span
-            className={`px-3 py-1 rounded-full ${
-              product.product_stock > 5
-                ? "bg-green-100 text-green-800"
-                : "bg-red-100 text-red-800"
-            }`}
-          >
-            {product.product_stock > 5 ? "In Stock" : "Out of Stock"}
-          </span>
+          {product.product_stock < 5 ? (
+            <span className="px-2 py-1 rounded-md bg-red-300 text-red-700">
+              Out of stock
+            </span>
+          ) : (
+            <span className="px-2 py-1 rounded-md bg-green-300 text-green-700">
+              In stock
+            </span>
+          )}
         </div>
 
         {/* Quantity and Add to Cart */}

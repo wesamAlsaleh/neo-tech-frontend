@@ -1,7 +1,8 @@
 import React from "react";
 
 // import custom components
-import ShopFeaturesList from "@/components/ShopFeaturesList";
+import TrustBadgeList from "@/components/TrustBadgeList";
+import TrustBadgesPreview from "@/components/TrustBadgesPreview";
 import PageTitle from "@/components/PageTitle";
 import { ActionButton } from "@/components/ActionButton";
 
@@ -31,8 +32,11 @@ export default function page() {
         }
       />
 
+      {/* Activated Badges Preview */}
+      <TrustBadgesPreview />
+
       {/* Feature list table */}
-      <ShopFeaturesList />
+      <TrustBadgeList />
     </div>
   );
 }

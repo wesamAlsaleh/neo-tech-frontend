@@ -17,7 +17,7 @@ import { icons } from "../../public/icons";
 // import custom components
 import DeleteModal from "./DeleteModal";
 
-export default function ShopFeaturesList() {
+export default function TrustBadgeList() {
   const [features, setFeatures] = useState<Feature[]>();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -115,9 +115,6 @@ export default function ShopFeaturesList() {
           <span className="block sm:inline">{error}</span>
         </div>
       )}
-
-      {/* TODO: Activated Badges Preview */}
-      <div></div>
 
       {/* Features Table */}
       <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">

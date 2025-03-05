@@ -4,9 +4,9 @@ import axios from "axios";
 import { cookies } from "next/headers";
 
 /**
- * @function getShopFeatures to get shop features from the server
+ * @function getActiveShopFeatures to get all active trust badges from the server (should be <= 3)
  */
-export const getShopFeatures = async () => {
+export const getActiveShopFeatures = async () => {
   try {
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_APP_URI}/active-features`
@@ -29,7 +29,7 @@ export const getShopFeatures = async () => {
 };
 
 /**
- * @function getShopFeaturesAdmin to get all shop features from the server for admin (active and inactive)
+ * @function getShopFeaturesAdmin to get all trust badges from the server for admin (active and inactive)
  * @param {number} currentPage - current page number to fetch features
  * @returns {object} - object containing status, message, features, currentPage, totalPages
  */

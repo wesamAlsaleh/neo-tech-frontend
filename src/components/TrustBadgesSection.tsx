@@ -1,27 +1,23 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 // import services
-import { getShopFeatures } from "@/services/shop-feature-services";
+import { getActiveShopFeatures } from "@/services/shop-feature-services";
 
 // import types
 import { Feature } from "@/types/features";
-import TrustBadgeCard from "./TrustBadgeCard";
 
 // import custom components
+import TrustBadgeCard from "./TrustBadgeCard";
 
 export default function TrustBadgesSection() {
-  // Router instance
-  const router = useRouter();
-
   const [trustBadges, setTrustBadges] = useState<Feature[]>([]);
 
-  // fetch all categories
+  // fetch all trust badges (3 or less badges only)
   useEffect(() => {
     const fetchTrustBadges = async () => {
-      const serverResponse = await getShopFeatures();
+      const serverResponse = await getActiveShopFeatures();
 
       if (serverResponse.status) setTrustBadges(serverResponse.features);
     };
@@ -31,8 +27,8 @@ export default function TrustBadgesSection() {
 
   return (
     // Trust Badges Section Container
-    //   {/* Badges Grid */}
     <div className="container mx-auto px-4">
+      {/* Badges Grid */}
       <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-1 my-8">
         {trustBadges.map((badge) => (
           <TrustBadgeCard key={badge.id} badge={badge} />

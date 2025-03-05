@@ -30,6 +30,10 @@ export default function TrustBadgesSection() {
     <div className="container mx-auto px-4">
       {/* Badges Grid */}
       <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-1 my-8">
+        {/* If empty return nothing  */}
+        {trustBadges.length === 0 && null}
+
+        {/* Map through trust badges */}
         {trustBadges.map((badge) => (
           <TrustBadgeCard key={badge.id} badge={badge} />
         ))}

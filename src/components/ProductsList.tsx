@@ -55,6 +55,7 @@ export default function ProductsList() {
 
       if (response.status) {
         setProducts(response.products.data);
+        console.log(products);
       }
     } catch (error) {
       setServerResponse({
@@ -205,14 +206,14 @@ export default function ProductsList() {
         </thead>
 
         <tbody>
-          {products.length === 0 ? (
+          {(products || []).length === 0 ? (
             <tr>
-              <td colSpan={8} className="px-4 py-6 text-center text-red-600">
+              <td colSpan={8} className="px-4 py-6 text-center">
                 No products found.
               </td>
             </tr>
           ) : (
-            products.map((product) => (
+            products?.map((product) => (
               <tr
                 key={product.id}
                 className="hover:bg-gray-100 even:bg-gray-50"

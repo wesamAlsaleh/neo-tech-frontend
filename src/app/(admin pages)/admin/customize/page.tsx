@@ -43,9 +43,9 @@ export default function page() {
 
         <button
           className="bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg px-4 py-3 shadow-md transition duration-300"
-          onClick={() => {}}
+          onClick={() => router.push("/admin/customize/sales")}
         >
-          Customize NeoTech Sales (Coming Soon)
+          Customize NeoTech Sales
         </button>
       </div>
     </>

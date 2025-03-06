@@ -66,7 +66,7 @@ export const getSaleProducts = async (currentPage: number) => {
     console.error(error);
 
     // Log the Developer message
-    console.log(error.response.data.developerMessage);
+    console.log(error);
 
     return {
       status: false,

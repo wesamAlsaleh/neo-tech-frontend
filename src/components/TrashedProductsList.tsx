@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 
 // import types
-import { Product, Products } from "@/types/product";
+import { Product } from "@/types/product";
 
 // Services import
 import {
@@ -22,7 +22,8 @@ import { icons } from "../../public/icons";
 import ConfirmationModal from "@/components/ConfirmationModal";
 
 export default function TrashedProductsList() {
-  const [products, setProducts] = useState<Products[]>([]); // Products state
+  const [products, setProducts] = useState<Product[]>([]); // Products state
+
   const [serverResponse, setServerResponse] = useState({
     status: false,
     message: "",
@@ -165,14 +166,14 @@ export default function TrashedProductsList() {
           </thead>
 
           <tbody>
-            {products.length === 0 ? (
+            {(products?.length || []) === 0 ? (
               <tr>
                 <td colSpan={8} className="px-4 py-6 text-center text-red-600">
                   No products found.
                 </td>
               </tr>
             ) : (
-              products.map((product) => (
+              products?.map((product) => (
                 <tr
                   key={product.id}
                   className="hover:bg-gray-100 even:bg-gray-50"
@@ -256,7 +257,9 @@ export default function TrashedProductsList() {
 
                   {/* Product Delete Date */}
                   <td className="px-4 py-2 border border-gray-300">
-                    {new Date(product.deleted_at).toLocaleDateString()}
+                    {product.deleted_at
+                      ? new Date(product.deleted_at).toLocaleDateString()
+                      : "N/A"}
                   </td>
 
                   {/* Action buttons */}

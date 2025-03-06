@@ -10,6 +10,7 @@ import {
 } from "@/types/product";
 import { getSaleProducts } from "@/services/products-services";
 import { icons } from "../../public/icons";
+import LoadingSpinner from "./LoadingSpinner";
 
 // import custom components
 
@@ -18,7 +19,6 @@ export default function SaleProductsList() {
 
   // API status
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -41,6 +41,11 @@ export default function SaleProductsList() {
         setCurrentPage(response.currentPage);
         setTotalPages(response.totalPages);
         setTotalProducts(response.totalProducts);
+      } else {
+        setServerResponse({
+          status: response.status,
+          message: response.message,
+        });
       }
     } finally {
       setLoading(false);
@@ -51,6 +56,12 @@ export default function SaleProductsList() {
   useEffect(() => {
     fetchProductsOnSale();
   }, [currentPage]); // fetch features when currentPage changes or on initial render only
+
+  // Display loading spinner
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <div className="overflow-x-auto">

@@ -24,6 +24,12 @@ import unavailableIcon50 from "../public/assets/button-icons/icons8-unavailable-
 import unavailableIcon100 from "../public/assets/button-icons/icons8-unavailable-100.png";
 import unavailableIcon500 from "../public/assets/button-icons/icons8-unavailable-500.png";
 
+// Sale Icons
+import orangeSaleIcon48 from "../public/assets/button-icons/icons8-hot-price-48.png";
+import orangeSaleIcon96 from "../public/assets/button-icons/icons8-hot-price-96.png";
+import salePriceTag48 from "../public/assets/button-icons/icons8-sale-price-tag-48.png";
+import salePriceTag96 from "../public/assets/button-icons/icons8-sale-price-tag-96.png";
+
 // Admin sidebar icons
 
 export const icons = {
@@ -47,4 +53,8 @@ export const icons = {
   viewIcon96,
   restoreIcon48,
   restoreIcon96,
+  orangeSaleIcon48,
+  orangeSaleIcon96,
+  salePriceTag48,
+  salePriceTag96,
 };

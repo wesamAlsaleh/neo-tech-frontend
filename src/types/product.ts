@@ -68,5 +68,5 @@ export const convertSalePercentage = (percentage: any) => {
   if (isNaN(validPercentage)) {
     return null; // Return null if the input is not a valid number
   }
-  return `${validPercentage.toFixed(0)}%`; // Return the percentage as a string without decimal places
+  return `${validPercentage.toFixed(0)}% OFF`; // Return the percentage as a string without decimal places
 };

@@ -21,7 +21,7 @@ export default function ProductCardShowcase({ product }: { product: Product }) {
       {product.onSale ? (
         // Discount Badge container
         <div className="absolute top-3 left-3 bg-red-500 text-white text-sm font-semibold px-2 py-1 rounded-full">
-          {`${convertSalePercentage(product.discount)}% OFF`}
+          {`${convertSalePercentage(product.discount)}`}
         </div>
       ) : null}
 

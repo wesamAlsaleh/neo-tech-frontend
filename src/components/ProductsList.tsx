@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 // import types
 import { Product, convertPriceToBHD } from "@/types/product";
@@ -22,8 +23,12 @@ import { icons } from "../../public/icons";
 // import custom components
 import EditProductModal from "./EditProductModal";
 import DeleteModal from "./DeleteModal";
+import SaleModal from "./SaleModal";
 
 export default function ProductsList() {
+  // Router instance
+  const router = useRouter();
+
   const [products, setProducts] = useState<Product[]>([]); // Products state
   const [loading, setLoading] = useState(true); // Loading state
 
@@ -35,6 +40,7 @@ export default function ProductsList() {
   // Modal states
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isSaleModalOpen, setIsSaleModalOpen] = useState(false);
 
   // Selected product state for actions
   const [selectedProduct, setSelectedProduct] = useState<Product | undefined>(
@@ -142,6 +148,12 @@ export default function ProductsList() {
         message: "Failed to toggle product status. Please try again later.",
       });
     }
+  };
+
+  // Handle sale product event
+  const handleSaleProduct = async (product: Product) => {
+    setSelectedProduct(product);
+    setIsSaleModalOpen(true);
   };
 
   // If loading, show loading spinner
@@ -298,7 +310,7 @@ export default function ProductsList() {
 
                 {/* Action buttons */}
                 <td className="px-4 py-2 border border-gray-300">
-                  <div className="flex gap-2">
+                  <div className="flex items-center justify-center space-x-2">
                     {/* Edit button */}
                     <button
                       className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
@@ -315,9 +327,9 @@ export default function ProductsList() {
 
                     {/* Delete button */}
                     <button
-                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
+                      className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
                       onClick={() => handleDeleteClick(product)}
-                      title={`Delete product ${product.product_name}`}
+                      title={`Delete ${product.product_name}`}
                     >
                       <img
                         src={icons.delete50.src}
@@ -331,7 +343,7 @@ export default function ProductsList() {
                     <button
                       className={`${
                         product.is_active
-                          ? "bg-orange-400 hover:bg-orange-500"
+                          ? "bg-rose-400 hover:bg-rose-500"
                           : "bg-green-500 hover:bg-green-600"
                       } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
                       onClick={() =>
@@ -356,19 +368,46 @@ export default function ProductsList() {
                     </button>
 
                     {/* View product button */}
-                    <Link href={`/products/${product.slug}`} passHref>
-                      <button
-                        className={`bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
-                        title={`View ${product.product_name}`}
-                      >
-                        <img
-                          src={icons.viewIcon48.src}
-                          alt={`View ${product.product_name}`}
-                          width={24}
-                          height={24}
-                        />
-                      </button>
-                    </Link>
+                    <button
+                      className={` bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
+                      title={`View ${product.product_name}`}
+                      onClick={() => router.push(`/products/${product.slug}`)}
+                    >
+                      <img
+                        src={icons.viewIcon96.src}
+                        alt={`View ${product.product_name}`}
+                        width={24}
+                        height={24}
+                      />
+                    </button>
+
+                    {/* Sale button */}
+                    <button
+                      className={`${
+                        product.onSale
+                          ? "bg-amber-400 hover:bg-amber-500"
+                          : "bg-lime-400 hover:bg-lime-600"
+                      } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
+                      title={
+                        product.onSale
+                          ? `Remove ${product.product_name} From Sale`
+                          : `Put ${product.product_name} On Sale`
+                      }
+                      onClick={() => handleSaleProduct(product)}
+                    >
+                      <img
+                        src={
+                          product.onSale
+                            ? icons.salePriceTag48.src
+                            : icons.salePriceTag48.src
+                        }
+                        alt={
+                          product.onSale ? "Remove from Sale" : "Put On Sale"
+                        }
+                        width={24}
+                        height={24}
+                      />
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -394,6 +433,13 @@ export default function ProductsList() {
         onClose={() => setIsDeleteModalOpen(false)} // close the modal
         onConfirm={() => handleConfirmDelete()} // confirm delete
         name={selectedProduct?.product_name || ""} // pass the selected product name to delete
+      />
+
+      {/* Sale Modal */}
+      <SaleModal
+        isOpen={isSaleModalOpen} // open the modal
+        onClose={() => setIsSaleModalOpen(false)} // close the modal
+        product={selectedProduct!} // pass the selected product to the modal
       />
     </div>
   );

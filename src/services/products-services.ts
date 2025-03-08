@@ -563,8 +563,10 @@ export const putProductOnSale = async (
     // Debugging error
     console.error(error);
 
+    console.log(" ");
+
     // Log the Developer message
-    console.log(error.response.data.developerMessage);
+    console.log(error.response.data);
 
     return {
       status: false,

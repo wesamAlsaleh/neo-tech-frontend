@@ -587,6 +587,7 @@ export const removeProductFromSale = async (productId: string) => {
 
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_APP_URI}/admin/toggle-product-sale-off/${productId}`,
+      {}, // Empty data
       {
         headers: {
           Authorization: `Bearer ${userToken}`,
@@ -601,6 +602,8 @@ export const removeProductFromSale = async (productId: string) => {
   } catch (error: any) {
     // Debugging error
     console.error(error);
+
+    console.log(" ");
 
     // Log the Developer message
     console.log(error.response.data.developerMessage);

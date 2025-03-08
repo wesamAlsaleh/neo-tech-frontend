@@ -79,6 +79,29 @@ export default function SaleModal({
     }
   };
 
+  // Handle Remove from Sale action
+  const handleRemoveFromSale = async () => {
+    setIsSubmitting(true); // Set the form submission status to true
+
+    try {
+      // Submit the form data using the service
+      const result = await removeProductFromSale(String(product.id));
+
+      // Update UI with the response
+      setStatus({
+        status: result.status,
+        message: result.message,
+      });
+
+      // Reload the page after 10 second if the action was successful to reflect the changes
+      if (result.status) {
+        setTimeout(() => window.location.reload(), 10000);
+      }
+    } finally {
+      setIsSubmitting(false); // Set the form submission status to false
+    }
+  };
+
   return (
     // Modal container
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -112,87 +135,135 @@ export default function SaleModal({
           </div>
         )}
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="grid grid-cols-3 gap-4">
-          {/* Discount Rate field container */}
-          <div className="space-y-2">
-            <label
-              htmlFor="discount"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Discount Rate (%)<span className="text-red-500">*</span>
-            </label>
+        {/* Remove from sale content container */}
+        {product.onSale ? (
+          <div className="space-y-4">
+            <p className="mt-2 text-red-600 bg-red-100 p-2 rounded text-sm font-semibold text-center">
+              This action is permanent and cannot be undone!
+            </p>
 
-            <input
-              type="number"
-              id="discount"
-              min="0"
-              max="100"
-              value={discount}
-              onChange={(event) => setDiscount(Number(event.target.value))}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
-            />
+            <div className="space-y-1">
+              <p className="text-gray-600 text-base">
+                Are you sure you want to remove{" "}
+                <strong className="">{product.product_name}</strong> from sale?
+              </p>
+
+              <p className="text-gray-600 text-sm">
+                Note: {product.product_name} will be available at its original
+                price on {product.sale_end}
+              </p>
+            </div>
+
+            {/* button containers */}
+            <div className="col-span-5 flex justify-start gap-2 mt-4">
+              {/* Cancel button */}
+              <button
+                type="button"
+                onClick={onClose}
+                className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Cancel
+              </button>
+
+              {/* submit button */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                hidden={isSubmitting}
+                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={handleRemoveFromSale}
+              >
+                {isSubmitting
+                  ? "Updating..."
+                  : `Set ${product.onSale ? "Off" : "On"} Sale`}
+              </button>
+            </div>
           </div>
+        ) : null}
 
-          {/* Sale Start Date field container */}
-          <div className="space-y-2">
-            <label
-              htmlFor="saleStart"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Sale Start Date<span className="text-red-500">*</span>
-            </label>
+        {/* Add sale Container */}
+        {!product.onSale && (
+          <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+            {/* Discount Rate field container */}
+            <div className="space-y-2">
+              <label
+                htmlFor="discount"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Discount Rate (%)<span className="text-red-500">*</span>
+              </label>
 
-            <input
-              type="date"
-              id="saleStart"
-              value={saleStart}
-              onChange={(event) => setSaleStart(event.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
-            />
-          </div>
+              <input
+                type="number"
+                id="discount"
+                min="0"
+                max="100"
+                value={discount}
+                onChange={(event) => setDiscount(Number(event.target.value))}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+              />
+            </div>
 
-          {/* Sale End Date field container */}
-          <div className="space-y-2">
-            <label
-              htmlFor="saleEnd"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Sale End Date<span className="text-red-500">*</span>
-            </label>
+            {/* Sale Start Date field container */}
+            <div className="space-y-2">
+              <label
+                htmlFor="saleStart"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Sale Start Date<span className="text-red-500">*</span>
+              </label>
 
-            <input
-              type="date"
-              id="saleEnd"
-              value={saleEnd}
-              onChange={(event) => setSaleEnd(event.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
-            />
-          </div>
+              <input
+                type="date"
+                id="saleStart"
+                value={saleStart}
+                onChange={(event) => setSaleStart(event.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+              />
+            </div>
 
-          {/* button containers */}
-          <div className="flex justify-end gap-2">
-            {/* Cancel button */}
-            <button
-              type="button"
-              onClick={onClose}
-              className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-            >
-              Cancel
-            </button>
+            {/* Sale End Date field container */}
+            <div className="space-y-2">
+              <label
+                htmlFor="saleEnd"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Sale End Date<span className="text-red-500">*</span>
+              </label>
 
-            {/* submit button */}
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting
-                ? "Updating..."
-                : `Set ${product.onSale ? "Off" : "On"} Sale`}
-            </button>
-          </div>
-        </form>
+              <input
+                type="date"
+                id="saleEnd"
+                value={saleEnd}
+                onChange={(event) => setSaleEnd(event.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+              />
+            </div>
+
+            {/* button containers */}
+            <div className="col-span-5 flex justify-start gap-2 mt-4">
+              {/* Cancel button */}
+              <button
+                type="button"
+                onClick={onClose}
+                className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              >
+                Cancel
+              </button>
+
+              {/* submit button */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting
+                  ? "Updating..."
+                  : `Set ${product.onSale ? "Off" : "On"} Sale`}
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );

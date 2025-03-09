@@ -73,15 +73,10 @@ export default function ProductsList() {
     }
   };
 
-  // Fetch data on mount
+  // Fetch data
   useEffect(() => {
     fetchProductsData();
-  }, []);
-
-  // Fetch data when currentPage changes
-  useEffect(() => {
-    fetchProductsData();
-  }, [currentPage]);
+  }, [currentPage]); // Fetch data when the page changes (pagination) or on initial load
 
   // Handle edit product (to open modal with product data)
   const handleEditClick = (product: Product) => {

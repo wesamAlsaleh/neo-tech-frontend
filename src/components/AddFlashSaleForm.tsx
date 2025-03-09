@@ -10,12 +10,7 @@ import { createFlashSale } from "@/services/sale-services";
 // import types
 import { Product, convertPriceToBHD } from "@/types/product";
 import ServerResponse from "./ServerResponse";
-
-// UI interface for the form status
-interface FormStatus {
-  success: boolean;
-  message: string;
-}
+import LoadingSpinner from "./LoadingSpinner";
 
 export default function AddFlashSaleForm() {
   const [products, setProducts] = useState<Product[]>([]); // Products state
@@ -52,8 +47,11 @@ export default function AddFlashSaleForm() {
   const [totalProducts, setTotalProducts] = useState<number>(0);
 
   // Function to fetch the product from the server
-  const fetchProductsData = async () => {
+  const fetchOnSaleProducts = async () => {
     try {
+      // Set loading to true to display the loading spinner while fetching data (even in the pagination)
+      setLoading(true);
+
       // Fetch products
       const response = await getSaleProducts(currentPage);
 
@@ -74,10 +72,10 @@ export default function AddFlashSaleForm() {
     }
   };
 
-  // Fetch products data when the component mounts
+  // Fetch products data
   useEffect(() => {
-    fetchProductsData();
-  }, []);
+    fetchOnSaleProducts();
+  }, [currentPage]); // Fetch products when the currentPage changes (pagination) or when the component mounts
 
   // Router instance
   const router = useRouter();
@@ -118,6 +116,11 @@ export default function AddFlashSaleForm() {
       setIsSubmitting(false);
     }
   };
+
+  // Display loading spinner when fetching data
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <>
@@ -254,40 +257,44 @@ export default function AddFlashSaleForm() {
             ))}
           </div>
 
-          {/* Pagination Control */}
-          {totalPages > 1 && (
-            <div className="flex items-center mt-4 gap-x-4">
-              {/* Previous Button */}
-              <button
-                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className={`px-4 py-2 border rounded ${
-                  currentPage === 1
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-blue-500 text-white"
-                }`}
-              >
-                Previous
-              </button>
+          {/* Pagination Control Container*/}
+          <div className="flex justify-start items-center">
+            {totalPages > 1 && (
+              <div className="flex items-center mt-4 gap-x-4">
+                {/* Previous Button */}
+                <button
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+                  }
+                  disabled={currentPage === 1}
+                  className={`px-4 py-2 border rounded ${
+                    currentPage === 1
+                      ? "bg-gray-300 cursor-not-allowed"
+                      : "bg-blue-500 text-white"
+                  }`}
+                >
+                  Previous
+                </button>
 
-              <span className="font-semibold">{`${currentPage} of ${totalPages}`}</span>
+                <span className="font-semibold">{`${currentPage} of ${totalPages}`}</span>
 
-              {/* Next Button */}
-              <button
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                }
-                disabled={currentPage === totalPages}
-                className={`px-4 py-2 border rounded ${
-                  currentPage === totalPages
-                    ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-blue-500 text-white"
-                }`}
-              >
-                Next
-              </button>
-            </div>
-          )}
+                {/* Next Button */}
+                <button
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                  }
+                  disabled={currentPage === totalPages}
+                  className={`px-4 py-2 border rounded ${
+                    currentPage === totalPages
+                      ? "bg-gray-300 cursor-not-allowed"
+                      : "bg-blue-500 text-white"
+                  }`}
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Action buttons container */}

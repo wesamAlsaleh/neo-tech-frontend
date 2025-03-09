@@ -1,0 +1,277 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+
+// import services
+import { getSaleProducts } from "@/services/products-services";
+import { createFlashSale } from "@/services/sale-services";
+
+// import types
+import { Product, convertPriceToBHD } from "@/types/product";
+import ServerResponse from "./ServerResponse";
+
+// UI interface for the form status
+interface FormStatus {
+  success: boolean;
+  message: string;
+}
+
+export default function AddFlashSaleForm() {
+  const [products, setProducts] = useState<Product[]>([]); // Products state
+
+  // State to store the form data
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]); // Selected products IDs as strings array
+
+  // State to store the response status to display to the user after fetching the products
+  const [serverResponseForProducts, setServerResponseForProducts] = useState({
+    status: false,
+    message: "",
+  }); // Server response state
+
+  // State to store the response status to display to the user after form submission
+  const [serverResponseForFlashSale, setServerResponseForFlashSale] = useState({
+    status: false,
+    message: "",
+    duration: 0,
+  }); // Server response state
+
+  // State to store the form submission status
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // State to store the loading status
+  const [loading, setLoading] = useState(true);
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalProducts, setTotalProducts] = useState<number>(0);
+
+  // Function to fetch the product from the server
+  const fetchProductsData = async () => {
+    try {
+      // Fetch products
+      const response = await getSaleProducts(currentPage);
+
+      // Update the UI with the fetched data
+      setServerResponseForProducts({
+        status: response.status,
+        message: response.message!,
+      });
+
+      if (response.status) {
+        setProducts(response.products);
+        setCurrentPage(response.currentPage);
+        setTotalPages(response.totalPages);
+        setTotalProducts(response.totalProducts);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Fetch products data when the component mounts
+  useEffect(() => {
+    fetchProductsData();
+  }, []);
+
+  // Router instance
+  const router = useRouter();
+
+  // Function to handle the form submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    // Prevent the default form submission
+    e.preventDefault();
+
+    // Set the form submission status to true to disable the submit button
+    setIsSubmitting(true);
+
+    // Prepare form data
+    const formData = new FormData();
+
+    // Append the form data
+    formData.append("name", name);
+    formData.append("description", description);
+    formData.append("start_date", startDate);
+    formData.append("end_date", endDate);
+    selectedProducts.forEach((id) => formData.append("products[]", id));
+
+    try {
+      // Submit the form data using the service
+      const result = await createFlashSale(formData);
+
+      // Update UI with the response
+      setServerResponseForFlashSale({
+        status: result.status,
+        message: result.message,
+        duration: result.duration,
+      });
+
+      // Reload the page after the category is created successfully
+      router.push("/admin/customize/sales"); // Redirect to the parent page
+    } finally {
+      // Set the form submission status to false to enable the submit button
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <>
+      {/* display message for fetching data*/}
+      <ServerResponse
+        message={serverResponseForProducts.message}
+        condition={serverResponseForProducts.status}
+      />
+
+      {/* display message for flash sale creation*/}
+      <ServerResponse
+        message={serverResponseForFlashSale.message}
+        condition={serverResponseForFlashSale.status}
+      />
+
+      {/* Form */}
+      <form onSubmit={(e) => handleSubmit(e)} className="space-y-4">
+        {/* Name field container */}
+        <div className="space-y-2">
+          <label htmlFor="" className="block text-sm font-medium text-gray-700">
+            Flash Sale Name<span className="text-red-600">*</span>
+          </label>
+
+          <input
+            type="text"
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="Enter the flash sale name e.g. Black Friday"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+            required
+          />
+        </div>
+
+        {/* Description field container */}
+        <div className="space-y-2">
+          <label htmlFor="" className="block text-sm font-medium text-gray-700">
+            Description
+          </label>
+
+          <textarea
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="Enter the flash sale description e.g. The biggest sale of the year"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+          />
+        </div>
+
+        {/* Start Date field container */}
+        <div className="space-y-2">
+          <label htmlFor="" className="block text-sm font-medium text-gray-700">
+            Start Date<span className="text-red-600">*</span>
+          </label>
+
+          <input
+            type="date"
+            id="start_date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+            required
+          />
+        </div>
+
+        {/* End Date field container */}
+        <div className="space-y-2">
+          <label htmlFor="" className="block text-sm font-medium text-gray-700">
+            End Date<span className="text-red-600">*</span>
+          </label>
+
+          <input
+            type="date"
+            id="end_date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+            required
+          />
+        </div>
+
+        {/* Products field container */}
+        <div className="space-y-2">
+          <label htmlFor="" className="block text-sm font-medium text-gray-700">
+            Products<span className="text-red-600">*</span>
+          </label>
+
+          {/* Products grid */}
+          <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
+            {products.map((product) => (
+              // Product card container
+              <div
+                key={product.id}
+                className="bg-white shadow-md rounded-md p-4"
+              >
+                {/* Product Name & checkbox container */}
+                <div className="flex justify-between items-center">
+                  {/* Product Name */}
+                  <h3 className="text-lg font-semibold">
+                    {product.product_name}
+                  </h3>
+
+                  {/* CheckBox */}
+                  <input
+                    type="checkbox"
+                    className="form-checkbox h-5 w-5 text-blue-600"
+                    checked={selectedProducts.includes(String(product.id))} // Check if product is already selected
+                    onChange={(e) => {
+                      // If the checkbox is checked, add the product to the selected products array
+                      if (e.target.checked) {
+                        setSelectedProducts((prev) => [
+                          ...prev,
+                          String(product.id),
+                        ]); // Add product
+                      } else {
+                        // If the checkbox is unchecked, remove the product from the selected products array
+                        setSelectedProducts(
+                          (prev) =>
+                            prev.filter((id) => id !== String(product.id)) // Remove product
+                        );
+                      }
+                    }}
+                  />
+                </div>
+
+                {/* Product details */}
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Product Price</span>
+                  <span className="text-sm text-gray-600">
+                    {convertPriceToBHD(product.product_price_after_discount)}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* TODO: Navigation Control */}
+        </div>
+
+        {/* Action buttons container */}
+        <div className="flex gap-2">
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSubmitting ? "Adding..." : "Add Flash Sale"}
+          </button>
+
+          <button onClick={() => console.log(selectedProducts)}>
+            Click Me
+          </button>
+        </div>
+      </form>
+    </>
+  );
+}

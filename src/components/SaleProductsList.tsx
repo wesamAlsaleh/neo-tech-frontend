@@ -36,16 +36,18 @@ export default function SaleProductsList() {
     try {
       const response = await getSaleProducts(currentPage);
 
+      // Update the UI with the fetched data
+      setServerResponse({
+        status: response.status,
+        message: response.message!,
+      });
+
+      // If the server response is successful, set the products state
       if (response.status) {
         setProducts(response.products);
         setCurrentPage(response.currentPage);
         setTotalPages(response.totalPages);
         setTotalProducts(response.totalProducts);
-      } else {
-        setServerResponse({
-          status: response.status,
-          message: response.message,
-        });
       }
     } finally {
       setLoading(false);

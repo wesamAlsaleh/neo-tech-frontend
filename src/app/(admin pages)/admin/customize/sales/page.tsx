@@ -11,8 +11,13 @@ export default function page() {
       <PageTitle
         title="Sales Settings"
         subtitle="Here you can manage and customize NeoTech sales settings"
-        actionButton={<ActionButton text="Add Flash Sale" href="" />}
-        actionButton2={<ActionButton text="Add Coupon (coming soon)" href="" />}
+        actionButton={
+          <ActionButton
+            text="Add Flash Sale"
+            href="/admin/customize/sales/create-flash-sale"
+          />
+        }
+        // actionButton2={<ActionButton text="Add Coupon (coming soon)" href="" />}
       />
 
       {/* Products on Sale list */}

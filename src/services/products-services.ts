@@ -6,15 +6,17 @@ import { cookies } from "next/headers";
 /**
  * @function getProducts to get all products
  */
-export const getProducts = async () => {
+export const getProducts = async (currentPage: number) => {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_APP_URI}/products`
+      `${process.env.NEXT_PUBLIC_APP_URI}/products?page=${currentPage}`
     );
 
     return {
       status: true,
       products: response.data.products,
+      currentPage: response.data.pagination.current_page,
+      totalPages: response.data.pagination.total_pages,
     };
   } catch (error: any) {
     // Debugging error
@@ -25,7 +27,7 @@ export const getProducts = async () => {
 
     return {
       status: false,
-      message: "An error occurred while fetching the products.",
+      message: error.response.data.message,
     };
   }
 };

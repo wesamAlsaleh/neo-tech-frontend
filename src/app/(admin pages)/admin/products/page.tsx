@@ -19,6 +19,14 @@ export default function ManageProductsPage() {
             buttonTitle="Add a new product"
           />
         }
+        actionButton2={
+          <ActionButton
+            href="/admin/customize/sales"
+            text="Manage Flash Sales"
+            buttonTitle="Manage flash sales"
+            color="steelblue"
+          />
+        }
         recycleButton={<RecycleButton href="/admin/products/recycle-bin" />}
       />
 

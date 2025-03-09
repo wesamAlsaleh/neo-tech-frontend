@@ -29,7 +29,7 @@ export default function ProductsList() {
   // Router instance
   const router = useRouter();
 
-  const [products, setProducts] = useState<Product[]>([]); // Products state
+  const [products, setProducts] = useState<Product[]>(); // Products state
   const [loading, setLoading] = useState(true); // Loading state
 
   const [serverResponse, setServerResponse] = useState({
@@ -47,11 +47,15 @@ export default function ProductsList() {
     undefined
   );
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+
   // Fetch Data function
   const fetchProductsData = async () => {
     try {
       // Fetch products
-      const response = await getProducts();
+      const response = await getProducts(currentPage);
 
       // Update the UI with the fetched data
       setServerResponse({
@@ -60,22 +64,24 @@ export default function ProductsList() {
       });
 
       if (response.status) {
-        setProducts(response.products.data);
+        setProducts(response.products);
+        setCurrentPage(response.currentPage);
+        setTotalPages(response.totalPages);
       }
-    } catch (error) {
-      setServerResponse({
-        status: false,
-        message: "Failed to fetch products. Please try again later.",
-      });
     } finally {
       setLoading(false);
     }
   };
 
-  // Fetch on mount
+  // Fetch data on mount
   useEffect(() => {
     fetchProductsData();
   }, []);
+
+  // Fetch data when currentPage changes
+  useEffect(() => {
+    fetchProductsData();
+  }, [currentPage]);
 
   // Handle edit product (to open modal with product data)
   const handleEditClick = (product: Product) => {
@@ -415,6 +421,41 @@ export default function ProductsList() {
           )}
         </tbody>
       </table>
+
+      {/* Pagination Control */}
+      {totalPages > 1 && (
+        <div className="flex items-center mt-4 gap-x-4">
+          {/* Previous Button */}
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className={`px-4 py-2 border rounded ${
+              currentPage === 1
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-blue-500 text-white"
+            }`}
+          >
+            Previous
+          </button>
+
+          <span className="font-semibold">{`${currentPage} of ${totalPages}`}</span>
+
+          {/* Next Button */}
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className={`px-4 py-2 border rounded ${
+              currentPage === totalPages
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-blue-500 text-white"
+            }`}
+          >
+            Next
+          </button>
+        </div>
+      )}
 
       {/* Edit Modal */}
       <EditProductModal

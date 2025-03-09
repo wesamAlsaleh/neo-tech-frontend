@@ -22,6 +22,9 @@ export default function page() {
 
       {/* Products on Sale list */}
       <SaleProductsList />
+
+      {/* Flash list  */}
+      {/* <FlashSalesList /> */}
     </>
   );
 }

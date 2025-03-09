@@ -67,8 +67,6 @@ export default function SaleProductsList() {
 
   return (
     <div className="overflow-x-auto">
-      {/* status  */}
-
       {/* product list */}
       <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
         <thead>

@@ -82,7 +82,6 @@ export default function SaleProductsList() {
               Sale Started on
             </th>
             <th className="px-4 py-2 border border-gray-300">Sale Ends on</th>
-            <th className="px-4 py-2 border border-gray-300">Actions</th>
           </tr>
         </thead>
 
@@ -150,65 +149,6 @@ export default function SaleProductsList() {
               {/* sale end date Container */}
               <td className="px-4 py-2 border border-gray-300 text-center">
                 {product.sale_end}
-              </td>
-
-              {/* Action buttons */}
-              <td className="px-4 py-2 border border-gray-300">
-                <div className="flex gap-2">
-                  {/* Edit button */}
-                  <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
-                    onClick={() => {}}
-                    title={`Edit `}
-                  >
-                    <img
-                      src={icons.edit50.src}
-                      alt="Edit"
-                      width={24}
-                      height={24}
-                    />
-                  </button>
-
-                  {/* Delete button */}
-                  <button
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
-                    onClick={() => {}}
-                    title={`Delete product `}
-                  >
-                    <img
-                      src={icons.delete50.src}
-                      alt="Delete"
-                      width={24}
-                      height={24}
-                    />
-                  </button>
-
-                  {/* Toggle status button */}
-                  <button
-                    className={`${
-                      product.is_active
-                        ? "bg-orange-400 hover:bg-orange-500"
-                        : "bg-green-500 hover:bg-green-600"
-                    } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
-                    onClick={() => {}}
-                    title={
-                      product.is_active
-                        ? `Deactivate ${product.product_name}`
-                        : `Activate product ${product.product_name}`
-                    }
-                  >
-                    <img
-                      src={
-                        product.is_active
-                          ? icons.removeBasket50.src
-                          : icons.addBasket50.src
-                      }
-                      alt={product.is_active ? "Deactivate" : "Activate"}
-                      width={24}
-                      height={24}
-                    />
-                  </button>
-                </div>
               </td>
             </tr>
           ))}

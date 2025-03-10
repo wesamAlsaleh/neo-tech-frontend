@@ -8,7 +8,13 @@ import { getSaleProducts } from "@/services/products-services";
 import { createFlashSale } from "@/services/sale-services";
 
 // import types
-import { Product, convertPriceToBHD } from "@/types/product";
+import {
+  Product,
+  convertPriceToBHD,
+  convertSalePercentage,
+} from "@/types/product";
+
+// import custom components
 import ServerResponse from "./ServerResponse";
 import LoadingSpinner from "./LoadingSpinner";
 
@@ -246,12 +252,23 @@ export default function AddFlashSaleForm() {
                   />
                 </div>
 
-                {/* Product details */}
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Product Price</span>
-                  <span className="text-sm text-gray-600">
-                    {convertPriceToBHD(product.product_price_after_discount)}
-                  </span>
+                {/* Product details container */}
+                <div className="space-y-1">
+                  {/* Discount details container */}
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Sale Details</span>
+                    <span className="text-sm text-gray-600">
+                      {convertSalePercentage(product.discount)}
+                    </span>
+                  </div>
+
+                  {/* Price after discount container  */}
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">Product Price</span>
+                    <span className="text-sm text-gray-600">
+                      {convertPriceToBHD(product.product_price_after_discount)}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}

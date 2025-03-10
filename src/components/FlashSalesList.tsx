@@ -12,11 +12,14 @@ import { formatDateTime } from "@/lib/helpers";
 // Import icons
 import { icons } from "../../public/icons";
 
+// Import services
+import { deleteFlashSale, getFlashSales } from "@/services/sale-services";
+
 // Import custom components
-import { getFlashSales } from "@/services/sale-services";
 import ServerResponse from "./ServerResponse";
 import LoadingSpinner from "./LoadingSpinner";
 import TableStatusColumn from "./TableStatusColumn";
+import DeleteModal from "./DeleteModal";
 
 export default function FlashSalesList() {
   // Router instance
@@ -30,29 +33,72 @@ export default function FlashSalesList() {
     message: "",
   }); // Server response state
 
+  // Delete Modal state
+  const [selectedFlashSale, setSelectedFlashSale] = useState<FlashSale>();
+  const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
+
+  // Fetch data function
+  const fetchData = async () => {
+    try {
+      // Fetch products
+      const response = await getFlashSales();
+
+      // Update the UI with the fetched data
+      setServerResponse({
+        status: response.status,
+        message: "", // I don't want to show the message if the status is true
+      });
+
+      if (response.status) {
+        setFlashSales(response.flashSales);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Fetch Data
   useEffect(() => {
-    const fetchProductsData = async () => {
-      try {
-        // Fetch products
-        const response = await getFlashSales();
-
-        // Update the UI with the fetched data
-        setServerResponse({
-          status: response.status,
-          message: response.message!,
-        });
-
-        if (response.status) {
-          setFlashSales(response.flashSales);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProductsData();
+    fetchData();
   }, []);
+
+  // Handle delete product (to open modal with product data)
+  const handleDeleteClick = (flashSale: FlashSale) => {
+    setSelectedFlashSale(flashSale);
+    setOpenDeleteModal(true);
+  };
+
+  // Handle confirm delete product
+  const handleConfirmDelete = async () => {
+    try {
+      // If no product is selected, return
+      if (!selectedFlashSale) return;
+
+      // Delete the flash sale
+      const response = await deleteFlashSale(String(selectedFlashSale.id));
+
+      // Update the UI with the response
+      setServerResponse({
+        status: response.status,
+        message: response.message,
+      });
+
+      // Refresh products list by fetching data again
+      if (response.status) {
+        // Fetch data again
+        fetchData();
+
+        // Close the modal after successful delete
+        setOpenDeleteModal(false);
+      }
+    } catch (error) {
+      // Update the UI with the error message
+      setServerResponse({
+        status: false,
+        message: "Failed to delete product. Please try again later.",
+      });
+    }
+  };
 
   // If loading display loading spinner
   if (loading) {
@@ -62,10 +108,12 @@ export default function FlashSalesList() {
   return (
     <>
       {/* Display Message  */}
-      <ServerResponse
-        message={serverResponse.message}
-        condition={serverResponse.status === false} // Show the message if the status is false (error)
-      />
+      {serverResponse.message && (
+        <ServerResponse
+          message={serverResponse.message}
+          condition={serverResponse.status}
+        />
+      )}
 
       {/* Flash Sales Table */}
       <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
@@ -149,6 +197,20 @@ export default function FlashSalesList() {
                         height={24}
                       />
                     </button>
+
+                    {/* Delete button */}
+                    <button
+                      className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
+                      onClick={() => handleDeleteClick(flashSale)}
+                      title={`Delete ${flashSale.name}`}
+                    >
+                      <img
+                        src={icons.delete50.src}
+                        alt="Delete"
+                        width={24}
+                        height={24}
+                      />
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -156,6 +218,15 @@ export default function FlashSalesList() {
           )}
         </tbody>
       </table>
+
+      {/* Delete Modal */}
+      <DeleteModal
+        isOpen={openDeleteModal}
+        onClose={() => setOpenDeleteModal(false)}
+        name={selectedFlashSale?.name!}
+        onConfirm={() => handleConfirmDelete()}
+        permanentAlert
+      />
     </>
   );
 }

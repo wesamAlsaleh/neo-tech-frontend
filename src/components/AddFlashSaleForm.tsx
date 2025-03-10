@@ -130,10 +130,13 @@ export default function AddFlashSaleForm() {
   return (
     <>
       {/* display message for fetching data*/}
-      <ServerResponse
-        message={serverResponseForProducts.message}
-        condition={serverResponseForProducts.status}
-      />
+      {!serverResponseForProducts.status && (
+        // Display the message if the status is false (error)
+        <ServerResponse
+          message={serverResponseForProducts.message}
+          condition={serverResponseForProducts.status}
+        />
+      )}
 
       {/* display message for flash sale creation*/}
       <ServerResponse
@@ -215,6 +218,13 @@ export default function AddFlashSaleForm() {
 
           {/* Products grid */}
           <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
+            {/* If no products show the message from the server */}
+            {products.length === 0 && (
+              <p className="px-4 py-3 rounded relative bg-red-100 border border-red-400 text-red-700">
+                {serverResponseForProducts.message}
+              </p>
+            )}
+
             {products.map((product) => (
               // Product card container
               <div

@@ -58,6 +58,7 @@ export const getSaleProducts = async (currentPage: number) => {
 
     return {
       status: true,
+      message: response.data.message,
       products: response.data.products,
       currentPage: response.data.pagination.current_page,
       totalPages: response.data.pagination.total_pages,

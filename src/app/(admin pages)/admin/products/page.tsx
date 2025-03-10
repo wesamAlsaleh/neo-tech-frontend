@@ -1,10 +1,13 @@
 import React from "react";
 
+// import icons
+
 // import custom components
 import ProductsList from "@/components/ProductsList";
 import PageTitle from "@/components/PageTitle";
 import { ActionButton } from "@/components/ActionButton";
 import { RecycleButton } from "@/components/RecycleButton";
+import { icons } from "../../../../../public/icons";
 
 export default function ManageProductsPage() {
   return (
@@ -27,7 +30,15 @@ export default function ManageProductsPage() {
             color="steelblue"
           />
         }
-        recycleButton={<RecycleButton href="/admin/products/recycle-bin" />}
+        actionButton3={
+          <ActionButton
+            href="/admin/products/recycle-bin"
+            text="Recycle Button"
+            isIconButton
+            iconSrc={icons.recycleIcon48.src}
+            color="yellowgreen"
+          />
+        }
       />
 
       {/* products table */}

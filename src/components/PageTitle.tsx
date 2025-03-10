@@ -6,6 +6,8 @@ interface PageTitleProps {
   highlightText?: string;
   actionButton?: React.ReactNode;
   actionButton2?: React.ReactNode;
+  actionButton3?: React.ReactNode;
+  actionButton4?: React.ReactNode;
   recycleButton?: React.ReactNode;
 }
 
@@ -15,6 +17,8 @@ export default function PageTitle({
   highlightText,
   actionButton,
   actionButton2,
+  actionButton3,
+  actionButton4,
   recycleButton,
 }: PageTitleProps) {
   return (
@@ -36,14 +40,18 @@ export default function PageTitle({
           )}
         </div>
 
+        {/* Buttons Container */}
         <div className="flex items-center space-x-2">
-          {/* recycle button Optional! */}
-          {recycleButton && <>{recycleButton}</>}
+          {/* Action button Button Optional! */}
+          {actionButton4 && <>{actionButton4}</>}
 
-          {/* Go Back Button Optional! */}
+          {/* Action button Button Optional! */}
+          {actionButton3 && <>{actionButton3}</>}
+
+          {/* Action button Button Optional! */}
           {actionButton2 && <>{actionButton2}</>}
 
-          {/* action button */}
+          {/* Action button Optional! */}
           {actionButton && <>{actionButton}</>}
         </div>
       </div>

@@ -61,7 +61,7 @@ export const getSaleProducts = async (currentPage: number) => {
       products: response.data.products,
       currentPage: response.data.pagination.current_page,
       totalPages: response.data.pagination.total_pages,
-      totalProducts: response.data.pagination.total_items,
+      totalProducts: response.data.pagination.total_products_onSale,
     };
   } catch (error: any) {
     // Debugging error

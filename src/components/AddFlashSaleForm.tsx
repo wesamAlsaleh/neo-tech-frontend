@@ -211,7 +211,7 @@ export default function AddFlashSaleForm() {
         {/* Products field container */}
         <div className="space-y-2">
           <label htmlFor="" className="block text-sm font-medium text-gray-700">
-            Products<span className="text-red-600">*</span>
+            Products ({totalProducts})<span className="text-red-600">*</span>
           </label>
 
           {/* Products grid */}

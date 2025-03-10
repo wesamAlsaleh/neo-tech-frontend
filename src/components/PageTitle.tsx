@@ -1,5 +1,8 @@
 import React from "react";
 
+// import custom components
+import Separator from "./Separator";
+
 interface PageTitleProps {
   title: string;
   subtitle?: string;
@@ -56,8 +59,13 @@ export default function PageTitle({
         </div>
       </div>
 
-      {/* separator */}
-      <hr className="border-t border-gray-200" />
+      {/* Separator */}
+      <Separator
+        color="border-gray-200"
+        thickness="border-t"
+        width="w-full"
+        margin="my-4"
+      />
     </div>
   );
 }

@@ -4,7 +4,7 @@ import React from "react";
 import PageTitle from "@/components/PageTitle";
 import { ActionButton } from "@/components/ActionButton";
 import SaleProductsList from "@/components/SaleProductsList";
-import { icons } from "../../../../../../public/icons";
+import Separator from "@/components/Separator";
 
 export default function page() {
   return (
@@ -29,6 +29,14 @@ export default function page() {
 
       {/* Products on Sale list */}
       <SaleProductsList />
+
+      {/* Separator */}
+      <Separator
+        color="border-gray-200"
+        thickness="border-t"
+        width="w-full"
+        margin="my-4"
+      />
 
       {/* Flash list  */}
       {/* <FlashSalesList /> */}

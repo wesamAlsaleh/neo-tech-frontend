@@ -1,13 +1,12 @@
 import React from "react";
 
 // import icons
+import { icons } from "../../../../../public/icons";
 
 // import custom components
 import ProductsList from "@/components/ProductsList";
 import PageTitle from "@/components/PageTitle";
 import { ActionButton } from "@/components/ActionButton";
-import { RecycleButton } from "@/components/RecycleButton";
-import { icons } from "../../../../../public/icons";
 
 export default function ManageProductsPage() {
   return (

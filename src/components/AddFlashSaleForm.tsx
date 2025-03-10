@@ -182,7 +182,7 @@ export default function AddFlashSaleForm() {
           </label>
 
           <input
-            type="date"
+            type="datetime-local"
             id="start_date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
@@ -198,7 +198,7 @@ export default function AddFlashSaleForm() {
           </label>
 
           <input
-            type="date"
+            type="datetime-local"
             id="end_date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}

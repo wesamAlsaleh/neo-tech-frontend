@@ -214,7 +214,7 @@ export default function SaleModal({
               </label>
 
               <input
-                type="date"
+                type="datetime-local"
                 id="saleStart"
                 value={saleStart}
                 onChange={(event) => setSaleStart(event.target.value)}
@@ -232,7 +232,7 @@ export default function SaleModal({
               </label>
 
               <input
-                type="date"
+                type="datetime-local"
                 id="saleEnd"
                 value={saleEnd}
                 onChange={(event) => setSaleEnd(event.target.value)}

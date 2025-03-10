@@ -11,13 +11,14 @@ export const formatDateTime = (date: string) => {
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
-    hour12: false, // Ensures 24-hour format
+    hour12: true, // Ensures 12-hour time format
   };
 
-  return new Date(date)
-    .toLocaleDateString("en-GB", options)
-    .replace(/\//g, "/") // Ensures slashes are used consistently
-    .replace(",", ""); // Removes unwanted comma between date and time
+  // Format the date string into "DD/MM/YYYY HH:mm" format
+  const formattedDate = new Date(date).toLocaleDateString("en-GB", options);
+
+  // Replace slashes and remove comma
+  return formattedDate.replace(/\//g, "/").replace(",", "");
 };
 
 /**

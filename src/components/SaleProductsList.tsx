@@ -8,7 +8,11 @@ import { getSaleProducts } from "@/services/products-services";
 import LoadingSpinner from "./LoadingSpinner";
 
 // import helper functions
-import { convertPriceToBHD, convertSalePercentage } from "@/lib/helpers";
+import {
+  convertPriceToBHD,
+  convertSalePercentage,
+  formatDateTime,
+} from "@/lib/helpers";
 
 // import custom components
 
@@ -145,12 +149,12 @@ export default function SaleProductsList() {
 
               {/* sale start date Container */}
               <td className="px-4 py-2 border border-gray-300 text-center">
-                {product.sale_start}
+                {formatDateTime(product.sale_start!)}
               </td>
 
               {/* sale end date Container */}
               <td className="px-4 py-2 border border-gray-300 text-center">
-                {product.sale_end}
+                {formatDateTime(product.sale_end!)}
               </td>
             </tr>
           ))}

@@ -89,11 +89,11 @@ export default function SaleProductsList() {
           </tr>
         </thead>
 
-        {(products?.length || []) === 0 && (
+        {products?.length === 0 && (
           <tbody>
             <tr>
-              <td colSpan={8} className="text-center py-4">
-                No Badges found.
+              <td colSpan={7} className="text-center py-4">
+                No products on sale yet.
               </td>
             </tr>
           </tbody>

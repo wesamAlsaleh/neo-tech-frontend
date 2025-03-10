@@ -4,6 +4,7 @@ import React from "react";
 import PageTitle from "@/components/PageTitle";
 import { ActionButton } from "@/components/ActionButton";
 import SaleProductsList from "@/components/SaleProductsList";
+import { icons } from "../../../../../../public/icons";
 
 export default function page() {
   return (

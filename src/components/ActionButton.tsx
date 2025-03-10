@@ -4,12 +4,12 @@ import React from "react";
 interface ActionButtonProps {
   text: string;
   buttonTitle?: string;
-  href: string;
-  className?: string;
-  color?: string;
-  textColor?: string;
-  isIconButton?: boolean;
-  iconSrc?: string;
+  href?: string; // URL for the button link
+  className?: string; // Custom CSS classes
+  color?: string; // Background color
+  textColor?: string; // Text color
+  isIconButton?: boolean; // Determines if the button should display an icon
+  iconSrc?: string; // Icon source (required if isIconButton is true)
 }
 
 export const ActionButton: React.FC<ActionButtonProps> = ({
@@ -21,45 +21,46 @@ export const ActionButton: React.FC<ActionButtonProps> = ({
   textColor,
   isIconButton,
   iconSrc,
-}: ActionButtonProps) => {
+}) => {
+  // Default button styling
   const defaultClassName =
     "px-4 py-2 bg-primary text-white rounded hover:bg-primary/50 transition duration-300";
 
-  const buttonStyle = {
-    backgroundColor: color,
-    color: textColor,
-  };
+  // Apply custom background and text color if provided
+  const buttonStyle =
+    color || textColor
+      ? { backgroundColor: color, color: textColor }
+      : undefined;
 
-  if (isIconButton && iconSrc) {
+  // Set the title attribute (for accessibility and tooltips)
+  const title = buttonTitle || text;
+
+  // Ensure an icon button has an icon source
+  if (isIconButton && !iconSrc) {
+    return "Error: You need to provide an iconSrc for the icon button!";
+  }
+
+  // Set button content (icon or text)
+  const ButtonContent =
+    isIconButton && iconSrc ? (
+      <img src={iconSrc} alt={title} className="w-6 h-6" />
+    ) : (
+      text
+    );
+
+  // If href is provided, wrap the button inside a Next.js Link
+  if (href) {
     return (
       <Link href={href}>
         <button
-          // If the icon button class is provided use it, otherwise use the default class
           className={className || defaultClassName}
-          // If the icon button color is provided, use it, otherwise use the text color and button color
-          style={color || textColor ? buttonStyle : undefined}
-          title={buttonTitle || text}
-          aria-label={buttonTitle || text}
-          about="Restore deleted products"
+          style={buttonStyle}
+          title={title}
+          aria-label={title}
         >
-          <img src={iconSrc} alt={buttonTitle || text} className="w-6 h-6" />
+          {ButtonContent}
         </button>
       </Link>
     );
-  } else if (isIconButton && !iconSrc) {
-    return <p>"Icon source is required for icon button."</p>;
-  }
-
-  return (
-    <Link href={href}>
-      <button
-        className={className || defaultClassName}
-        style={color || textColor ? buttonStyle : undefined}
-        title={buttonTitle || text}
-        aria-label={buttonTitle || text}
-      >
-        {text}
-      </button>
-    </Link>
-  );
+  } else return "href is required for the ActionButton component!";
 };

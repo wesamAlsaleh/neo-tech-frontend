@@ -1,12 +1,16 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 // Import the FlashSale type
 import { FlashSale } from "@/types/sale";
 
 // import helper functions
 import { formatDateTime } from "@/lib/helpers";
+
+// Import icons
+import { icons } from "../../public/icons";
 
 // Import custom components
 import { getFlashSales } from "@/services/sale-services";
@@ -15,6 +19,9 @@ import LoadingSpinner from "./LoadingSpinner";
 import TableStatusColumn from "./TableStatusColumn";
 
 export default function FlashSalesList() {
+  // Router instance
+  const router = useRouter();
+
   const [flashSales, setFlashSales] = useState<FlashSale[]>(); // Flash sales state
   const [loading, setLoading] = useState(true); // Loading state
 
@@ -125,7 +132,24 @@ export default function FlashSalesList() {
 
                 {/* Actions */}
                 <td className="px-4 py-2 border border-gray-300">
-                  View Details | Activate |Delete
+                  {/* Buttons container */}
+                  <div className="flex items-center justify-center space-x-2">
+                    {/* View sale details button */}
+                    <button
+                      className={` bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
+                      title={`View ${flashSale.name}`}
+                      onClick={() =>
+                        router.push(`/admin/customize/sales/${flashSale.id}`)
+                      }
+                    >
+                      <img
+                        src={icons.viewIcon96.src}
+                        alt={`View ${flashSale.name}`}
+                        width={24}
+                        height={24}
+                      />
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))

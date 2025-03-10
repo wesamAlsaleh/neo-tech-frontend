@@ -5,6 +5,7 @@ import PageTitle from "@/components/PageTitle";
 import { ActionButton } from "@/components/ActionButton";
 import SaleProductsList from "@/components/SaleProductsList";
 import Separator from "@/components/Separator";
+import FlashSalesList from "@/components/FlashSalesList";
 
 export default function page() {
   return (
@@ -31,15 +32,10 @@ export default function page() {
       <SaleProductsList />
 
       {/* Separator */}
-      <Separator
-        color="border-gray-200"
-        thickness="border-t"
-        width="w-full"
-        margin="my-4"
-      />
+      <Separator color="border-gray-400" margin="my-6" />
 
       {/* Flash list  */}
-      {/* <FlashSalesList /> */}
+      <FlashSalesList />
     </>
   );
 }

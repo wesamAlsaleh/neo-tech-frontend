@@ -5,12 +5,46 @@ import { cookies } from "next/headers";
 
 /**
  * @function getFlashSales to fetch the flash sales from the server
- * @param currentPage the page number to fetch
  */
-export const getFlashSales = async (currentPage: number) => {
+export const getFlashSales = async () => {
   try {
-  } catch (error) {
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    if (!userToken) {
+      return {
+        status: false,
+        message: "Authentication token not found.",
+      };
+    }
+
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/flash-sales`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+      flashSales: response.data.flashSales,
+    };
+  } catch (error: any) {
+    // Debug the error
     console.error(error);
+
+    console.log(" ");
+
+    // Development error
+    console.log(error.response.data);
+
+    return {
+      status: false,
+      message: error.response.data.message,
+    };
   }
 };
 

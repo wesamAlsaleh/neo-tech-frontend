@@ -34,6 +34,10 @@ export default function SaleProductsList() {
   // Fetch all product on sale from the database
   const fetchProductsOnSale = async () => {
     try {
+      // Set the loading state to true for the loading spinner while moving between pages in the pagination
+      setLoading(true);
+
+      // Fetch the data from the server
       const response = await getSaleProducts(currentPage);
 
       // Update the UI with the fetched data

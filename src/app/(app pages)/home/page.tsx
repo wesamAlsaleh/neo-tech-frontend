@@ -5,6 +5,7 @@ import dynamic from "next/dynamic"; // dynamic import for custom components
 
 // import custom components
 import LoadingSpinner from "@/components/LoadingSpinner";
+import Separator from "@/components/Separator";
 
 // import custom components with dynamic import for better performance
 const HeroSection = dynamic(() => import("@/components/HeroSection"), {});
@@ -50,19 +51,30 @@ export default function homePage() {
       {/* TODO: Flash Sales Section, require productsManagement update */}
       <FlashSalesSection />
 
+      <Separator color="border-gray-400" />
+
       {/* Browse Category Section  */}
       <BrowseByCategorySection />
+
+      <Separator color="border-gray-400" />
 
       {/* Best Selling Section */}
       <BestSellingProductsSection />
 
+      <Separator color="border-gray-400" />
+
       {/* TODO: Special Banner Section */}
       <AdBannerSection />
+
+      <Separator color="border-gray-400" />
 
       {/* Explore Products Section */}
       <ExploreProductsSection />
 
+      <Separator color="border-gray-400" />
+
       {/* TODO: New Arrival Section */}
+      {/* Section */}
 
       {/* Trust Badges Section */}
       <TrustBadgesSection />

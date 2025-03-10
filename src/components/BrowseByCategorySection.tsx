@@ -30,7 +30,7 @@ export default function BrowseByCategorySection() {
   }, []);
 
   return (
-    <div className="mb-4">
+    <>
       {/* component info  */}
       <HomeComponentTitle title="Browse By Categories" subtitle="Categories" />
 
@@ -55,6 +55,6 @@ export default function BrowseByCategorySection() {
           </div>
         ))}
       </div>
-    </div>
+    </>
   );
 }

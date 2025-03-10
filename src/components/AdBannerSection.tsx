@@ -5,7 +5,7 @@ import HomeComponentTitle from "./HomeComponentTitle";
 
 export default function AdBannerSection() {
   return (
-    <div className="my-4">
+    <>
       {/* black Banner */}
       <div className="bg-black text-white p-4">
         <p className="text-center">
@@ -14,6 +14,6 @@ export default function AdBannerSection() {
           eros nec, ultricies nunc.{" "}
         </p>
       </div>
-    </div>
+    </>
   );
 }

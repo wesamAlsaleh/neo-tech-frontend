@@ -618,3 +618,43 @@ export const removeProductFromSale = async (productId: string) => {
     };
   }
 };
+
+/**
+ * @function removeAllProductsFromSale to remove all products from sale
+ */
+export const removeAllProductsFromSale = async () => {
+  try {
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/remove-all-products-from-sale`,
+      {}, // Empty data
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+    };
+  } catch (error: any) {
+    // Debugging error
+    console.error(error);
+
+    console.log(" ");
+
+    // Log the Developer message
+    console.log(error.response.data.developerMessage);
+
+    return {
+      status: false,
+      message:
+        error.response.data.message ||
+        "An error occurred while removing all products from sale.",
+    };
+  }
+};

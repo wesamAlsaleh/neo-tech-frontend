@@ -17,7 +17,13 @@ export default function page() {
             href="/admin/customize/sales/create-flash-sale"
           />
         }
-        // actionButton2={<ActionButton text="Add Coupon (coming soon)" href="" />}
+        actionButton2={
+          <ActionButton
+            text="Manage Products"
+            href="/admin/products"
+            color="steelblue"
+          />
+        }
       />
 
       {/* Products on Sale list */}

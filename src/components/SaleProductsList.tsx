@@ -3,14 +3,12 @@
 import React, { useEffect, useState } from "react";
 
 // import types
-import {
-  Product,
-  convertPriceToBHD,
-  convertSalePercentage,
-} from "@/types/product";
+import { Product } from "@/types/product";
 import { getSaleProducts } from "@/services/products-services";
-import { icons } from "../../public/icons";
 import LoadingSpinner from "./LoadingSpinner";
+
+// import helper functions
+import { convertPriceToBHD, convertSalePercentage } from "@/lib/helpers";
 
 // import custom components
 

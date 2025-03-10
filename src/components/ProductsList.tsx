@@ -5,7 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 // import types
-import { Product, convertPriceToBHD } from "@/types/product";
+import { Product } from "@/types/product";
+
+// import helper functions
+import { convertPriceToBHD } from "@/lib/helpers";
 
 // Services import
 import {

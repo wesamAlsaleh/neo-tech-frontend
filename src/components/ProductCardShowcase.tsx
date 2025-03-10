@@ -4,11 +4,10 @@ import React from "react";
 import { useRouter } from "next/navigation";
 
 // import types
-import {
-  Product,
-  convertPriceToBHD,
-  convertSalePercentage,
-} from "@/types/product";
+import { Product } from "@/types/product";
+
+// import helper functions
+import { convertPriceToBHD, convertSalePercentage } from "@/lib/helpers";
 
 // import custom components
 

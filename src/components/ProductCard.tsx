@@ -4,7 +4,10 @@ import React, { useState } from "react";
 import Image from "next/image";
 
 // import types and functions from the product file
-import { convertPriceToBHD, SingleProduct } from "@/types/product";
+import { SingleProduct } from "@/types/product";
+
+// import helper functions
+import { convertPriceToBHD } from "@/lib/helpers";
 
 // import custom components
 

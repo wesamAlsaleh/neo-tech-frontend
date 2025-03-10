@@ -4,13 +4,15 @@ import React, { useEffect, useState } from "react";
 
 // Import the FlashSale type
 import { FlashSale } from "@/types/sale";
+
+// import helper functions
+import { formatDateTime } from "@/lib/helpers";
+
+// Import custom components
 import { getFlashSales } from "@/services/sale-services";
-import { Server } from "http";
 import ServerResponse from "./ServerResponse";
 import LoadingSpinner from "./LoadingSpinner";
 import TableStatusColumn from "./TableStatusColumn";
-
-// Import custom components
 
 export default function FlashSalesList() {
   const [flashSales, setFlashSales] = useState<FlashSale[]>(); // Flash sales state
@@ -113,12 +115,12 @@ export default function FlashSalesList() {
 
                 {/* Flash Sale Start Date */}
                 <td className="px-4 py-2 border border-gray-300">
-                  {flashSale.start_date}
+                  {formatDateTime(flashSale.start_date)}
                 </td>
 
                 {/* Flash Sale End Date */}
                 <td className="px-4 py-2 border border-gray-300">
-                  {flashSale.end_date}
+                  {formatDateTime(flashSale.end_date)}
                 </td>
 
                 {/* Actions */}

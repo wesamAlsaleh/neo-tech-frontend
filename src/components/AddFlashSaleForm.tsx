@@ -8,11 +8,10 @@ import { getSaleProducts } from "@/services/products-services";
 import { createFlashSale } from "@/services/sale-services";
 
 // import types
-import {
-  Product,
-  convertPriceToBHD,
-  convertSalePercentage,
-} from "@/types/product";
+import { Product } from "@/types/product";
+
+// import helper functions
+import { convertPriceToBHD, convertSalePercentage } from "@/lib/helpers";
 
 // import custom components
 import ServerResponse from "./ServerResponse";

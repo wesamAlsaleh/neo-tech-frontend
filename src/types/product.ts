@@ -55,18 +55,3 @@ export type SingleProduct = {
   updated_at: string;
   deleted_at: string | null;
 };
-
-// function to convert the product price to a number in BHD format with 3 decimal places and a currency symbol
-export const convertPriceToBHD = (price: string) => {
-  return `BD ${parseFloat(price).toFixed(3)}`;
-};
-
-// Function to convert the sale percentage to a number (e.g., 20.00 to 20%)
-export const convertSalePercentage = (percentage: any) => {
-  // Ensure that the input is a valid number before using .toFixed()
-  const validPercentage = Number(percentage);
-  if (isNaN(validPercentage)) {
-    return null; // Return null if the input is not a valid number
-  }
-  return `${validPercentage.toFixed(0)}% OFF`; // Return the percentage as a string without decimal places
-};

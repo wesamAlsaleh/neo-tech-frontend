@@ -27,6 +27,7 @@ import { icons } from "../../public/icons";
 import EditProductModal from "./EditProductModal";
 import DeleteModal from "./DeleteModal";
 import SaleModal from "./SaleModal";
+import TableStatusColumn from "./TableStatusColumn";
 
 export default function ProductsList() {
   // Router instance
@@ -242,15 +243,11 @@ export default function ProductsList() {
 
                 {/* Product Active Status */}
                 <td className="px-4 py-2 border border-gray-300">
-                  {product.is_active ? (
-                    <span className="bg-green-100 text-green-600 px-2 py-1 rounded-md font-bold">
-                      Active
-                    </span>
-                  ) : (
-                    <span className="bg-red-100 text-red-600 px-2 py-1 rounded-md font-bold">
-                      Inactive
-                    </span>
-                  )}
+                  <TableStatusColumn
+                    condition={product.is_active}
+                    onYes="Active"
+                    onNo="Inactive"
+                  />
                 </td>
 
                 {/* Product stock Status */}
@@ -268,15 +265,11 @@ export default function ProductsList() {
 
                 {/* Product On Sale Status */}
                 <td className="px-4 py-2 border border-gray-300">
-                  {product.onSale ? (
-                    <span className="bg-green-100 text-green-600 px-2 py-1 rounded-md font-bold">
-                      Yes
-                    </span>
-                  ) : (
-                    <span className="bg-red-100 text-red-600 px-2 py-1 rounded-md font-bold">
-                      No
-                    </span>
-                  )}
+                  <TableStatusColumn
+                    condition={product.onSale}
+                    onYes="Yes"
+                    onNo="No"
+                  />
                 </td>
 
                 {/* Product Original Price */}

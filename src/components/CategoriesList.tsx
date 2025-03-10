@@ -16,6 +16,7 @@ import { Category } from "@/types/category";
 import LoadingSpinner from "./LoadingSpinner";
 import EditCategoryModal from "@/components/EditCategoryModal";
 import DeleteModal from "@/components/DeleteModal";
+import TableStatusColumn from "./TableStatusColumn";
 
 // import the icons from the public/icons folder
 import { icons } from "../../public/icons";

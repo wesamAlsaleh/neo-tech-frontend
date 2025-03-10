@@ -15,6 +15,7 @@ import {
 } from "@/lib/helpers";
 
 // import custom components
+import TableStatusColumn from "./TableStatusColumn";
 
 export default function SaleProductsList() {
   const [products, setProducts] = useState<Product[]>();
@@ -129,17 +130,11 @@ export default function SaleProductsList() {
 
               {/* Sale Status Container */}
               <td className="px-4 py-2 border border-gray-300 text-center">
-                {/* bg color condition */}
-                <span
-                  className={`inline-block px-3 py-1 rounded-full font-semibold ${
-                    product.onSale
-                      ? "bg-green-100 text-green-800"
-                      : "bg-red-100 text-red-800"
-                  }`}
-                >
-                  {/* text color condition */}
-                  {product.onSale ? "Yes" : "No"}
-                </span>
+                <TableStatusColumn
+                  condition={product.onSale}
+                  onYes="Yes"
+                  onNo="No"
+                />
               </td>
 
               {/* Discount percentage Container */}

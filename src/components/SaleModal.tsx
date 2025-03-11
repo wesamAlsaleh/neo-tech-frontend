@@ -40,7 +40,6 @@ export default function SaleModal({
 
   // Sale Form States
   const [discount, setDiscount] = useState<number>(0);
-  const [saleStart, setSaleStart] = useState("");
   const [saleEnd, setSaleEnd] = useState("");
 
   // State to store the response status to display to the user after form submission
@@ -63,7 +62,6 @@ export default function SaleModal({
 
     // Append the form data
     formData.append("discount", String(discount));
-    formData.append("sale_start", saleStart);
     formData.append("sale_end", saleEnd);
 
     try {
@@ -191,23 +189,6 @@ export default function SaleModal({
                 max="100"
                 value={discount}
                 onChange={(event) => setDiscount(Number(event.target.value))}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
-              />
-            </div>
-
-            {/* Sale Start Date field container */}
-            <div className="space-y-2">
-              <label
-                htmlFor="saleStart"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Sale Start Date<span className="text-red-500">*</span>
-              </label>
-              <input
-                type="datetime-local"
-                id="saleStart"
-                value={saleStart}
-                onChange={(event) => setSaleStart(event.target.value)}
                 className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
               />
             </div>

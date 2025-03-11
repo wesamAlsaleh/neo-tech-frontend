@@ -44,11 +44,8 @@ export default function EditFlashSalePage({
   });
 
   // Product states
-  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [saleProducts, setSaleProducts] = useState<Product[]>([]); // All products available for selection
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]); // Selected products IDs as strings
-
-  // Form validation
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   // Server responses
   const [serverResponse, setServerResponse] = useState({
@@ -121,7 +118,7 @@ export default function EditFlashSalePage({
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        setLoading(true);
+        setLoading(true); // Set loading to true
 
         const response = await getSaleProducts(currentPage);
 
@@ -131,7 +128,7 @@ export default function EditFlashSalePage({
         });
 
         if (response.status) {
-          setAllProducts(response.products);
+          setSaleProducts(response.products);
           setCurrentPage(response.currentPage);
           setTotalPages(response.totalPages);
           setTotalProducts(response.totalProducts);
@@ -261,14 +258,9 @@ export default function EditFlashSalePage({
                 value={formData.name}
                 onChange={handleInputChange}
                 placeholder="Enter the flash sale name e.g. Black Friday"
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 ${
-                  formErrors.name ? "border-red-500" : ""
-                }`}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 `}
                 required
               />
-              {formErrors.name && (
-                <p className="mt-1 text-sm text-red-600">{formErrors.name}</p>
-              )}
             </div>
 
             {/* Description Field */}
@@ -285,15 +277,8 @@ export default function EditFlashSalePage({
                 value={formData.description}
                 onChange={handleInputChange}
                 placeholder="Enter the flash sale description e.g. The biggest sale of the year"
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 ${
-                  formErrors.description ? "border-red-500" : ""
-                }`}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 `}
               />
-              {formErrors.description && (
-                <p className="mt-1 text-sm text-red-600">
-                  {formErrors.description}
-                </p>
-              )}
             </div>
 
             {/* Date Range */}
@@ -312,16 +297,9 @@ export default function EditFlashSalePage({
                   name="start_date"
                   value={formData.start_date}
                   onChange={handleInputChange}
-                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 ${
-                    formErrors.start_date ? "border-red-500" : ""
-                  }`}
+                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 `}
                   required
                 />
-                {formErrors.start_date && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {formErrors.start_date}
-                  </p>
-                )}
               </div>
 
               {/* End Date */}
@@ -338,16 +316,9 @@ export default function EditFlashSalePage({
                   name="end_date"
                   value={formData.end_date}
                   onChange={handleInputChange}
-                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 ${
-                    formErrors.end_date ? "border-red-500" : ""
-                  }`}
+                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 `}
                   required
                 />
-                {formErrors.end_date && (
-                  <p className="mt-1 text-sm text-red-600">
-                    {formErrors.end_date}
-                  </p>
-                )}
               </div>
             </div>
           </div>
@@ -360,81 +331,69 @@ export default function EditFlashSalePage({
           </h2>
 
           {/* Display message for product fetch errors */}
-          {!serverResponseForProducts.status &&
-            serverResponseForProducts.message && (
-              <div
-                className="px-4 py-3 rounded relative mb-4 bg-red-100 border border-red-400 text-red-700"
-                role="alert"
-              >
-                <span className="font-bold">Error! </span>
-                <span className="block sm:inline">
-                  {serverResponseForProducts.message}
-                </span>
-              </div>
-            )}
-
-          {formErrors.products && (
-            <p className="mt-1 mb-4 text-sm text-red-600">
-              {formErrors.products}
+          {loading ? (
+            <LoadingSpinner />
+          ) : !serverResponseForProducts.status ? (
+            <p className="px-4 py-3 rounded relative bg-red-100 border border-red-400 text-red-700 w-full">
+              {serverResponseForProducts.message}
             </p>
-          )}
-
-          {/* If no products show the message */}
-          {allProducts.length === 0 && (
+          ) : saleProducts.length === 0 ? (
             <p className="px-4 py-3 rounded relative bg-red-100 border border-red-400 text-red-700 w-full">
               No products available.
             </p>
-          )}
-
-          {/* Products grid */}
-          <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
-            {allProducts.map((product) => {
-              const isSelected = selectedProducts.includes(String(product.id));
-              return (
-                // Product card container
-                <div
-                  key={product.id}
-                  className={`${
-                    isSelected ? "bg-blue-50" : "bg-white"
-                  } shadow-md rounded-md p-4`}
-                >
-                  {/* Product Name & checkbox container */}
-                  <div className="flex justify-between items-center">
-                    {/* Product Name */}
-                    <h3 className="text-lg font-semibold">
-                      {product.product_name}
-                    </h3>
-
-                    {/* CheckBox */}
-                    <input
-                      type="checkbox"
-                      className="form-checkbox h-5 w-5 text-blue-600"
-                      checked={isSelected}
-                      onChange={(e) =>
-                        handleProductSelection(
-                          String(product.id),
-                          e.target.checked
-                        )
-                      }
-                    />
-                  </div>
-
-                  {/* Product details container */}
-                  <div className="space-y-3 mt-2">
-                    {/* Original Price */}
+          ) : (
+            // Render the products grid
+            <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
+              {saleProducts.map((product) => {
+                const isSelected = selectedProducts.includes(
+                  String(product.id)
+                );
+                return (
+                  // Product card container
+                  <div
+                    key={product.id}
+                    className={`${
+                      isSelected ? "bg-blue-50" : "bg-white"
+                    } shadow-md rounded-md p-4`}
+                  >
+                    {/* Product Name & checkbox container */}
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">
-                        Original Price
-                      </span>
-                      <span className="text-sm">
-                        {convertPriceToBHD(product.product_price)}
-                      </span>
+                      {/* Product Name */}
+                      <h3 className="text-lg font-semibold">
+                        {product.product_name}
+                      </h3>
+
+                      {/* CheckBox */}
+                      <input
+                        type="checkbox"
+                        className="form-checkbox h-5 w-5 text-blue-600"
+                        checked={isSelected}
+                        onChange={(e) =>
+                          handleProductSelection(
+                            String(product.id),
+                            e.target.checked
+                          )
+                        }
+                      />
+                    </div>
+
+                    {/* Product details container */}
+                    <div className="space-y-3 mt-2">
+                      {/* Original Price */}
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">
+                          Original Price
+                        </span>
+                        <span className="text-sm">
+                          {convertPriceToBHD(product.product_price)}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
 
           {/* Pagination Control */}
           {totalPages > 1 && (

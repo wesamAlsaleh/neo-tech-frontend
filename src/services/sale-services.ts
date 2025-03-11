@@ -112,7 +112,7 @@ export const updateFlashSale = async (
       };
     }
 
-    const response = await axios.put(
+    const response = await axios.post(
       `${process.env.NEXT_PUBLIC_APP_URI}/admin/update-flash-sale/${flashSaleId}`,
       formData,
       {

@@ -17,7 +17,8 @@ import { convertPriceToBHD, convertSalePercentage } from "@/lib/helpers";
 import LoadingSpinner from "./LoadingSpinner";
 
 export default function AddFlashSaleForm() {
-  const [products, setProducts] = useState<Product[]>([]); // Products state
+  // Products on sale state
+  const [productsOnSale, setProductsOnSale] = useState<Product[]>([]); // Products state
 
   // State to store the form data
   const [name, setName] = useState("");
@@ -39,11 +40,8 @@ export default function AddFlashSaleForm() {
     duration: 0,
   }); // Server response state
 
-  // State to store the form submission status
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // State to store the loading status
-  const [loading, setLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false); // State to store the form submission status
+  const [loading, setLoading] = useState(true); // State to store the loading status
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -66,7 +64,7 @@ export default function AddFlashSaleForm() {
       });
 
       if (response.status) {
-        setProducts(response.products);
+        setProductsOnSale(response.products);
         setCurrentPage(response.currentPage);
         setTotalPages(response.totalPages);
         setTotalProducts(response.totalProducts);
@@ -255,7 +253,7 @@ export default function AddFlashSaleForm() {
           </label>
 
           {/* If no products show the message from the server */}
-          {products.length === 0 && (
+          {productsOnSale.length === 0 && (
             <p className="px-4 py-3 rounded relative bg-red-100 border border-red-400 text-red-700 w-full">
               {serverResponseForProducts.message}
             </p>
@@ -263,7 +261,7 @@ export default function AddFlashSaleForm() {
 
           {/* Products grid */}
           <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
-            {products.map((product) => (
+            {productsOnSale.map((product) => (
               // Product card container
               <div
                 key={product.id}
@@ -363,7 +361,7 @@ export default function AddFlashSaleForm() {
 
         {/* Action buttons container */}
         <div className="flex gap-2">
-          {products.length > 0 && (
+          {productsOnSale.length > 0 && (
             <button
               type="submit"
               disabled={isSubmitting}

@@ -114,11 +114,22 @@ export default function AddFlashSaleForm() {
         duration: result.duration,
       });
 
-      // Reload the page after the category is created successfully
-      router.push("/admin/customize/sales"); // Redirect to the parent page
+      // Reload the page after the flash sale is created successfully
+      if (result.status) {
+        setTimeout(() => router.push("/admin/customize/sales"), 3000); // Redirect after 3 seconds
+      } else {
+        console.log(
+          result.message +
+            " " +
+            serverResponseForFlashSale.message +
+            " " +
+            result.status +
+            " " +
+            "This is the error"
+        );
+      }
     } finally {
-      // Set the form submission status to false to enable the submit button
-      setIsSubmitting(false);
+      setIsSubmitting(false); // Re-enable the submit button
     }
   };
 
@@ -139,10 +150,25 @@ export default function AddFlashSaleForm() {
       )}
 
       {/* display message for flash sale creation*/}
-      <ServerResponse
-        message={serverResponseForFlashSale.message}
-        condition={serverResponseForFlashSale.status}
-      />
+      {serverResponseForFlashSale.message && (
+        <div
+          className={`px-4 py-3 rounded relative mb-4 ${
+            serverResponseForFlashSale.status
+              ? "bg-green-100 border border-green-400 text-green-700"
+              : "bg-red-100 border border-red-400 text-red-700"
+          }`}
+          role="alert"
+        >
+          {serverResponseForFlashSale.status ? (
+            <span className="font-bold">Success! </span>
+          ) : (
+            <span className="font-bold">Error! </span>
+          )}
+          <span className="block sm:inline">
+            {serverResponseForFlashSale.message}
+          </span>
+        </div>
+      )}
 
       {/* Form */}
       <form onSubmit={(e) => handleSubmit(e)} className="space-y-4">

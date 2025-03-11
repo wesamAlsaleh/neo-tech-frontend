@@ -47,12 +47,13 @@ export default function EditFlashSalePage({
   const [saleProducts, setSaleProducts] = useState<Product[]>([]); // All products available for selection
   const [selectedProducts, setSelectedProducts] = useState<string[]>([]); // Selected products IDs as strings
 
-  // Server responses
+  // Server responses for the form submission
   const [serverResponse, setServerResponse] = useState({
     status: false,
     message: "",
   });
 
+  // Server response for fetching products that are on sale
   const [serverResponseForProducts, setServerResponseForProducts] = useState({
     status: false,
     message: "",
@@ -70,41 +71,50 @@ export default function EditFlashSalePage({
   useEffect(() => {
     const fetchSaleDetails = async () => {
       try {
+        setLoading(true); // Set loading to true
+
+        // Get the sale id from the resolved params
         const id = resolvedParams.id;
 
+        // If the id is not available, redirect to 404 page
         if (!id) {
           router.push("/404");
           return;
         }
 
+        // Fetch the flash sale details
         const serverResponse = await getFlashSale(id);
 
+        // If the response status is false, redirect to 404 page
         if (!serverResponse.status) {
           router.push("/404");
           return;
         }
 
+        // Update the UI with the fetched sale details
         setServerResponse({
           status: serverResponse.status,
           message: serverResponse.message!,
         });
 
-        const sale = serverResponse.flashSale;
-        setFlashSale(sale);
+        // Set the flash sale details in state to be used in the form
+        setFlashSale(serverResponse.flashSale);
 
         // Initialize form data with fetched sale details
         setFormData({
-          name: sale.name,
-          description: sale.description,
-          start_date: sale.start_date,
-          end_date: sale.end_date,
+          name: serverResponse.flashSale.name,
+          description: serverResponse.flashSale.description,
+          start_date: serverResponse.flashSale.start_date,
+          end_date: serverResponse.flashSale.end_date,
         });
 
-        // Initialize selected products
-        const selectedProductIds = sale.products.map((product: Product) =>
-          String(product.id)
-        );
+        // Initialize selected products as an array of product IDs
+        const selectedProductIds =
+          serverResponse.flashSale.products?.map((product: Product) =>
+            String(product.id)
+          ) || []; // Fallback to an empty array if products is undefined
 
+        // Set the selected products in state as an array of product IDs
         setSelectedProducts(selectedProductIds);
       } finally {
         setLoading(false);
@@ -120,15 +130,21 @@ export default function EditFlashSalePage({
       try {
         setLoading(true); // Set loading to true
 
+        // Fetch the products that are on sale for the current page
         const response = await getSaleProducts(currentPage);
 
+        // Update the UI with the fetched products
         setServerResponseForProducts({
           status: response.status,
           message: response.message,
         });
 
+        // If the response status is true
         if (response.status) {
+          // Set the products in state
           setSaleProducts(response.products);
+
+          // Set the navigation states
           setCurrentPage(response.currentPage);
           setTotalPages(response.totalPages);
           setTotalProducts(response.totalProducts);
@@ -141,25 +157,33 @@ export default function EditFlashSalePage({
     fetchProducts();
   }, [currentPage]);
 
-  // Handle form input changes
+  // Handle form input changes, this will update the form data state "formData"
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
+    // Extract the name and value from the input element
     const { name, value } = e.target;
+
+    // Update the form data state
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  // Handle product selection
+  /**
+   * Handles the selection of a product by adding or removing it from the selected products list.
+   *
+   * @param {string} productId - The ID of the product being selected or deselected.
+   * @param {boolean} checked - A boolean indicating whether the product is selected (true) or deselected (false).
+   */
   const handleProductSelection = (productId: string, checked: boolean) => {
-    // If checked is true, add the product to selected products
+    // If checked is true, add the product to selected products as new product (as string)
     if (checked) {
       // Add product to selected products
       setSelectedProducts((prev) => [...prev, productId]);
     } else {
-      // Remove product from selected products
+      // If not checked, remove the product from selected products array (if the checkbox is unchecked)
       setSelectedProducts((prev) => prev.filter((id) => id !== productId));
     }
   };
@@ -172,13 +196,14 @@ export default function EditFlashSalePage({
     try {
       // Prepare form data
       const formDataToSubmit = new FormData();
+
       formDataToSubmit.append("name", formData.name);
       formDataToSubmit.append("description", formData.description);
       formDataToSubmit.append("start_date", formData.start_date);
       formDataToSubmit.append("end_date", formData.end_date);
 
-      // Add selected products with their discounts
-      selectedProducts.forEach((productId) => {
+      // Add selected products with their IDs to the form data
+      selectedProducts?.forEach((productId) => {
         formDataToSubmit.append("products[]", productId);
       });
 
@@ -188,11 +213,13 @@ export default function EditFlashSalePage({
         String(resolvedParams.id)
       );
 
+      // Update the server response state
       setServerResponse({
         status: response.status,
-        message: response.message || "Flash sale updated successfully!",
+        message: response.message,
       });
 
+      // If the response status is true redirect to the flash sales list
       if (response.status) {
         // Redirect to the flash sales list after successful update
         setTimeout(() => {
@@ -219,7 +246,7 @@ export default function EditFlashSalePage({
         }
       />
 
-      {/* Server Response Message */}
+      {/* Server Response Message in case of form error */}
       {serverResponse.message && !serverResponse.status && (
         <div
           className={`p-4 mb-4 rounded-md ${
@@ -242,6 +269,7 @@ export default function EditFlashSalePage({
         <div className="bg-white shadow-md rounded-md p-6">
           <h2 className="text-lg font-semibold mb-4">Flash Sale Details</h2>
 
+          {/* Flash Sale Details Input container */}
           <div className="space-y-4">
             {/* Name Field */}
             <div className="space-y-2">
@@ -251,6 +279,7 @@ export default function EditFlashSalePage({
               >
                 Flash Sale Name
               </label>
+
               <input
                 type="text"
                 id="name"
@@ -271,6 +300,7 @@ export default function EditFlashSalePage({
               >
                 Description
               </label>
+
               <textarea
                 id="description"
                 name="description"
@@ -281,7 +311,7 @@ export default function EditFlashSalePage({
               />
             </div>
 
-            {/* Date Range */}
+            {/* Date fields container */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* Start Date */}
               <div className="space-y-2">
@@ -291,6 +321,7 @@ export default function EditFlashSalePage({
                 >
                   Start Date
                 </label>
+
                 <input
                   type="datetime-local"
                   id="start_date"
@@ -310,6 +341,7 @@ export default function EditFlashSalePage({
                 >
                   End Date
                 </label>
+
                 <input
                   type="datetime-local"
                   id="end_date"
@@ -324,7 +356,7 @@ export default function EditFlashSalePage({
           </div>
         </div>
 
-        {/* Products Section */}
+        {/* Products Section container */}
         <div className="bg-white shadow-md rounded-md p-6">
           <h2 className="text-lg font-semibold mb-4">
             Products ({totalProducts})
@@ -345,9 +377,11 @@ export default function EditFlashSalePage({
             // Render the products grid
             <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 gap-4">
               {saleProducts.map((product) => {
-                const isSelected = selectedProducts.includes(
+                // Check if the product (on sale) is selected by checking if the product ID is in the selected products array
+                const isSelected = selectedProducts?.includes(
                   String(product.id)
                 );
+
                 return (
                   // Product card container
                   <div

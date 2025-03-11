@@ -182,16 +182,16 @@ export default function FlashSalesList() {
                 <td className="px-4 py-2 border border-gray-300">
                   {/* Buttons container */}
                   <div className="flex items-center justify-center space-x-2">
-                    {/* View sale details button */}
+                    {/* Edit sale button */}
                     <button
-                      className={` bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
+                      className={` bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
                       title={`View ${flashSale.name}`}
                       onClick={() =>
                         router.push(`/admin/customize/sales/${flashSale.id}`)
                       }
                     >
                       <img
-                        src={icons.viewIcon96.src}
+                        src={icons.edit50.src}
                         alt={`View ${flashSale.name}`}
                         width={24}
                         height={24}

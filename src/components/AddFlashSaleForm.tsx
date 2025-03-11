@@ -143,10 +143,23 @@ export default function AddFlashSaleForm() {
       {/* display message for fetching data*/}
       {!serverResponseForProducts.status && (
         // Display the message if the status is false (error)
-        <ServerResponse
-          message={serverResponseForProducts.message}
-          condition={serverResponseForProducts.status}
-        />
+        <div
+          className={`px-4 py-3 rounded relative mb-4 ${
+            serverResponseForProducts.status
+              ? "bg-green-100 border border-green-400 text-green-700"
+              : "bg-red-100 border border-red-400 text-red-700"
+          }`}
+          role="alert"
+        >
+          {serverResponseForProducts.status ? (
+            <span className="font-bold">Success! </span>
+          ) : (
+            <span className="font-bold">Error! </span>
+          )}
+          <span className="block sm:inline">
+            {serverResponseForProducts.message}
+          </span>
+        </div>
       )}
 
       {/* display message for flash sale creation*/}

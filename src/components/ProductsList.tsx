@@ -310,27 +310,13 @@ export default function ProductsList() {
                   <div className="flex items-center justify-center space-x-2">
                     {/* Edit button */}
                     <button
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
+                      className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
                       onClick={() => handleEditClick(product)}
                       title={`Edit ${product.product_name}`}
                     >
                       <img
                         src={icons.edit50.src}
                         alt="Edit"
-                        width={24}
-                        height={24}
-                      />
-                    </button>
-
-                    {/* Delete button */}
-                    <button
-                      className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
-                      onClick={() => handleDeleteClick(product)}
-                      title={`Delete ${product.product_name}`}
-                    >
-                      <img
-                        src={icons.delete50.src}
-                        alt="Delete"
                         width={24}
                         height={24}
                       />
@@ -401,6 +387,20 @@ export default function ProductsList() {
                         alt={
                           product.onSale ? "Remove from Sale" : "Put On Sale"
                         }
+                        width={24}
+                        height={24}
+                      />
+                    </button>
+
+                    {/* Delete button */}
+                    <button
+                      className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
+                      onClick={() => handleDeleteClick(product)}
+                      title={`Delete ${product.product_name}`}
+                    >
+                      <img
+                        src={icons.delete50.src}
+                        alt="Delete"
                         width={24}
                         height={24}
                       />

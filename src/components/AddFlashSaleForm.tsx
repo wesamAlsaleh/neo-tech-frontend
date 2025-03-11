@@ -14,7 +14,6 @@ import { Product } from "@/types/product";
 import { convertPriceToBHD, convertSalePercentage } from "@/lib/helpers";
 
 // import custom components
-import ServerResponse from "./ServerResponse";
 import LoadingSpinner from "./LoadingSpinner";
 
 export default function AddFlashSaleForm() {

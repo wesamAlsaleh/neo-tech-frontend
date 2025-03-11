@@ -97,7 +97,10 @@ export const createFlashSale = async (formData: FormData) => {
  * @function updateFlashSale to update a flash sale
  * @param formData the form data to update the flash sale
  */
-export const updateFlashSale = async (formData: FormData) => {
+export const updateFlashSale = async (
+  formData: FormData,
+  flashSaleId: string
+) => {
   try {
     const cookieStore = await cookies();
     const userToken = cookieStore.get("userToken")?.value;
@@ -110,7 +113,7 @@ export const updateFlashSale = async (formData: FormData) => {
     }
 
     const response = await axios.put(
-      `${process.env.NEXT_PUBLIC_APP_URI}/admin/update-flash-sale`,
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/update-flash-sale/${flashSaleId}`,
       formData,
       {
         headers: {

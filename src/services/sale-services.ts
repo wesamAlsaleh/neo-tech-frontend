@@ -229,16 +229,11 @@ export const getFlashSale = async (flashSaleId: string) => {
 };
 
 /**
- * @function displayFlashSale to fetch a single flash sale
- * @param flashSaleId the id of the flash sale to fetch
+ * @function displayFlashSale to fetch the active flash sale
  * @param perPage the number of items to display per page
  * @param page the page number to display
  */
-export const displayFlashSale = async (
-  flashSaleId: string,
-  perPage: number,
-  page: number
-) => {
+export const displayFlashSale = async (perPage: number, page: number) => {
   try {
     const cookieStore = await cookies();
     const userToken = cookieStore.get("userToken")?.value;
@@ -251,7 +246,7 @@ export const displayFlashSale = async (
     }
 
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_APP_URI}/admin/display-flash-sale/${flashSaleId}?perPage=${perPage}&page=${page}`,
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/display-active-flash-sale?perPage=${perPage}&page=${page}`,
       {
         headers: {
           Authorization: `Bearer ${userToken}`,

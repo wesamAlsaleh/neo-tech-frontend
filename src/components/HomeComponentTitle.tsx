@@ -9,6 +9,7 @@ interface HomeComponentTitleProps {
   subtitle: string;
   viewAllButton?: boolean;
   url?: string;
+  paginationControl?: React.ReactNode;
 }
 
 export default function HomeComponentTitle({
@@ -16,6 +17,7 @@ export default function HomeComponentTitle({
   subtitle,
   viewAllButton,
   url,
+  paginationControl: paginationControls,
 }: HomeComponentTitleProps) {
   // router instance
   const router = useRouter();
@@ -49,6 +51,9 @@ export default function HomeComponentTitle({
             View All
           </button>
         )}
+
+        {/* Pagination control if provided */}
+        {paginationControls}
       </div>
     </>
   );

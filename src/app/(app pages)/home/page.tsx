@@ -4,7 +4,6 @@ import React from "react";
 import dynamic from "next/dynamic"; // dynamic import for custom components
 
 // import custom components
-import LoadingSpinner from "@/components/LoadingSpinner";
 import Separator from "@/components/Separator";
 
 // import custom components with dynamic import for better performance

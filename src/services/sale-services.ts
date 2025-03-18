@@ -235,28 +235,26 @@ export const getFlashSale = async (flashSaleId: string) => {
  */
 export const displayFlashSale = async (perPage: number, page: number) => {
   try {
-    const cookieStore = await cookies();
-    const userToken = cookieStore.get("userToken")?.value;
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/display-active-flash-sale?perPage=${perPage}&page=${page}`
+    );
 
-    if (!userToken) {
+    // if there is no active flash sale return false and a message
+    if (response.status === 202) {
       return {
         status: false,
-        message: "Authentication token not found.",
+        message: response.data.message,
       };
     }
-
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_APP_URI}/admin/display-active-flash-sale?perPage=${perPage}&page=${page}`,
-      {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      }
-    );
 
     return {
       status: true,
       message: response.data.message,
+      flashSale: response.data.flashSale,
+      duration: response.data.flashSale.flash_sale_duration,
+      products: response.data.flashSale.products.data,
+      currentPage: response.data.flashSale.products.current_page,
+      totalPages: response.data.flashSale.products.total,
     };
   } catch (error: any) {
     // Debug the error

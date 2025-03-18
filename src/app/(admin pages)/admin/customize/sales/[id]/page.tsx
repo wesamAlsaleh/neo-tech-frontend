@@ -304,7 +304,7 @@ export default function EditFlashSalePage({
               <textarea
                 id="description"
                 name="description"
-                value={formData.description}
+                value={formData.description || ""}
                 onChange={handleInputChange}
                 placeholder="Enter the flash sale description e.g. The biggest sale of the year"
                 className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 `}

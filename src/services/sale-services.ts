@@ -227,3 +227,52 @@ export const getFlashSale = async (flashSaleId: string) => {
     };
   }
 };
+
+/**
+ * @function displayFlashSale to fetch a single flash sale
+ * @param flashSaleId the id of the flash sale to fetch
+ * @param perPage the number of items to display per page
+ * @param page the page number to display
+ */
+export const displayFlashSale = async (
+  flashSaleId: string,
+  perPage: number,
+  page: number
+) => {
+  try {
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    if (!userToken) {
+      return {
+        status: false,
+        message: "Authentication token not found.",
+      };
+    }
+
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/display-flash-sale/${flashSaleId}?perPage=${perPage}&page=${page}`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+    };
+  } catch (error: any) {
+    // Debug the error
+    console.error(error);
+
+    // Development error
+    console.log(error.response.data.developerMessage);
+
+    return {
+      status: false,
+      message: error.response.data.message,
+    };
+  }
+};

@@ -34,7 +34,7 @@ export default function FlashSalesSection() {
     const fetchFlashSale = async () => {
       try {
         // fetch the flash sales from the server
-        const response = await displayFlashSale(7, page);
+        const response = await displayFlashSale(8, page);
 
         // check if the response is successful
         if (response.status) {
@@ -66,9 +66,9 @@ export default function FlashSalesSection() {
   // Pagination control component to pass it to the title component
   function PaginationControl() {
     // If there is only one page, don't show the pagination control
-    // if (totalPages === 1) {
-    //   return null;
-    // }
+    if (totalPages === 1) {
+      return null;
+    }
 
     // Pagination control
     return (
@@ -112,7 +112,7 @@ export default function FlashSalesSection() {
       />
 
       {/* Product Cards Grid */}
-      <div className="grid lg:grid-cols-7 md:grid-cols-4 sm:grid-cols-1 gap-2 w-[90%]">
+      <div className="grid lg:grid-cols-8 md:grid-cols-4 sm:grid-cols-1 gap-2 w-[100%]">
         {products.map((product) => {
           return <ProductCardShowcase key={product.id} product={product} />;
         })}

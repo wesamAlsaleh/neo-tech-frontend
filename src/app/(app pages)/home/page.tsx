@@ -60,10 +60,9 @@ export default function homePage() {
       {/* Best Selling Section */}
       <BestSellingProductsSection />
 
-      <Separator color="border-gray-400" />
-
+      {/* <Separator color="border-gray-400" /> */}
       {/* TODO: Special Banner Section */}
-      <AdBannerSection />
+      {/* <AdBannerSection /> */}
 
       <Separator color="border-gray-400" />
 

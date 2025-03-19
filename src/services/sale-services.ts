@@ -250,11 +250,13 @@ export const displayFlashSale = async (perPage: number, page: number) => {
     return {
       status: true,
       message: response.data.message,
-      flashSale: response.data.flashSale,
-      duration: response.data.flashSale.flash_sale_duration,
-      products: response.data.flashSale.products.data,
-      currentPage: response.data.flashSale.products.current_page,
-      totalPages: response.data.flashSale.products.total,
+      flashSaleInfo: response.data.flashSaleInfo,
+      duration: response.data.flashSaleInfo.flash_sale_duration,
+      products: response.data.flashSaleProducts,
+      currentPage: response.data.pagination.currentPage,
+      perPage: response.data.pagination.perPage,
+      totalProducts: response.data.pagination.total,
+      totalPages: response.data.pagination.lastPage,
     };
   } catch (error: any) {
     // Debug the error

@@ -569,7 +569,7 @@ export const putProductOnSale = async (
     console.log(" ");
 
     // Log the Developer message
-    console.log(error.response.data);
+    console.log(error.response.data.developerMessage);
 
     return {
       status: false,

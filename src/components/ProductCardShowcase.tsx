@@ -14,6 +14,7 @@ import { convertPriceToBHD, convertSalePercentage } from "@/lib/helpers";
 export default function ProductCardShowcase({ product }: { product: Product }) {
   // router instance
   const router = useRouter();
+
   return (
     // product container
     <div className="relative p-4 bg-white shadow-lg rounded-lg">

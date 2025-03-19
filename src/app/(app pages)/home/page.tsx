@@ -50,26 +50,26 @@ export default function homePage() {
       {/* TODO: Flash Sales Section, require productsManagement update */}
       <FlashSalesSection />
 
-      <Separator color="border-gray-400" />
+      <Separator margin="my-8" />
 
       {/* Browse Category Section  */}
       <BrowseByCategorySection />
 
-      <Separator color="border-gray-400" />
+      <Separator margin="my-8" />
 
       {/* Best Selling Section */}
       <BestSellingProductsSection />
 
-      {/* <Separator color="border-gray-400" /> */}
+      {/* <Separator  margin="my-8"/> */}
       {/* TODO: Special Banner Section */}
       {/* <AdBannerSection /> */}
 
-      <Separator color="border-gray-400" />
+      <Separator margin="my-8" />
 
       {/* Explore Products Section */}
       <ExploreProductsSection />
 
-      <Separator color="border-gray-400" />
+      <Separator margin="my-8" />
 
       {/* TODO: New Arrival Section */}
       {/* Section */}

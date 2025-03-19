@@ -194,7 +194,7 @@ export default function AddFlashSaleForm() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Enter the flash sale name e.g. Black Friday"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
             required
           />
         </div>
@@ -210,7 +210,7 @@ export default function AddFlashSaleForm() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Enter the flash sale description e.g. The biggest sale of the year"
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
           />
         </div>
 
@@ -225,7 +225,7 @@ export default function AddFlashSaleForm() {
             id="start_date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
             required
           />
         </div>
@@ -241,7 +241,7 @@ export default function AddFlashSaleForm() {
             id="end_date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2"
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
             required
           />
         </div>
@@ -277,7 +277,7 @@ export default function AddFlashSaleForm() {
                   {/* CheckBox */}
                   <input
                     type="checkbox"
-                    className="form-checkbox h-5 w-5 text-blue-600"
+                    className="form-checkbox h-5 w-5 text-orange-600"
                     checked={selectedProducts.includes(String(product.id))} // Check if product is already selected
                     onChange={(e) => {
                       // If the checkbox is checked, add the product to the selected products array
@@ -332,7 +332,7 @@ export default function AddFlashSaleForm() {
                   className={`px-4 py-2 border rounded ${
                     currentPage === 1
                       ? "bg-gray-300 cursor-not-allowed"
-                      : "bg-blue-500 text-white"
+                      : "bg-orange-500 text-white"
                   }`}
                 >
                   Previous
@@ -349,7 +349,7 @@ export default function AddFlashSaleForm() {
                   className={`px-4 py-2 border rounded ${
                     currentPage === totalPages
                       ? "bg-gray-300 cursor-not-allowed"
-                      : "bg-blue-500 text-white"
+                      : "bg-orange-500 text-white"
                   }`}
                 >
                   Next
@@ -365,7 +365,7 @@ export default function AddFlashSaleForm() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSubmitting ? "Adding..." : "Add Flash Sale"}
             </button>

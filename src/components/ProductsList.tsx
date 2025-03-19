@@ -423,7 +423,7 @@ export default function ProductsList() {
             className={`px-4 py-2 border rounded ${
               currentPage === 1
                 ? "bg-gray-300 cursor-not-allowed"
-                : "bg-blue-500 text-white"
+                : "bg-orange-500 text-white"
             }`}
           >
             Previous
@@ -440,7 +440,7 @@ export default function ProductsList() {
             className={`px-4 py-2 border rounded ${
               currentPage === totalPages
                 ? "bg-gray-300 cursor-not-allowed"
-                : "bg-blue-500 text-white"
+                : "bg-orange-500 text-white"
             }`}
           >
             Next

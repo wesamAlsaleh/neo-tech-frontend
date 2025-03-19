@@ -135,7 +135,7 @@ export default function ProductImageUpload({
           accept="image/*"
           onChange={handleImageChange}
           multiple
-          className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 p-2"
+          className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
           required={required}
         />
       </div>

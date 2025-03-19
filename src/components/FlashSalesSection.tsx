@@ -80,7 +80,7 @@ export default function FlashSalesSection() {
           className={`px-4 py-2 border rounded-full ${
             page === 1
               ? "bg-gray-200 cursor-not-allowed"
-              : "bg-blue-300 text-white"
+              : "bg-orange-300 text-white"
           }`}
         >
           {"<"}
@@ -93,7 +93,7 @@ export default function FlashSalesSection() {
           className={`px-4 py-2 border rounded-full ${
             page === totalPages
               ? "bg-gray-200 cursor-not-allowed"
-              : "bg-blue-300 text-white"
+              : "bg-orange-300 text-white"
           }`}
         >
           {">"}

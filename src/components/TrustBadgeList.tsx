@@ -199,7 +199,7 @@ export default function TrustBadgeList() {
                 <div className="flex gap-2">
                   {/* Edit button */}
                   <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
+                    className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
                     onClick={() => {
                       setSelectedFeature(feature); // set selected feature to delete
                       setEditModalVisible(true); // show delete modal

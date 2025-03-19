@@ -32,7 +32,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   // Function to create breadcrumb items dynamically
   const createBreadcrumbItem = (title: string, link: string) => (
     <span
-      className="cursor-pointer hover:text-blue-500"
+      className="cursor-pointer hover:text-orange-500"
       onClick={() => router.push(link)}
     >
       {title}

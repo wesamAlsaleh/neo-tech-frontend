@@ -217,7 +217,7 @@ export default function CategoryList() {
               {/* Category  */}
               <td className="px-4 py-2 border border-gray-300 flex gap-2">
                 <button
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   onClick={() => {
                     setIsEditModalOpen(true);
                     setSelectedCategory(category);

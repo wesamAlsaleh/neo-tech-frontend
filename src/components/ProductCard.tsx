@@ -90,7 +90,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 key={index}
                 className={`h-16 w-16 border rounded cursor-pointer ${
                   currentImageIndex === index
-                    ? "border-blue-500 border-2"
+                    ? "border-orange-500 border-2"
                     : "border-gray-300"
                 }`}
                 onClick={() => handleThumbnailClick(index)}
@@ -168,7 +168,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
 
             <button
-              className={`px-6 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 ${
+              className={`px-6 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 ${
                 product.product_stock === 0
                   ? "opacity-50 cursor-not-allowed"
                   : ""

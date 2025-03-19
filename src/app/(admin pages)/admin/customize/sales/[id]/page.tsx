@@ -287,7 +287,7 @@ export default function EditFlashSalePage({
                 value={formData.name}
                 onChange={handleInputChange}
                 placeholder="Enter the flash sale name e.g. Black Friday"
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 `}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2 `}
                 required
               />
             </div>
@@ -307,7 +307,7 @@ export default function EditFlashSalePage({
                 value={formData.description || ""}
                 onChange={handleInputChange}
                 placeholder="Enter the flash sale description e.g. The biggest sale of the year"
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 `}
+                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2 `}
               />
             </div>
 
@@ -328,7 +328,7 @@ export default function EditFlashSalePage({
                   name="start_date"
                   value={formData.start_date}
                   onChange={handleInputChange}
-                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 `}
+                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2 `}
                   required
                 />
               </div>
@@ -348,7 +348,7 @@ export default function EditFlashSalePage({
                   name="end_date"
                   value={formData.end_date}
                   onChange={handleInputChange}
-                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 `}
+                  className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2 `}
                   required
                 />
               </div>
@@ -387,7 +387,7 @@ export default function EditFlashSalePage({
                   <div
                     key={product.id}
                     className={`${
-                      isSelected ? "bg-blue-50" : "bg-white"
+                      isSelected ? "bg-orange-50" : "bg-white"
                     } shadow-md rounded-md p-4`}
                   >
                     {/* Product Name & checkbox container */}
@@ -400,7 +400,7 @@ export default function EditFlashSalePage({
                       {/* CheckBox */}
                       <input
                         type="checkbox"
-                        className="form-checkbox h-5 w-5 text-blue-600"
+                        className="form-checkbox h-5 w-5 text-orange-600"
                         checked={isSelected}
                         onChange={(e) =>
                           handleProductSelection(
@@ -440,7 +440,7 @@ export default function EditFlashSalePage({
                 className={`px-4 py-2 border rounded ${
                   currentPage === 1
                     ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-blue-500 text-white"
+                    : "bg-orange-500 text-white"
                 }`}
               >
                 Previous
@@ -458,7 +458,7 @@ export default function EditFlashSalePage({
                 className={`px-4 py-2 border rounded ${
                   currentPage === totalPages
                     ? "bg-gray-300 cursor-not-allowed"
-                    : "bg-blue-500 text-white"
+                    : "bg-orange-500 text-white"
                 }`}
               >
                 Next
@@ -479,7 +479,7 @@ export default function EditFlashSalePage({
           <button
             type="submit"
             disabled={submitting}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
+            className="px-4 py-2 bg-orange-600 text-white rounded-md text-sm font-medium hover:bg-orange-700 disabled:opacity-50"
           >
             {submitting ? "Saving..." : "Save Changes"}
           </button>

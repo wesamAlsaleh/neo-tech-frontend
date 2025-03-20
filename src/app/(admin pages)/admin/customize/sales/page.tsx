@@ -26,6 +26,15 @@ export default function page() {
             color="steelblue"
           />
         }
+        actionButton3={
+          <ActionButton
+            href="/admin/customize"
+            text="Back"
+            buttonTitle="Go back to Customize NeoTech Shop"
+            color="white"
+            textColor="black"
+          />
+        }
       />
 
       {/* Products on Sale list */}

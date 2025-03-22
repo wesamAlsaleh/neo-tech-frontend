@@ -47,7 +47,6 @@ export default function homePage() {
       {/* TODO: Hero Section */}
       <HeroSection />
 
-      {/* TODO: Flash Sales Section, require productsManagement update */}
       <FlashSalesSection />
 
       <Separator margin="my-8" />

@@ -236,7 +236,7 @@ export const getFlashSale = async (flashSaleId: string) => {
 export const displayFlashSale = async (perPage: number, page: number) => {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_APP_URI}/admin/display-active-flash-sale?perPage=${perPage}&page=${page}`
+      `${process.env.NEXT_PUBLIC_APP_URI}/display-active-flash-sale?perPage=${perPage}&page=${page}`
     );
 
     // if there is no active flash sale return false and a message

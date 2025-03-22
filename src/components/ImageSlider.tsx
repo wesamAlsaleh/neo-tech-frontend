@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
-// ImageSlider component props is imageUrls
+// [
+// 'http://127.0.0.1:8000/storage/images/slider_images/New_slider_updated_successfully.jpg',
+//  'http://127.0.0.1:8000/storage/images/slider_images/New_slider.jpg',
+//  'http://127.0.0.1:8000/storage/images/slider_images/featured.jpg'
+// ]
+
+// Interface for ImageSlider props
 interface Props {
   imageUrls: string[];
 }
 
-// Interface for image data
-interface ImageData {
-  src: string;
-}
-
 export default function ImageSlider(props: Props) {
   // Loop through the imageUrls array and create an array of image data
-  const images: ImageData[] = props.imageUrls.map((url) => ({
-    src: `${url}`,
+  const images = props.imageUrls.map((url) => ({
+    src: url,
   }));
 
   // State to keep track of the current image index
@@ -59,6 +60,11 @@ export default function ImageSlider(props: Props) {
   const handleMouseLeave = (): void => {
     setIsHovered(false);
   };
+
+  // If there are no images, display a message
+  if (images.length === 0) {
+    return <div>No images available</div>;
+  }
 
   return (
     // Image slider container

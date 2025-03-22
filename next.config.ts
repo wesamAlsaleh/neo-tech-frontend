@@ -7,16 +7,28 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "4mb", // default is "1mb" (1 megabyte)
     },
   },
-  // images: {
-  //   remotePatterns: [
-  //     {
-  //       protocol: "http",
-  //       hostname: "127.0.0.1",
-  //       port: "8000",
-  //       pathname: "/storage/images/products_images/**",
-  //     },
-  //   ],
-  // },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        port: "8000",
+        pathname: "/storage/images/**",
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        port: "8000",
+        pathname: "/storage/images/products_images/**",
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        port: "8000",
+        pathname: "/storage/images/slider_images/**",
+      },
+    ],
+  },
 };
 
 export default nextConfig;

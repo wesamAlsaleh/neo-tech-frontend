@@ -37,14 +37,12 @@ export default function HeroSection() {
   }, []);
 
   // loop through the slider images and create an array of image urls
-  const imageUrls = sliderImages.map((image) => image.url);
-
-  console.log(imageUrls);
+  const imageUrlsArray = sliderImages.map((image) => image.url);
 
   // If loading, return a loading spinner
   if (loading) {
     return <LoadingSpinner />;
   }
 
-  return <ImageSlider imageUrls={imageUrls} />;
+  return <ImageSlider imageUrls={imageUrlsArray} />;
 }

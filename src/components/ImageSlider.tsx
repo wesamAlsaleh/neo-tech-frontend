@@ -71,34 +71,38 @@ export default function ImageSlider(props: Props) {
     <div className="relative w-full mx-auto mt-4">
       {/* Image Container */}
       <div
-        className="relative h-[460px] mx-12 group hover:-translate-y-2"
-        onMouseOver={handleMouseOver}
-        onMouseLeave={handleMouseLeave}
+        className="relative h-[460px] mx-12 group"
+        onMouseOver={handleMouseOver} // Pause the automatic slide transition
+        onMouseLeave={handleMouseLeave} // Resume the automatic slide transition
       >
         <Image
-          src={images[currentIndex].src}
-          alt={`Slider Image ${currentIndex + 1}`}
-          layout="fill"
-          objectFit="cover"
-          className="rounded-xl transition-all duration-500 ease-in-out cursor-pointer"
+          src={images[currentIndex].src} // Display the current image
+          alt={`Slider Image ${currentIndex + 1}`} // Image alt text for accessibility
+          layout="fill" // Image layout property
+          objectFit="cover" // Image fit property
+          className="rounded-lg transition-all duration-500 ease-in-out"
         />
       </div>
 
       {/* Previous button */}
-      <button
-        className="absolute left-0 top-1/2 transform h-[459px] rounded-xl hover:bg-[#1a222f] mx-1 -mt-[10px] -translate-y-1/2 bg-[#111927] text-white p-2 group"
-        onClick={prevSlide}
-      >
-        l
-      </button>
+      {images.length > 1 && (
+        <button
+          className="absolute left-0 top-1/2 transform h-[459px] rounded-xl hover:bg-[#1a222f] mx-1 -mt-[10px] -translate-y-1/2 bg-[#111927] text-white p-2 group"
+          onClick={prevSlide}
+        >
+          l
+        </button>
+      )}
 
       {/* Next button */}
-      <button
-        className="absolute right-0 top-1/2 transform h-[459px] rounded-xl hover:bg-[#1a222f] mx-1 -mt-[10px] -translate-y-1/2 bg-[#111927] text-white p-2 group"
-        onClick={nextSlide}
-      >
-        r
-      </button>
+      {images.length > 1 && (
+        <button
+          className="absolute right-0 top-1/2 transform h-[459px] rounded-xl hover:bg-[#1a222f] mx-1 -mt-[10px] -translate-y-1/2 bg-[#111927] text-white p-2 group"
+          onClick={nextSlide}
+        >
+          r
+        </button>
+      )}
 
       {/* Image slider pagination */}
       <div className="flex justify-center mt-4">

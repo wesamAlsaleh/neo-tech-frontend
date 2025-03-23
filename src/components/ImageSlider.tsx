@@ -13,8 +13,11 @@ interface Props {
 }
 
 export default function ImageSlider(props: Props) {
+  // Add this check to ensure imageUrls exists and is an array
+  const imageUrls = props.imageUrls || [];
+
   // Loop through the imageUrls array and create an array of image data
-  const images = props.imageUrls.map((url) => ({
+  const images = imageUrls.map((url) => ({
     src: url,
   }));
 
@@ -38,6 +41,9 @@ export default function ImageSlider(props: Props) {
 
   // useEffect hook to handle automatic slide transition
   useEffect(() => {
+    // Check if images array is not empty
+    if (images.length === 0) return;
+
     // If not hovered, show the next slide every 3 seconds
     if (!isHovered) {
       const interval = setInterval(() => {
@@ -49,7 +55,7 @@ export default function ImageSlider(props: Props) {
         clearInterval(interval);
       };
     }
-  }, [isHovered]);
+  }, [isHovered, images.length]);
 
   // Handle mouse over event to pause the automatic slide transition
   const handleMouseOver = (): void => {

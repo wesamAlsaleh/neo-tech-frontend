@@ -44,7 +44,6 @@ const TrustBadgesSection = dynamic(
 export default function homePage() {
   return (
     <>
-      {/* TODO: Hero Section */}
       <HeroSection />
 
       <FlashSalesSection />

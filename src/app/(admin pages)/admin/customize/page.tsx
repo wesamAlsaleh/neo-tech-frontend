@@ -19,10 +19,10 @@ export default function page() {
       />
 
       {/* Customize actions container */}
-      <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-6 p-4">
-        {/* Customize Banner page link */}
+      <div className="grid lg:grid-cols-4 md:grid-cols-2 sm:grid-cols-1 gap-6 p-4 h-28">
+        {/* TODO: Customize Banner page link */}
         <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg px-4 py-3 shadow-md transition duration-300">
-          Customize Banner
+          Customize Banner (Coming Soon)
         </button>
 
         {/* Customize trust badges page link */}
@@ -33,12 +33,12 @@ export default function page() {
           Customize NeoTech Trust Badges
         </button>
 
-        {/* TODO: Image Carousels page link */}
+        {/* Image Carousels page link */}
         <button
           className="bg-violet-500 hover:bg-violet-600 text-white font-semibold rounded-lg px-4 py-3 shadow-md transition duration-300"
-          onClick={() => {}}
+          onClick={() => router.push("/admin/customize/slider")}
         >
-          Customize Image Carousels (Coming Soon)
+          Customize Image Carousels
         </button>
 
         <button

@@ -9,7 +9,10 @@ import { cookies } from "next/headers";
 /**
  * @function getSliderImagesAdmin - Function to get slider images for the admin dashboard
  */
-export const getSliderImagesAdmin = async () => {
+export const getSliderImagesAdmin = async (
+  currentPage: number,
+  perPage: number
+) => {
   try {
     // get user token from cookies
     const cookieStore = await cookies();
@@ -24,7 +27,7 @@ export const getSliderImagesAdmin = async () => {
     }
 
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_APP_URI}/admin/images`,
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/images?page=${currentPage}&per_page=${perPage}`,
       {
         headers: {
           Authorization: `Bearer ${userToken}`,
@@ -35,7 +38,18 @@ export const getSliderImagesAdmin = async () => {
     return {
       status: true,
       message: response.data.message,
-      sliderImages: response.data.images,
+      sliderImages: response.data.images.data,
+      pagination: {
+        currentPage: response.data.images.current_page,
+        totalPages: response.data.images.total,
+        firstPageUrl: response.data.images.first_page_url,
+        lastPageUrl: response.data.images.last_page_url,
+        nextPageUrl: response.data.images.next_page_url,
+        prevPageUrl: response.data.images.prev_page_url,
+        from: response.data.images.from, // Index of the first item in the current page
+        to: response.data.images.to, // Index of the last item in the current page
+        perPage: response.data.images.per_page,
+      },
     };
   } catch (error: any) {
     // Log the error to the console

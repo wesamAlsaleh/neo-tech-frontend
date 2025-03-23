@@ -4,6 +4,7 @@ import React from "react";
 import PageTitle from "@/components/PageTitle";
 import { ActionButton } from "@/components/ActionButton";
 import Separator from "@/components/Separator";
+import SliderImagesList from "@/components/SliderImagesList";
 
 export default function page() {
   return (
@@ -12,6 +13,13 @@ export default function page() {
         title="Image Slider"
         subtitle="Manage the images that appear on the homepage slider"
         actionButton={
+          <ActionButton
+            href="/admin/customize/slider/create-slider-image"
+            text="Add Slider Image"
+            buttonTitle="Add a new image to the slider"
+          />
+        }
+        actionButton2={
           <ActionButton
             href="/admin/customize"
             text="Back"
@@ -28,6 +36,7 @@ export default function page() {
       <Separator width="w-1/2" thickness="border-t-2" center />
 
       {/* All Images List */}
+      <SliderImagesList />
     </>
   );
 }

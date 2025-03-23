@@ -30,6 +30,12 @@ import orangeSaleIcon96 from "../public/assets/button-icons/icons8-hot-price-96.
 import salePriceTag48 from "../public/assets/button-icons/icons8-sale-price-tag-48.png";
 import salePriceTag96 from "../public/assets/button-icons/icons8-sale-price-tag-96.png";
 
+// visibility icons
+import globe48 from "../public/assets/button-icons/icons8-globe-48.png";
+import globe96 from "../public/assets/button-icons/icons8-globe-96.png";
+import exclusive48 from "../public/assets/button-icons/icons8-exclusive-product-48.png";
+import exclusive96 from "../public/assets/button-icons/icons8-exclusive-product-96.png";
+
 // Admin sidebar icons
 
 export const icons = {
@@ -57,4 +63,8 @@ export const icons = {
   orangeSaleIcon96,
   salePriceTag48,
   salePriceTag96,
+  globe48,
+  globe96,
+  exclusive48,
+  exclusive96,
 };

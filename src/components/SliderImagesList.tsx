@@ -204,7 +204,7 @@ export default function SliderImagesList() {
             <th className="px-4 py-2 border border-gray-300 w-48">
               Created Date
             </th>
-            <th className="px-4 py-2 border border-gray-300">Actions</th>
+            <th className="px-4 py-2 border border-gray-300 w-32">Actions</th>
           </tr>
         </thead>
 
@@ -282,7 +282,7 @@ export default function SliderImagesList() {
 
               {/* Action Buttons Column */}
               <td className="px-4 py-2 border border-gray-300">
-                <div className="flex gap-2">
+                <div className="flex items-center justify-center gap-2">
                   {/* Edit button */}
 
                   {/* Toggle activity button */}

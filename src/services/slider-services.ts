@@ -291,8 +291,18 @@ export const toggleActivity = async (imageId: string) => {
  */
 export const getSliderImages = async () => {
   try {
+    // get user token from cookies if available
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    // Define request headers (conditionally include Authorization)
+    const headers = userToken
+      ? { Authorization: `Bearer ${userToken}` }
+      : undefined;
+
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_APP_URI}/display-slider-images`
+      `${process.env.NEXT_PUBLIC_APP_URI}/display-slider-images`,
+      { headers }
     );
 
     return {

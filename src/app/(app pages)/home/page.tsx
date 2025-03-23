@@ -69,9 +69,6 @@ export default function homePage() {
 
       <Separator margin="my-8" />
 
-      {/* TODO: New Arrival Section */}
-      {/* Section */}
-
       {/* Trust Badges Section */}
       <TrustBadgesSection />
     </>

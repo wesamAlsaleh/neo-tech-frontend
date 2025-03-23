@@ -22,6 +22,7 @@ export default function HeroSection() {
   // Fetch slider images from the server
   useEffect(() => {
     try {
+      // Fetch the user
       const fetchSliderImages = async () => {
         const response = await getSliderImages();
 

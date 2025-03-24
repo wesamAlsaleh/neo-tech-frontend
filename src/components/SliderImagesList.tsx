@@ -63,7 +63,7 @@ export default function SliderImagesList() {
         setLoading(true);
 
         // Fetch slider images from the server
-        const response = await getSliderImagesAdmin(currentPage, 2);
+        const response = await getSliderImagesAdmin(currentPage, 10);
 
         // Check if the response is successful
         if (response.status) {

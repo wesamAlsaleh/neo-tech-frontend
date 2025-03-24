@@ -292,7 +292,7 @@ export default function SliderImagesList() {
                         ? "bg-rose-400 hover:bg-rose-500"
                         : "bg-green-500 hover:bg-green-600"
                     } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
-                    onClick={() => handleDelete(String(sliderImage.id))}
+                    onClick={() => handleToggleActivity(String(sliderImage.id))}
                     title={
                       sliderImage.is_active
                         ? `Deactivate ${sliderImage.name}`
@@ -367,6 +367,39 @@ export default function SliderImagesList() {
       </table>
 
       {/* Pagination Control*/}
+      {totalPages > 1 && (
+        <div className="flex items-center mt-4 gap-x-4">
+          {/* Previous Button */}
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className={`px-4 py-2 border rounded ${
+              currentPage === 1
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-orange-500 text-white"
+            }`}
+          >
+            Previous
+          </button>
+
+          <span className="font-semibold">{`${currentPage} of ${totalPages}`}</span>
+
+          {/* Next Button */}
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className={`px-4 py-2 border rounded ${
+              currentPage === totalPages
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-orange-500 text-white"
+            }`}
+          >
+            Next
+          </button>
+        </div>
+      )}
 
       {/* Delete Modal */}
       <DeleteModal

@@ -39,6 +39,7 @@ export default function SliderImagesList() {
   // State to store the pagination details
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalItems, setTotalItems] = useState<number>(0);
   const [firstPageUrl, setFirstPageUrl] = useState<string>("");
   const [lastPageUrl, setLastPageUrl] = useState<string>("");
   const [nextPageUrl, setNextPageUrl] = useState<string>("");
@@ -58,8 +59,11 @@ export default function SliderImagesList() {
     try {
       // Fetch slider images
       const fetchSliderImages = async () => {
+        // Set loading to true to display loading spinner while request is in progress
+        setLoading(true);
+
         // Fetch slider images from the server
-        const response = await getSliderImagesAdmin(currentPage, 10);
+        const response = await getSliderImagesAdmin(currentPage, 2);
 
         // Check if the response is successful
         if (response.status) {
@@ -76,6 +80,7 @@ export default function SliderImagesList() {
           if (response.pagination) {
             setCurrentPage(response.pagination.currentPage);
             setTotalPages(response.pagination.totalPages);
+            setTotalItems(response.pagination.totalItems);
             setFirstPageUrl(response.pagination.firstPageUrl);
             setLastPageUrl(response.pagination.lastPageUrl);
             setNextPageUrl(response.pagination.nextPageUrl);
@@ -382,6 +387,7 @@ export default function SliderImagesList() {
             Previous
           </button>
 
+          {/* Counter of current page */}
           <span className="font-semibold">{`${currentPage} of ${totalPages}`}</span>
 
           {/* Next Button */}

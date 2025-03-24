@@ -41,7 +41,8 @@ export const getSliderImagesAdmin = async (
       sliderImages: response.data.images.data,
       pagination: {
         currentPage: response.data.images.current_page,
-        totalPages: response.data.images.total,
+        totalPages: response.data.images.last_page,
+        totalItems: response.data.images.total,
         firstPageUrl: response.data.images.first_page_url,
         lastPageUrl: response.data.images.last_page_url,
         nextPageUrl: response.data.images.next_page_url,

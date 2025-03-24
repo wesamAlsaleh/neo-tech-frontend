@@ -78,7 +78,7 @@ export default function ImageSlider(props: Props) {
     <div className="relative w-full mx-auto">
       {/* Image Container */}
       <div
-        className="relative h-[576px] w-[1024px] mx-auto group" // Image container styles 1024x576 pixels
+        className="relative h-[576px] w-[1280px] mx-auto group" // Image container styles 1024x576 pixels
         onMouseOver={handleMouseOver} // Pause the automatic slide transition
         onMouseLeave={handleMouseLeave} // Resume the automatic slide transition
       >

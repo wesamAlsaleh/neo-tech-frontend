@@ -11,7 +11,7 @@ export default function page() {
       <PageTitle
         title="Add Slider Image"
         subtitle="Add a new image to the slider"
-        highlightText="The recommended image size is 1920x1080 pixels"
+        highlightText="The recommended image size is  1024x576 pixels"
         actionButton={
           <ActionButton
             href="/admin/customize/slider"

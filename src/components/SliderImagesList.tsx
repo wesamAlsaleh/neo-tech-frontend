@@ -36,6 +36,9 @@ export default function SliderImagesList() {
   // loading state
   const [loading, setLoading] = useState(true);
 
+  // State to store the action submission status
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // State to store the pagination details
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
@@ -103,8 +106,8 @@ export default function SliderImagesList() {
   // Handle toggle activity feature
   const handleToggleActivity = async (imageId: string) => {
     try {
-      // Set loading to true to display loading spinner while request is in progress
-      setLoading(true);
+      // Set is submitting to true to disable the button while request is in progress
+      setIsSubmitting(true);
 
       const response = await toggleActivity(imageId);
 
@@ -126,8 +129,8 @@ export default function SliderImagesList() {
   // Handle toggle visibility feature
   const handleToggleVisibility = async (imageId: string) => {
     try {
-      // Set loading to true to display loading spinner while request is in progress
-      setLoading(true);
+      // Set is submitting to true to disable the button while request is in progress
+      setIsSubmitting(true);
 
       const response = await toggleVisibility(imageId);
 
@@ -149,8 +152,8 @@ export default function SliderImagesList() {
   // Handle delete feature
   const handleDelete = async (imageId: string) => {
     try {
-      // Set loading to true to display loading spinner while request is in progress
-      setLoading(true);
+      // Set is submitting to true to disable the button while request is in progress
+      setIsSubmitting(true);
 
       const response = await deleteSliderImage(imageId);
 
@@ -303,6 +306,7 @@ export default function SliderImagesList() {
                         ? `Deactivate ${sliderImage.name}`
                         : `Activate sliderImage ${sliderImage.name}`
                     }
+                    disabled={isSubmitting}
                   >
                     <img
                       src={
@@ -331,6 +335,7 @@ export default function SliderImagesList() {
                         ? `Make ${sliderImage.name} exclusive to members`
                         : `Make ${sliderImage.name} public to all`
                     }
+                    disabled={isSubmitting}
                   >
                     <img
                       src={
@@ -356,6 +361,7 @@ export default function SliderImagesList() {
                       setDeleteModalVisible(true); // show delete modal
                     }}
                     title={`Delete Image ${sliderImage.name}`}
+                    disabled={isSubmitting}
                   >
                     <img
                       src={icons.delete50.src}

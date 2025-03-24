@@ -36,6 +36,7 @@ export default function ImageSlider(props: Props) {
 
   // Function to show the next slide
   const nextSlide = (): void => {
+    // Update the current index to the next image index
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
   };
 
@@ -55,7 +56,7 @@ export default function ImageSlider(props: Props) {
         clearInterval(interval);
       };
     }
-  }, [isHovered, images.length]);
+  }, [isHovered, images.length, currentIndex]);
 
   // Handle mouse over event to pause the automatic slide transition
   const handleMouseOver = (): void => {
@@ -74,10 +75,10 @@ export default function ImageSlider(props: Props) {
 
   return (
     // Image slider container
-    <div className="relative w-full mx-auto mt-4">
+    <div className="relative w-full mx-auto">
       {/* Image Container */}
       <div
-        className="relative h-[460px] mx-12 group"
+        className="relative h-[576px] w-[1024px] mx-auto group" // Image container styles 1024x576 pixels
         onMouseOver={handleMouseOver} // Pause the automatic slide transition
         onMouseLeave={handleMouseLeave} // Resume the automatic slide transition
       >
@@ -91,38 +92,45 @@ export default function ImageSlider(props: Props) {
       </div>
 
       {/* Previous button */}
-      {images.length > 1 && (
+      {/* {images.length > 1 && (
         <button
-          className="absolute left-0 top-1/2 transform h-[459px] rounded-xl hover:bg-[#1a222f] mx-1 -mt-[10px] -translate-y-1/2 bg-[#111927] text-white p-2 group"
+          className="absolute left-0 top-1/2 transform h-[576px] rounded-xl hover:bg-[#1a222f] mx-1 -mt-[10px] -translate-y-1/2 bg-[#111927] text-white p-2 group"
           onClick={prevSlide}
         >
           l
         </button>
-      )}
+      )} */}
 
       {/* Next button */}
-      {images.length > 1 && (
+      {/* {images.length > 1 && (
         <button
-          className="absolute right-0 top-1/2 transform h-[459px] rounded-xl hover:bg-[#1a222f] mx-1 -mt-[10px] -translate-y-1/2 bg-[#111927] text-white p-2 group"
+          className="absolute right-0 top-1/2 transform h-[576px] rounded-xl hover:bg-[#1a222f] mx-1 -mt-[10px] -translate-y-1/2 bg-[#111927] text-white p-2 group"
           onClick={nextSlide}
         >
           r
         </button>
-      )}
+      )} */}
 
       {/* Image slider pagination */}
       <div className="flex justify-center mt-4">
         {images.map((_, index) => (
-          <div
+          // Pagination dots
+          <button
             key={index}
             className={`h-1 w-10 mx-1 ${
               index === currentIndex
                 ? "bg-orange-500 rounded-xl"
                 : "bg-gray-300 rounded-xl"
             } transition-all duration-500 ease-in-out`}
-          ></div>
+            onClick={() => setCurrentIndex(index)}
+          />
         ))}
       </div>
     </div>
   );
+}
+
+// This line is for the parent image container div, its to add a temporary border to debug the image slider
+{
+  /* <div className="relative w-full mx-auto border-2 border-red-500"> */
 }

@@ -152,9 +152,7 @@ export default function AddImageSliderForm() {
             />
             <label htmlFor="visibility" className="text-sm text-gray-700">
               Make it exclusive to members only{" "}
-              <span className="text-xs text-gray-500">
-                (default: For all users)
-              </span>
+              <span className="text-xs text-gray-500">(Default: everyone)</span>
             </label>
           </div>
         </div>

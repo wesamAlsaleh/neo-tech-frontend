@@ -16,6 +16,7 @@ import { Category } from "@/types/category";
 import LoadingSpinner from "./LoadingSpinner";
 import EditCategoryModal from "@/components/EditCategoryModal";
 import DeleteModal from "@/components/DeleteModal";
+import TableStatusColumn from "./TableStatusColumn";
 
 // import the icons from the public/icons folder
 import { icons } from "../../public/icons";
@@ -106,6 +107,11 @@ export default function CategoryList() {
     }
   };
 
+  // If the categories are still being fetched, display the loading spinner
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
   return (
     // Categories Table Container
     <div className="overflow-x-auto">
@@ -129,153 +135,149 @@ export default function CategoryList() {
       )}
 
       {/* Categories Table */}
-      <Suspense fallback={<LoadingSpinner />}>
-        <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
-          <thead>
-            <tr className="bg-gray-100 border-b border-gray-300">
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Category Name
-              </th>
 
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Category Description
-              </th>
+      <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
+        <thead>
+          <tr className="bg-gray-100 border-b border-gray-300">
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Category Name
+            </th>
 
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Category Image
-              </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Category Description
+            </th>
 
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Is Active
-              </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Category Image
+            </th>
 
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Created At
-              </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Is Active
+            </th>
 
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Actions
-              </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Created At
+            </th>
+
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Actions
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {/* No categories message */}
+          {categories.length === 0 && (
+            <tr>
+              <td className="text-center py-4" colSpan={6}>
+                No categories available
+              </td>
             </tr>
-          </thead>
+          )}
 
-          <tbody>
-            {/* No categories message */}
-            {categories.length === 0 && (
-              <tr>
-                <td className="text-center py-4" colSpan={6}>
-                  No categories available
-                </td>
-              </tr>
-            )}
+          {categories.map((category) => (
+            <tr key={category.id} className="hover:bg-gray-100 even:bg-gray-50">
+              {/* Category Name */}
+              <td className="px-4 py-2 border border-gray-300">
+                {category.category_name}
+              </td>
 
-            {categories.map((category) => (
-              <tr
-                key={category.id}
-                className="hover:bg-gray-100 even:bg-gray-50"
-              >
-                {/* Category Name */}
-                <td className="px-4 py-2 border border-gray-300">
-                  {category.category_name}
-                </td>
+              {/* Category description*/}
+              <td className="px-4 py-2 border border-gray-300">
+                {category.category_description || "No description"}
+              </td>
 
-                {/* Category description*/}
-                <td className="px-4 py-2 border border-gray-300">
-                  {category.category_description || "No description"}
-                </td>
+              {/* Category image*/}
+              <td className="px-4 py-2 border border-gray-300">
+                <img
+                  className="h-10 w-10 rounded-full object-cover"
+                  src={category.category_image_url!}
+                  alt={category.category_name}
+                />
+              </td>
 
-                {/* Category image*/}
-                <td className="px-4 py-2 border border-gray-300">
+              {/* Category Status */}
+              <td className="px-4 py-2 border border-gray-300">
+                {category.is_active ? (
+                  <span className="text-green-600 bg-green-100 px-2 py-1 rounded-md font-bold">
+                    Active
+                  </span>
+                ) : (
+                  <span className="text-red-600 bg-red-100 px-2 py-1 rounded-md font-bold">
+                    Inactive
+                  </span>
+                )}
+              </td>
+
+              {/* Category Created Date */}
+              <td className="px-4 py-2 border border-gray-300">
+                {new Date(category.created_at).toLocaleDateString()}
+              </td>
+
+              {/* Category  */}
+              <td className="px-4 py-2 border border-gray-300 flex gap-2">
+                <button
+                  className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  onClick={() => {
+                    setIsEditModalOpen(true);
+                    setSelectedCategory(category);
+                  }}
+                >
                   <img
-                    className="h-10 w-10 rounded-full object-cover"
-                    src={category.category_image_url!}
-                    alt={category.category_name}
+                    src={icons.edit50.src}
+                    alt="Edit"
+                    width={35}
+                    height={35}
                   />
-                </td>
+                </button>
 
-                {/* Category Status */}
-                <td className="px-4 py-2 border border-gray-300">
+                <button
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  onClick={() => {
+                    // Open the delete modal
+                    setIsDeleteModalOpen(true);
+
+                    // Set the selected category to delete
+                    setSelectedCategoryToDelete(category);
+                  }}
+                >
+                  <img
+                    src={icons.delete50.src}
+                    alt="Delete"
+                    width={35}
+                    height={35}
+                  />
+                </button>
+
+                <button
+                  className={`${
+                    category.is_active
+                      ? "bg-orange-400 hover:bg-orange-400"
+                      : `bg-green-500 hover:bg-green-700`
+                  } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
+                  onClick={() => handleCategoryStatusToggle(category.id)}
+                >
                   {category.is_active ? (
-                    <span className="text-green-600 bg-green-100 px-2 py-1 rounded-md font-bold">
-                      Active
-                    </span>
+                    <img
+                      src={icons.removeBasket50.src}
+                      alt="Add to Basket"
+                      width={35}
+                      height={35}
+                    />
                   ) : (
-                    <span className="text-red-600 bg-green-100 px-2 py-1 rounded-md font-bold">
-                      Inactive
-                    </span>
+                    <img
+                      src={icons.addBasket50.src}
+                      alt="Add to Basket"
+                      width={35}
+                      height={35}
+                    />
                   )}
-                </td>
-
-                {/* Category Created Date */}
-                <td className="px-4 py-2 border border-gray-300">
-                  {new Date(category.created_at).toLocaleDateString()}
-                </td>
-
-                {/* Category  */}
-                <td className="px-4 py-2 border border-gray-300 flex gap-2">
-                  <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                    onClick={() => {
-                      setIsEditModalOpen(true);
-                      setSelectedCategory(category);
-                    }}
-                  >
-                    <img
-                      src={icons.edit50.src}
-                      alt="Edit"
-                      width={35}
-                      height={35}
-                    />
-                  </button>
-
-                  <button
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                    onClick={() => {
-                      // Open the delete modal
-                      setIsDeleteModalOpen(true);
-
-                      // Set the selected category to delete
-                      setSelectedCategoryToDelete(category);
-                    }}
-                  >
-                    <img
-                      src={icons.delete50.src}
-                      alt="Delete"
-                      width={35}
-                      height={35}
-                    />
-                  </button>
-
-                  <button
-                    className={`${
-                      category.is_active
-                        ? "bg-orange-400 hover:bg-orange-400"
-                        : `bg-green-500 hover:bg-green-700`
-                    } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
-                    onClick={() => handleCategoryStatusToggle(category.id)}
-                  >
-                    {category.is_active ? (
-                      <img
-                        src={icons.removeBasket50.src}
-                        alt="Add to Basket"
-                        width={35}
-                        height={35}
-                      />
-                    ) : (
-                      <img
-                        src={icons.addBasket50.src}
-                        alt="Add to Basket"
-                        width={35}
-                        height={35}
-                      />
-                    )}
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Suspense>
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
 
       {/* Edit Modal */}
       <EditCategoryModal

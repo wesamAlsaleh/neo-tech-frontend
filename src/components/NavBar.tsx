@@ -7,7 +7,6 @@ import React from "react";
 import { useAuth } from "@/contexts/AuthContext";
 
 // import custom components
-import LoadingSpinner from "@/components/LoadingSpinner";
 import DropDownMenu from "./DropDownMenu";
 
 export default function NavBar() {
@@ -17,7 +16,7 @@ export default function NavBar() {
   return (
     <div>
       {/* Navbar container */}
-      <div className="flex p-4 items-center justify-between bg-gray-100/10">
+      <div className="flex p-4 items-center justify-between bg-gray-100/10 border-b-2 border-gray-300 sticky top-0 z-50">
         {/* Shop name */}
         <div className="flex items-center ml-10">
           <h1 className="text-3xl font-bold text-primary">neoTech</h1>
@@ -52,7 +51,6 @@ export default function NavBar() {
             )
           ) : null}
 
-          {/* TODO: change the place of this button */}
           {user?.role === "admin" ? (
             loading ? null : (
               <button>

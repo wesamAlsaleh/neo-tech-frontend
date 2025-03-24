@@ -48,6 +48,7 @@ export default function AdminSidebar() {
           <LI href="/admin/dashboard" name="Dashboard" />
           <LI href="/admin/categories" name="Categories" />
           <LI href="/admin/products" name="Products" />
+          <LI href="/admin/customize" name="Customize Shop" />
         </ul>
       </nav>
     </aside>

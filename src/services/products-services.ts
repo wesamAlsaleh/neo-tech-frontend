@@ -6,29 +6,74 @@ import { cookies } from "next/headers";
 /**
  * @function getProducts to get all products
  */
-export const getProducts = async () => {
+export const getProducts = async (currentPage: number) => {
   try {
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_APP_URI}/products`
+      `${process.env.NEXT_PUBLIC_APP_URI}/products?page=${currentPage}`
     );
-
-    if (response.data.products.length === 0) {
-      return {
-        status: false,
-        message: "No products found.",
-      };
-    }
 
     return {
       status: true,
       products: response.data.products,
+      currentPage: response.data.pagination.current_page,
+      totalPages: response.data.pagination.total_pages,
     };
-  } catch (error) {
+  } catch (error: any) {
+    // Debugging error
     console.error(error);
+
+    // Log the Developer message
+    console.log(error.response.data.developerMessage);
 
     return {
       status: false,
-      message: "An error occurred while fetching the products.",
+      message: error.response.data.message,
+    };
+  }
+};
+
+/**
+ * @function getSaleProducts to get all products on sale
+ */
+export const getSaleProducts = async (currentPage: number) => {
+  try {
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    if (!userToken) {
+      return {
+        status: false,
+        message: "Authentication token not found.",
+      };
+    }
+
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/sale-products?page=${currentPage}`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+      products: response.data.products,
+      currentPage: response.data.pagination.current_page,
+      totalPages: response.data.pagination.total_pages,
+      totalProducts: response.data.pagination.total_products_onSale,
+    };
+  } catch (error: any) {
+    // Debugging error
+    console.error(error);
+
+    // Log the Developer message
+    console.log(error);
+
+    return {
+      status: false,
+      message: error.response.data.message,
     };
   }
 };
@@ -371,14 +416,16 @@ export const searchProductBySlug = async (slug: string) => {
 
     return {
       status: true,
-      products: response.data.products,
+      message: response.data.message,
+      product: response.data.product,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
+    console.log(error.response.data.developerMessage);
 
     return {
       status: false,
-      message: "An error occurred while searching for the product.",
+      message: error.response.data.message,
     };
   }
 };
@@ -427,6 +474,188 @@ export const searchProductByStatus = async (status: string) => {
     return {
       status: false,
       message: "An error occurred while searching for the product.",
+    };
+  }
+};
+
+/**
+ * @function getBestSellingProducts to get best selling products, with pagination
+ */
+export const getBestSellingProducts = async (currentPage: number) => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/best-selling-products?page=${currentPage}`
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+      products: response.data.products,
+      paginationInfo: {
+        currentPage: response.data.pagination.current_page,
+        totalPages: response.data.pagination.total_pages,
+        totalItems: response.data.pagination.total_items,
+      },
+    };
+  } catch (error: any) {
+    console.error("Error fetching best-selling products:", error);
+    console.log(error.response.data.developerMessage || "d@q");
+
+    return {
+      status: false,
+      message:
+        error.response.data.message ||
+        "An error occurred while fetching the best selling products.",
+    };
+  }
+};
+
+/**
+ * @function getExploreProducts to get explore products
+ */
+export const getExploreProducts = async () => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/explore-products`
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+      products: response.data.products,
+    };
+  } catch (error: any) {
+    console.error("Error fetching explore products:", error);
+    console.log(error.response.data.developerMessage || "d@q");
+
+    return {
+      status: false,
+      message:
+        error.response.data.message ||
+        "An error occurred while fetching the explore products.",
+    };
+  }
+};
+
+/**
+ * @function putProductOnSale to put a product on sale
+ */
+export const putProductOnSale = async (
+  productId: string,
+  formData: FormData
+) => {
+  try {
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/toggle-product-sale/${productId}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+    };
+  } catch (error: any) {
+    // Debugging error
+    console.error(error);
+
+    console.log(" ");
+
+    // Log the Developer message
+    console.log(error.response.data.developerMessage);
+
+    return {
+      status: false,
+      message:
+        error.response.data.message ||
+        "An error occurred while putting the product on sale.",
+    };
+  }
+};
+
+/**
+ * @function removeProductFromSale to remove a product from sale
+ */
+export const removeProductFromSale = async (productId: string) => {
+  try {
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/toggle-product-sale-off/${productId}`,
+      {}, // Empty data
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+    };
+  } catch (error: any) {
+    // Debugging error
+    console.error(error);
+
+    console.log(" ");
+
+    // Log the Developer message
+    console.log(error.response.data.developerMessage);
+
+    return {
+      status: false,
+      message:
+        error.response.data.message ||
+        "An error occurred while removing the product from sale.",
+    };
+  }
+};
+
+/**
+ * @function removeAllProductsFromSale to remove all products from sale
+ */
+export const removeAllProductsFromSale = async () => {
+  try {
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/remove-all-products-from-sale`,
+      {}, // Empty data
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+    };
+  } catch (error: any) {
+    // Debugging error
+    console.error(error);
+
+    console.log(" ");
+
+    // Log the Developer message
+    console.log(error.response.data.developerMessage);
+
+    return {
+      status: false,
+      message:
+        error.response.data.message ||
+        "An error occurred while removing all products from sale.",
     };
   }
 };

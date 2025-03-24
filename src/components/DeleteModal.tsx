@@ -3,8 +3,10 @@ export default function DeleteModal({
   onClose,
   onConfirm,
   name,
+  permanentAlert,
 }: {
   isOpen: boolean;
+  permanentAlert?: boolean;
   onClose: () => void;
   onConfirm: () => void;
   name: string;
@@ -17,13 +19,26 @@ export default function DeleteModal({
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       {/* Modal Content */}
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        {/* Modal Name */}
-        <h2 className="text-lg font-semibold">Confirm Deletion</h2>
+        {/* Text Container */}
+        <div className="">
+          {/* Modal Name */}
+          <h2 className="text-xl font-semibold text-gray-800">
+            Confirm Deletion
+          </h2>
 
-        {/* Product Name container*/}
-        <p className="mt-2 text-gray-600">
-          Are you sure you want to delete <strong>{name}</strong>?
-        </p>
+          {/* Permanent Alert */}
+          {permanentAlert && (
+            <p className="mt-2 text-red-600 bg-red-100 p-2 rounded text-sm text-center">
+              This action is permanent and cannot be undone!
+            </p>
+          )}
+
+          {/* Product Name container*/}
+          <p className="mt-2 text-gray-600 text-base">
+            Are you sure you want to delete <strong className="">{name}</strong>
+            ?
+          </p>
+        </div>
 
         {/* Buttons Container */}
         <div className="mt-4 flex justify-end gap-2">

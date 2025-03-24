@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Suspense, useEffect, useState } from "react";
 
 // import types
-import { Product, Products } from "@/types/product";
+import { Product } from "@/types/product";
 
 // Services import
 import {
@@ -20,9 +20,11 @@ import { icons } from "../../public/icons";
 
 // import custom components
 import ConfirmationModal from "@/components/ConfirmationModal";
+import ServerResponse from "./ServerResponse";
 
 export default function TrashedProductsList() {
-  const [products, setProducts] = useState<Products[]>([]); // Products state
+  const [products, setProducts] = useState<Product[]>([]); // Products state
+
   const [serverResponse, setServerResponse] = useState({
     status: false,
     message: "",
@@ -104,187 +106,176 @@ export default function TrashedProductsList() {
 
   return (
     <div className="overflow-x-auto">
-      <Suspense fallback={<LoadingSpinner />}>
-        {/* action message */}
-        {serverResponse.message && (
-          <div
-            className={`px-4 py-3 rounded relative mb-4 ${
-              serverResponse.status
-                ? "bg-green-100 border border-green-400 text-green-700"
-                : "bg-red-100 border border-red-400 text-red-700 "
-            }`}
-            role="alert"
-          >
-            {serverResponse.status ? (
-              <strong className="font-bold">Success! </strong>
-            ) : (
-              <strong className="font-bold">Error! </strong>
-            )}
-            <span className="block sm:inline">{serverResponse.message}</span>
-          </div>
-        )}
+      {/* action message */}
+      {serverResponse.message && (
+        <ServerResponse
+          condition={serverResponse.status}
+          message={serverResponse.message}
+        />
+      )}
 
-        {/* Products Table */}
-        <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
-          <thead>
-            <tr className="bg-gray-100 border-b border-gray-300">
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Product Name
-              </th>
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Product Image
-              </th>
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Is Active
-              </th>
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                In Stock
-              </th>
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Product Price
-              </th>
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Product View Count
-              </th>
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Product Sold Count
-              </th>
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Created At
-              </th>
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Updated At
-              </th>
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Deleted At
-              </th>
-              <th className="px-4 py-2 text-left text-gray-700 font-semibold">
-                Actions
-              </th>
+      {/* Products Table */}
+      <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
+        <thead>
+          <tr className="bg-gray-100 border-b border-gray-300">
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Product Name
+            </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Product Image
+            </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Is Active
+            </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              In Stock
+            </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Product Price
+            </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Product View Count
+            </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Product Sold Count
+            </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Created At
+            </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Updated At
+            </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Deleted At
+            </th>
+            <th className="px-4 py-2 text-left text-gray-700 font-semibold">
+              Actions
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {(products?.length || []) === 0 ? (
+            <tr>
+              <td colSpan={11} className="px-4 py-6 text-center text-red-600">
+                No products found.
+              </td>
             </tr>
-          </thead>
+          ) : (
+            products?.map((product) => (
+              <tr
+                key={product.id}
+                className="hover:bg-gray-100 even:bg-gray-50"
+              >
+                {/* Product Name */}
+                <td className="px-4 py-2 border border-gray-300">
+                  {product.product_name}
+                </td>
 
-          <tbody>
-            {products.length === 0 ? (
-              <tr>
-                <td colSpan={8} className="px-4 py-6 text-center text-red-600">
-                  No products found.
+                {/* Product first image*/}
+                <td className="px-4 py-2 border border-gray-300">
+                  {product.images && product.images.length > 0 ? (
+                    <img
+                      className="h-10 w-10 object-cover rounded"
+                      src={product.images[0]} // first image
+                      alt={product.product_name}
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          "https://placehold.co/100x100?text=No+Image";
+                      }}
+                    />
+                  ) : (
+                    <div className="h-10 w-10 bg-gray-200 flex items-center justify-center rounded">
+                      <span className="text-xs text-gray-500">No image</span>
+                    </div>
+                  )}
+                </td>
+
+                {/* Product Status */}
+                <td className="px-4 py-2 border border-gray-300">
+                  <span
+                    className={`${
+                      product.is_active
+                        ? "text-green-600 bg-green-100 px-2 py-1 rounded-md"
+                        : "text-red-600 bg-red-100 px-2 py-1 rounded-md"
+                    } font-medium`}
+                  >
+                    {product.is_active ? "Active" : "Inactive"}
+                  </span>
+                </td>
+
+                {/* Product stock */}
+                <td className="px-4 py-2 border border-gray-300">
+                  <span
+                    className={`${
+                      product.product_stock > 0
+                        ? "text-green-600 bg-green-100 px-2 py-1 rounded-md"
+                        : "text-red-600 bg-red-100 px-2 py-1 rounded-md"
+                    } font-medium`}
+                  >
+                    {product.product_stock > 0
+                      ? `In Stock (${product.product_stock})`
+                      : "Out of Stock"}
+                  </span>
+                </td>
+
+                {/* Product Price */}
+                <td className="px-4 py-2 border border-gray-300">
+                  {parseFloat(product.product_price).toFixed(2)} BHD
+                </td>
+
+                {/* Product View count */}
+                <td className="px-4 py-2 border border-gray-300">
+                  {product.product_view}
+                </td>
+
+                {/* Product Sold count */}
+                <td className="px-4 py-2 border border-gray-300">
+                  {product.product_sold}
+                </td>
+
+                {/* Product Created Date */}
+                <td className="px-4 py-2 border border-gray-300">
+                  {new Date(product.created_at).toLocaleDateString()}
+                </td>
+
+                {/* Product updated Date */}
+                <td className="px-4 py-2 border border-gray-300">
+                  {new Date(product.updated_at).toLocaleDateString()}
+                </td>
+
+                {/* Product Delete Date */}
+                <td className="px-4 py-2 border border-gray-300">
+                  {product.deleted_at
+                    ? new Date(product.deleted_at).toLocaleDateString()
+                    : "N/A"}
+                </td>
+
+                {/* Action buttons */}
+                <td className="px-4 py-2 border border-gray-300">
+                  <div className="flex gap-2">
+                    {/* Restore button */}
+                    <button
+                      className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
+                      onClick={() => handleRestoreClick(product)}
+                      title={`Restore ${product.product_name}`}
+                    >
+                      <img
+                        src={icons.restoreIcon48.src}
+                        alt="Restore"
+                        width={24}
+                        height={24}
+                      />
+                    </button>
+                  </div>
                 </td>
               </tr>
-            ) : (
-              products.map((product) => (
-                <tr
-                  key={product.id}
-                  className="hover:bg-gray-100 even:bg-gray-50"
-                >
-                  {/* Product Name */}
-                  <td className="px-4 py-2 border border-gray-300">
-                    {product.product_name}
-                  </td>
+            ))
+          )}
+        </tbody>
+      </table>
 
-                  {/* Product first image*/}
-                  <td className="px-4 py-2 border border-gray-300">
-                    {product.images && product.images.length > 0 ? (
-                      <img
-                        className="h-10 w-10 object-cover rounded"
-                        src={product.images[0]} // first image
-                        alt={product.product_name}
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src =
-                            "https://placehold.co/100x100?text=No+Image";
-                        }}
-                      />
-                    ) : (
-                      <div className="h-10 w-10 bg-gray-200 flex items-center justify-center rounded">
-                        <span className="text-xs text-gray-500">No image</span>
-                      </div>
-                    )}
-                  </td>
-
-                  {/* Product Status */}
-                  <td className="px-4 py-2 border border-gray-300">
-                    <span
-                      className={`${
-                        product.is_active
-                          ? "text-green-600 bg-green-100 px-2 py-1 rounded-md"
-                          : "text-red-600 bg-red-100 px-2 py-1 rounded-md"
-                      } font-medium`}
-                    >
-                      {product.is_active ? "Active" : "Inactive"}
-                    </span>
-                  </td>
-
-                  {/* Product stock */}
-                  <td className="px-4 py-2 border border-gray-300">
-                    <span
-                      className={`${
-                        product.product_stock > 0
-                          ? "text-green-600 bg-green-100 px-2 py-1 rounded-md"
-                          : "text-red-600 bg-red-100 px-2 py-1 rounded-md"
-                      } font-medium`}
-                    >
-                      {product.product_stock > 0
-                        ? `In Stock (${product.product_stock})`
-                        : "Out of Stock"}
-                    </span>
-                  </td>
-
-                  {/* Product Price */}
-                  <td className="px-4 py-2 border border-gray-300">
-                    {parseFloat(product.product_price).toFixed(2)} BHD
-                  </td>
-
-                  {/* Product View count */}
-                  <td className="px-4 py-2 border border-gray-300">
-                    {product.product_view}
-                  </td>
-
-                  {/* Product Sold count */}
-                  <td className="px-4 py-2 border border-gray-300">
-                    {product.product_sold}
-                  </td>
-
-                  {/* Product Created Date */}
-                  <td className="px-4 py-2 border border-gray-300">
-                    {new Date(product.created_at).toLocaleDateString()}
-                  </td>
-
-                  {/* Product updated Date */}
-                  <td className="px-4 py-2 border border-gray-300">
-                    {new Date(product.updated_at).toLocaleDateString()}
-                  </td>
-
-                  {/* Product Delete Date */}
-                  <td className="px-4 py-2 border border-gray-300">
-                    {new Date(product.deleted_at).toLocaleDateString()}
-                  </td>
-
-                  {/* Action buttons */}
-                  <td className="px-4 py-2 border border-gray-300">
-                    <div className="flex gap-2">
-                      {/* Restore button */}
-                      <button
-                        className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
-                        onClick={() => handleRestoreClick(product)}
-                        title={`Restore ${product.product_name}`}
-                      >
-                        <img
-                          src={icons.restoreIcon48.src}
-                          alt="Restore"
-                          width={24}
-                          height={24}
-                        />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-
-        {/* TODO: Pagination */}
-      </Suspense>
+      {/* TODO: Pagination */}
 
       {/* Restore Confirmation Modal */}
       <ConfirmationModal

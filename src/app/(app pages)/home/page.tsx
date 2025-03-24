@@ -1,42 +1,76 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-
-// Import custom components
-import NavBar from "@/components/NavBar";
-
-// Services import
-import { getProducts } from "@/services/products-services";
-import { getAllCategories } from "@/services/categories-services";
-
-// import types
-import { Products } from "@/types/product";
-import { Categories } from "@/types/category";
+import React from "react";
+import dynamic from "next/dynamic"; // dynamic import for custom components
 
 // import custom components
-import LoadingSpinner from "@/components/LoadingSpinner";
+import Separator from "@/components/Separator";
+
+// import custom components with dynamic import for better performance
+const HeroSection = dynamic(() => import("@/components/HeroSection"), {});
+
+const FlashSalesSection = dynamic(
+  () => import("@/components/FlashSalesSection")
+);
+
+const BrowseByCategorySection = dynamic(
+  () => import("@/components/BrowseByCategorySection"),
+  { ssr: false }
+);
+
+const BestSellingProductsSection = dynamic(
+  () => import("@/components/BestSellingProductsSection"),
+  { ssr: false }
+);
+
+const AdBannerSection = dynamic(() => import("@/components/AdBannerSection"), {
+  ssr: false,
+});
+
+const ExploreProductsSection = dynamic(
+  () => import("@/components/ExploreProductsSection"),
+  {
+    ssr: false,
+  }
+);
+
+const TrustBadgesSection = dynamic(
+  () => import("@/components/TrustBadgesSection"),
+  {
+    ssr: false,
+  }
+);
 
 export default function homePage() {
-  // data state
-  const [categories, setCategories] = useState<Categories[]>([]);
-  const [products, setProducts] = useState<Products[]>([]);
-
-  // loading state
-  const [loading, setLoading] = useState<boolean>(true);
-
-  // UI messages states
-  const [categoryMessage, setCategoryMessage] = useState<string>("");
-  const [productMessage, setProductMessage] = useState<string>("");
-
-  // TODO: Add loading page
-
   return (
-    <div>
-      {/* Navigation Bar */}
-      <NavBar />
+    <>
+      <HeroSection />
 
-      {/* Main content */}
-      <div>Main content here</div>
-    </div>
+      <FlashSalesSection />
+
+      <Separator margin="my-8" />
+
+      {/* Browse Category Section  */}
+      <BrowseByCategorySection />
+
+      <Separator margin="my-8" />
+
+      {/* Best Selling Section */}
+      <BestSellingProductsSection />
+
+      {/* <Separator  margin="my-8"/> */}
+      {/* TODO: Special Banner Section */}
+      {/* <AdBannerSection /> */}
+
+      <Separator margin="my-8" />
+
+      {/* Explore Products Section */}
+      <ExploreProductsSection />
+
+      <Separator margin="my-8" />
+
+      {/* Trust Badges Section */}
+      <TrustBadgesSection />
+    </>
   );
 }

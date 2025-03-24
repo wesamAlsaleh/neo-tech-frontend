@@ -3,9 +3,6 @@
 // Import axios for the API requests
 import axios from "axios";
 
-// Import the categories type
-import type { Category, CategoryData } from "@/types/category";
-
 // Import the cookies from the next/headers module
 import { cookies } from "next/headers";
 
@@ -26,7 +23,7 @@ export async function getAllCategories() {
     // Return the categories
     return {
       status: true,
-      message: "Categories fetched successfully",
+      message: response.data.message,
       categories: response.data.categories,
     };
   } catch (error: any) {

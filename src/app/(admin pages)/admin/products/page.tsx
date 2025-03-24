@@ -1,10 +1,12 @@
 import React from "react";
 
+// import icons
+import { icons } from "../../../../../public/icons";
+
 // import custom components
 import ProductsList from "@/components/ProductsList";
 import PageTitle from "@/components/PageTitle";
 import { ActionButton } from "@/components/ActionButton";
-import { RecycleButton } from "@/components/RecycleButton";
 
 export default function ManageProductsPage() {
   return (
@@ -19,7 +21,23 @@ export default function ManageProductsPage() {
             buttonTitle="Add a new product"
           />
         }
-        recycleButton={<RecycleButton href="/admin/products/recycle-bin" />}
+        actionButton2={
+          <ActionButton
+            href="/admin/customize/sales"
+            text="Manage Flash Sales"
+            buttonTitle="Manage flash sales"
+            color="steelblue"
+          />
+        }
+        actionButton3={
+          <ActionButton
+            href="/admin/products/recycle-bin"
+            text="Recycle Button"
+            isIconButton
+            iconSrc={icons.recycleIcon48.src}
+            color="yellowgreen"
+          />
+        }
       />
 
       {/* products table */}

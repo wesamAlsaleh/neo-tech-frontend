@@ -35,7 +35,8 @@ export async function getUserWishlist() {
     return {
       status: true,
       message: response.data.message,
-      userWishlist: response.data.userWishlist,
+      // userWishlistInfo: response.data.userWishlist,
+      products: response.data.products,
     };
   } catch (error: any) {
     // Log the error to the console

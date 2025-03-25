@@ -14,7 +14,14 @@ import { addProductToWishlist } from "@/services/wishlist-services";
 
 // import custom components
 
-export default function ProductCardShowcase({ product }: { product: Product }) {
+interface ProductCardShowcaseProps {
+  product: Product;
+  wishlist?: boolean; // Optional prop to show wishlist icon if true
+}
+
+export default function ProductCardShowcase(props: ProductCardShowcaseProps) {
+  const { product, wishlist } = props;
+
   // router instance
   const router = useRouter();
 
@@ -37,12 +44,14 @@ export default function ProductCardShowcase({ product }: { product: Product }) {
       {/* Wishlist & View Icons container */}
       <div className="absolute top-3 right-3 flex flex-col space-y-2">
         {/* whishlist button */}
-        <button
-          onClick={() => handleAddToWishlist(product.id)}
-          className="p-2 bg-white rounded-full shadow hover:bg-gray-200"
-        >
-          ❤️
-        </button>
+        {wishlist ? null : (
+          <button
+            onClick={() => handleAddToWishlist(product.id)}
+            className="p-2 bg-white rounded-full shadow hover:bg-gray-200"
+          >
+            ❤️
+          </button>
+        )}
 
         {/* view product button */}
         <button

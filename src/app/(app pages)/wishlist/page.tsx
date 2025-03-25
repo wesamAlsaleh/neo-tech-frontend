@@ -17,6 +17,10 @@ export default function page() {
   // State to store user wishlist data (array of products)
   const [userWishlistProducts, setUserWishlistProducts] = useState<Product[]>();
 
+  // State to store the count of products in the user's wishlist
+  const [userWishlistProductsCount, setUserWishlistProductsCount] =
+    useState<number>();
+
   // State to store the loading status
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -49,8 +53,7 @@ export default function page() {
 
         // Update the userWishlist state
         setUserWishlistProducts(response.products);
-
-        console.log(response.products);
+        setUserWishlistProductsCount(response.productsCount);
       };
 
       fetchUserWishlist();
@@ -66,6 +69,37 @@ export default function page() {
 
   return (
     <>
+      {/* Header Container */}
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-semibold text-gray-500 mb-4">
+          Your Wishlist ({userWishlistProductsCount})
+        </h1>
+
+        {/* Action Buttons */}
+        <div>
+          {/* Button to clear the wishlist */}
+          <button
+            className="px-4 py-2 bg-red-500 text-white rounded"
+            onClick={() => {
+              // Clear the user's wishlist
+            }}
+          >
+            Clear Wishlist
+          </button>
+
+          {/* Button To Add all to cart */}
+
+          <button
+            className="px-4 py-2 bg-blue-500 text-white rounded"
+            onClick={() => {
+              // Add all products to the cart
+            }}
+          >
+            Add all to cart
+          </button>
+        </div>
+      </div>
+
       {/* Display error message if something is wrong */}
       {serverResponse.message && !serverResponse.status && (
         <div
@@ -87,6 +121,7 @@ export default function page() {
 
       {/* If no Items in the cart */}
       {userWishlistProducts && userWishlistProducts.length === 0 && (
+        // Message Container
         <div className="flex items-center justify-center h-[50vh]">
           <h1 className="text-2xl font-semibold text-gray-500">
             Your wishlist is empty
@@ -98,7 +133,13 @@ export default function page() {
       <div className="grid lg:grid-cols-8 md:grid-cols-4 sm:grid-cols-1 gap-2 w-[100%] ">
         {userWishlistProducts &&
           userWishlistProducts.map((product) => {
-            return <ProductCardShowcase key={product.id} product={product} />;
+            return (
+              <ProductCardShowcase
+                key={product.id}
+                product={product}
+                wishlist // to remove the wishlist button
+              />
+            );
           })}
       </div>
     </>

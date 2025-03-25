@@ -9,11 +9,20 @@ import { Product } from "@/types/product";
 // import helper functions
 import { convertPriceToBHD, convertSalePercentage } from "@/lib/helpers";
 
+// Import backend services
+import { addProductToWishlist } from "@/services/wishlist-services";
+
 // import custom components
 
 export default function ProductCardShowcase({ product }: { product: Product }) {
   // router instance
   const router = useRouter();
+
+  // Handle adding product to wishlist
+  const handleAddToWishlist = async (productId: number) => {
+    const response = await addProductToWishlist(productId);
+    alert(response.message);
+  };
 
   return (
     // product container
@@ -28,7 +37,10 @@ export default function ProductCardShowcase({ product }: { product: Product }) {
       {/* Wishlist & View Icons container */}
       <div className="absolute top-3 right-3 flex flex-col space-y-2">
         {/* whishlist button */}
-        <button className="p-2 bg-white rounded-full shadow hover:bg-gray-200">
+        <button
+          onClick={() => handleAddToWishlist(product.id)}
+          className="p-2 bg-white rounded-full shadow hover:bg-gray-200"
+        >
           ❤️
         </button>
 

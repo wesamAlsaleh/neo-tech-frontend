@@ -11,6 +11,7 @@ import { convertPriceToBHD, convertSalePercentage } from "@/lib/helpers";
 
 // Import backend services
 import { addProductToWishlist } from "@/services/wishlist-services";
+import Link from "next/link";
 
 // import custom components
 
@@ -54,21 +55,23 @@ export default function ProductCardShowcase(props: ProductCardShowcaseProps) {
         )}
 
         {/* view product button */}
-        <button
+        {/* <button
           className="p-2 bg-white rounded-full shadow hover:bg-gray-200"
           onClick={() => router.push(`/products/${product.slug}`)}
         >
           👁️
-        </button>
+        </button> */}
       </div>
 
       {/* Product Image container */}
       <div className="flex items-center justify-center">
-        <img
-          src={String(product.images[0])}
-          alt={product.product_name}
-          className="w-48 h-48 object-cover rounded-lg"
-        />
+        <Link href={`/products/${product.slug}`}>
+          <img
+            src={String(product.images[0])}
+            alt={product.product_name}
+            className="w-48 h-48 object-cover rounded-lg"
+          />
+        </Link>
       </div>
 
       {/* Product Details container */}

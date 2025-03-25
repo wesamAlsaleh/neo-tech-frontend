@@ -36,6 +36,14 @@ import globe96 from "../public/assets/button-icons/icons8-globe-96.png";
 import exclusive48 from "../public/assets/button-icons/icons8-exclusive-product-48.png";
 import exclusive96 from "../public/assets/button-icons/icons8-exclusive-product-96.png";
 
+// Cart icons
+import cartIcon48 from "../public/assets/button-icons/icons8-cart-48.png";
+import cartIcon96 from "../public/assets/button-icons/icons8-cart-96.png";
+
+// Wishlist icons
+import wishlistIcon48 from "../public/assets/button-icons/icons8-wish-list-48.png";
+import wishlistIcon96 from "../public/assets/button-icons/icons8-wish-list-96.png";
+
 // Admin sidebar icons
 
 export const icons = {
@@ -67,4 +75,8 @@ export const icons = {
   globe96,
   exclusive48,
   exclusive96,
+  cartIcon48,
+  cartIcon96,
+  wishlistIcon48,
+  wishlistIcon96,
 };

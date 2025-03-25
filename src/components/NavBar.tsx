@@ -2,12 +2,16 @@
 
 import Link from "next/link";
 import React from "react";
+import Image from "next/image";
 
 // import the auth context to get the user data
 import { useAuth } from "@/contexts/AuthContext";
 
 // import custom components
 import DropDownMenu from "./DropDownMenu";
+
+// import the icons
+import { icons } from "../../public/icons";
 
 export default function NavBar() {
   // get user data
@@ -74,14 +78,24 @@ export default function NavBar() {
           </div>
 
           <button>
-            <Link href="#">
-              <h1>Wish list icon</h1>
+            <Link href="/wishlist">
+              <Image
+                src={icons.wishlistIcon48}
+                alt="Wishlist icon"
+                width={35}
+                height={35}
+              />
             </Link>
           </button>
 
           <button>
             <Link href="#">
-              <h1>Cart icon</h1>
+              <Image
+                src={icons.cartIcon48}
+                alt="Cart icon"
+                width={35}
+                height={35}
+              />
             </Link>
           </button>
 

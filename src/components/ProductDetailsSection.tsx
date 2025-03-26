@@ -3,42 +3,22 @@
 import React, { useState } from "react";
 import Image from "next/image";
 
-// import useAuth hook from the AuthContext
-import { useAuth } from "@/contexts/AuthContext";
-
 // import types and functions from the product file
 import { SingleProduct } from "@/types/product";
 
 // import helper functions
 import { convertPriceToBHD } from "@/lib/helpers";
-import RatingStars from "./RatingStars";
 
 // import custom components
+import RatingStars from "./RatingStars";
 
 interface ProductCardProps {
   product: SingleProduct;
 }
 
 export default function ProductDetailsSection({ product }: ProductCardProps) {
-  // Get the user from the auth context to check if the user is logged in
-  const { user } = useAuth();
-
   // State to store the current image index
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0); // Image index state
-
-  // Handle previous image
-  const handlePrevImage = () => {
-    setCurrentImageIndex((prev) =>
-      prev === 0 ? product?.images.length! - 1 : prev - 1
-    );
-  };
-
-  // Handle next image
-  const handleNextImage = () => {
-    setCurrentImageIndex((prev) =>
-      prev === product?.images.length! - 1 ? 0 : prev + 1
-    );
-  };
 
   // Handle thumbnail click event (change the current image index to the clicked thumbnail index)
   const handleThumbnailClick = (index: number) => {
@@ -64,10 +44,12 @@ export default function ProductDetailsSection({ product }: ProductCardProps) {
                 }`}
                 onClick={() => handleThumbnailClick(index)}
               >
-                <img
+                <Image
                   src={image}
                   alt={`Thumbnail ${index + 1}`}
                   className="object-cover w-full h-full"
+                  width={160} // Image width is 160px (fixed) to maintain the aspect ratio
+                  height={160} // Image height is 160px (fixed) to maintain the aspect ratio
                 />
               </div>
             ))}
@@ -76,10 +58,12 @@ export default function ProductDetailsSection({ product }: ProductCardProps) {
         {/* Main Image */}
         <div className="relative h-[665px] w-[665px] border rounded-lg overflow-hidden">
           {product.images && product.images.length > 0 ? (
-            <img
+            <Image
               src={product.images[currentImageIndex]}
               alt={product.product_name}
               className="object-contain w-full h-full"
+              width={665} // Image width is 665px (fixed) to maintain the aspect ratio
+              height={665} // Image height is 665px (fixed) to maintain the aspect ratio
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gray-200">
@@ -90,25 +74,33 @@ export default function ProductDetailsSection({ product }: ProductCardProps) {
       </div>
 
       {/* Right Section: Product Details */}
-      <div className="flex flex-col space-y-4 w-96">
+      <div className="flex flex-col space-y-4 w-full">
         {/* Product Details Container */}
-        <div className="flex flex-col space-y-2">
+        <div className="flex flex-col space-y-3">
           {/* Product Name */}
-          <h1 className="text-black">{product.product_name}</h1>
+          <h1 className="text-black text-3xl">{product.product_name}</h1>
 
           {/* Product Rating + Stock Status Container */}
           <div className="flex flex-row">
             {/* Product Rating */}
             <RatingStars key={product.id} rating={product.product_rating} />
 
+            <span className="mx-3 font-bold">|</span>
+
             {/* Product Stock */}
-            <span className="text-gray-500">
-              {product.product_stock > 0 ? "In Stock" : "Out of Stock"}
+            <span className="text-gray-500 text-lg">
+              {product.product_stock > 5 ? (
+                <span className="text-green-500">In Stock</span>
+              ) : (
+                <span className="text-red-500">Out of Stock</span>
+              )}
             </span>
           </div>
 
           {/* Product Price */}
-          <h3 className="mb-4">{convertPriceToBHD(product.product_price)}</h3>
+          <h3 className="text-2xl ">
+            {convertPriceToBHD(product.product_price)}
+          </h3>
 
           {/* Product Description */}
           <p>{product.product_description}</p>

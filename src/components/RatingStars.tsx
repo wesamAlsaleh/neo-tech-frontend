@@ -16,6 +16,9 @@ export default function RatingStars({ rating }: Props) {
   const integerPart = Math.floor(rating);
   const decimalPart = rating - integerPart;
 
+  // Convert the rating one decimal place
+  const ratingOneDecimal = Math.round(rating * 10) / 10;
+
   // Loop 5 times to create 5 stars
   for (let i = 0; i < 5; i++) {
     // If the current index is less than the integer part of the rating, add a full star
@@ -66,5 +69,5 @@ export default function RatingStars({ rating }: Props) {
   }
 
   // Return the stars array as JSX elements
-  return <div className="flex ">{stars}</div>;
+  return <div className="flex">{stars}</div>;
 }

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 // import types
 import { Product } from "@/types/product";
@@ -10,26 +11,42 @@ import { Product } from "@/types/product";
 import { convertPriceToBHD, convertSalePercentage } from "@/lib/helpers";
 
 // Import backend services
-import { addProductToWishlist } from "@/services/wishlist-services";
-import Link from "next/link";
+import {
+  addProductToWishlist,
+  removeProductFromWishlistByProductId,
+} from "@/services/wishlist-services";
 
 // import custom components
 
 interface ProductCardShowcaseProps {
   product: Product;
-  wishlist?: boolean; // Optional prop to show wishlist icon if true
+  isWishlist?: boolean; // Optional prop to show wishlist icon if true
 }
 
 export default function ProductCardShowcase(props: ProductCardShowcaseProps) {
-  const { product, wishlist } = props;
-
-  // router instance
-  const router = useRouter();
+  const { product, isWishlist } = props;
 
   // Handle adding product to wishlist
   const handleAddToWishlist = async (productId: number) => {
+    // request to add product to wishlist
     const response = await addProductToWishlist(productId);
+
+    // message alert
     alert(response.message);
+  };
+
+  // Handle removing product from wishlist
+  const handleRemoveFromWishlist = async (productId: number) => {
+    // request to remove product from wishlist
+    const response = await removeProductFromWishlistByProductId(productId);
+
+    // message alert
+    alert(response.message);
+
+    // reload the page after 1 sec to reflect the changes
+    setTimeout(() => {
+      window.location.reload();
+    }, 1000);
   };
 
   return (
@@ -45,7 +62,14 @@ export default function ProductCardShowcase(props: ProductCardShowcaseProps) {
       {/* Wishlist & View Icons container */}
       <div className="absolute top-3 right-3 flex flex-col space-y-2">
         {/* whishlist button */}
-        {wishlist ? null : (
+        {isWishlist ? (
+          <button
+            onClick={() => handleRemoveFromWishlist(product.id)}
+            className="p-2 bg-white rounded-full shadow hover:bg-gray-200"
+          >
+            🗑️
+          </button>
+        ) : (
           <button
             onClick={() => handleAddToWishlist(product.id)}
             className="p-2 bg-white rounded-full shadow hover:bg-gray-200"

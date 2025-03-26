@@ -75,29 +75,15 @@ export default function page() {
           Your Wishlist ({userWishlistProductsCount})
         </h1>
 
-        {/* Action Buttons */}
-        <div>
-          {/* Button to clear the wishlist */}
-          <button
-            className="px-4 py-2 bg-red-500 text-white rounded"
-            onClick={() => {
-              // Clear the user's wishlist
-            }}
-          >
-            Clear Wishlist
-          </button>
-
-          {/* Button To Add all to cart */}
-
-          <button
-            className="px-4 py-2 bg-blue-500 text-white rounded"
-            onClick={() => {
-              // Add all products to the cart
-            }}
-          >
-            Add all to cart
-          </button>
-        </div>
+        {/* Add to cart button */}
+        <button
+          className="px-6 py-3 border border-gray-500 text-black rounded"
+          onClick={() => {
+            // Add all products to the cart
+          }}
+        >
+          Move All To Bag
+        </button>
       </div>
 
       {/* Display error message if something is wrong */}
@@ -137,7 +123,7 @@ export default function page() {
               <ProductCardShowcase
                 key={product.id}
                 product={product}
-                wishlist // to remove the wishlist button
+                isWishlist // to remove the wishlist button
               />
             );
           })}

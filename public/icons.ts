@@ -44,6 +44,14 @@ import cartIcon96 from "../public/assets/button-icons/icons8-cart-96.png";
 import wishlistIcon48 from "../public/assets/button-icons/icons8-wish-list-48.png";
 import wishlistIcon96 from "../public/assets/button-icons/icons8-wish-list-96.png";
 
+// Import Full star and Half star icons
+import fullStar48 from "../public/assets/button-icons/icons8-star-48.png";
+import fullStar96 from "../public/assets/button-icons/icons8-star-96.png";
+import halfStar48 from "../public/assets/button-icons/icons8-star-half-empty-48.png";
+import halfStar96 from "../public/assets/button-icons/icons8-star-half-empty-96.png";
+import grayStar48 from "../public/assets/button-icons/icons8-gray-star-48.png";
+import grayStar96 from "../public/assets/button-icons/icons8-gray-star-96.png";
+
 // Admin sidebar icons
 
 export const icons = {
@@ -79,4 +87,10 @@ export const icons = {
   cartIcon96,
   wishlistIcon48,
   wishlistIcon96,
+  fullStar48,
+  fullStar96,
+  halfStar48,
+  halfStar96,
+  grayStar48,
+  grayStar96,
 };

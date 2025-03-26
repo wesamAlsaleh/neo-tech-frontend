@@ -67,7 +67,7 @@ export async function addProductToWishlist(productId: number) {
     if (!userToken) {
       return {
         status: false,
-        message: "Authentication token not found.",
+        message: "Please sign in to add products to your wishlist.",
       };
     }
 

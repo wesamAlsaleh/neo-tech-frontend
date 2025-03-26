@@ -11,7 +11,7 @@ import { searchProductBySlug } from "@/services/products-services";
 
 // import custom components
 import LoadingSpinner from "@/components/LoadingSpinner";
-import ProductCard from "@/components/ProductCard";
+import ProductDetailsSection from "@/components/ProductDetailsSection";
 import Breadcrumb from "@/components/PageBreadcrumb";
 
 const ProductPage = ({ params }: { params: Promise<{ slug: string }> }) => {
@@ -93,10 +93,11 @@ const ProductPage = ({ params }: { params: Promise<{ slug: string }> }) => {
         firstLink={`/categories/${product.category_id.category_slug}`}
         secondTitle={product.product_name}
         secondLink={`/products/${product.slug}`}
+        secondTitleColor="text-black"
       />
 
       {/* Product Card */}
-      <ProductCard product={product} />
+      <ProductDetailsSection product={product} />
     </>
   );
 };

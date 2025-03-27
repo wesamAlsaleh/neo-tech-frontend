@@ -12,6 +12,7 @@ import DropDownMenu from "./DropDownMenu";
 
 // import the icons
 import { icons } from "../../public/icons";
+import LoadingSpinner from "./LoadingSpinner";
 
 export default function NavBar() {
   // get user data
@@ -80,10 +81,10 @@ export default function NavBar() {
           <button>
             <Link href="/wishlist">
               <Image
-                src={icons.wishlistIcon48}
+                src={icons.outlineHeartIcon48}
                 alt="Wishlist icon"
-                width={35}
-                height={35}
+                width={33}
+                height={33}
               />
             </Link>
           </button>
@@ -91,16 +92,31 @@ export default function NavBar() {
           <button>
             <Link href="#">
               <Image
-                src={icons.cartIcon48}
+                src={icons.outlineCartIcon48}
                 alt="Cart icon"
-                width={35}
-                height={35}
+                width={33}
+                height={33}
               />
             </Link>
           </button>
 
           {/* if logged in show the profile icon here */}
-          {user ? loading ? null : <DropDownMenu /> : null}
+          {user ? (
+            loading ? (
+              <LoadingSpinner />
+            ) : (
+              <button>
+                <Link href="#">
+                  <Image
+                    src={icons.userIcon48}
+                    alt="Cart icon"
+                    width={33}
+                    height={33}
+                  />
+                </Link>
+              </button>
+            )
+          ) : null}
         </div>
       </div>
     </div>

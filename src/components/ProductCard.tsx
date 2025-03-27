@@ -3,6 +3,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 // import types
 import { Product } from "@/types/product";
@@ -16,14 +17,17 @@ import {
   removeProductFromWishlistByProductId,
 } from "@/services/wishlist-services";
 
+// import icons
+import { icons } from "../../public/icons";
+
 // import custom components
 
-interface ProductCardShowcaseProps {
+interface ProductCardProps {
   product: Product;
   isWishlist?: boolean; // Optional prop to show wishlist icon if true
 }
 
-export default function ProductCardShowcase(props: ProductCardShowcaseProps) {
+export default function ProductCard(props: ProductCardProps) {
   const { product, isWishlist } = props;
 
   // Handle adding product to wishlist
@@ -67,14 +71,24 @@ export default function ProductCardShowcase(props: ProductCardShowcaseProps) {
             onClick={() => handleRemoveFromWishlist(product.id)}
             className="p-2 bg-white rounded-full shadow hover:bg-gray-200"
           >
-            🗑️
+            <Image
+              src={icons.removeAsTrashIcon48}
+              alt="wishlist"
+              width={22}
+              height={22}
+            />
           </button>
         ) : (
           <button
             onClick={() => handleAddToWishlist(product.id)}
-            className="p-2 bg-white rounded-full shadow hover:bg-gray-200"
+            className="p-2 bg-orange-50 rounded-full shadow hover:bg-orange-200"
           >
-            ❤️
+            <Image
+              src={icons.outlineHeartIcon48}
+              alt="wishlist"
+              width={22}
+              height={22}
+            />
           </button>
         )}
 

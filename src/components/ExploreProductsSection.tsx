@@ -11,7 +11,7 @@ import { Product } from "@/types/product";
 
 // import custom components
 import HomeComponentTitle from "./HomeComponentTitle";
-import ProductCardShowcase from "./ProductCardShowcase";
+import ProductCard from "./ProductCard";
 
 export default function ExploreProductsSection() {
   // Router instance
@@ -40,7 +40,7 @@ export default function ExploreProductsSection() {
       {/* Product Cards Grid */}
       <div className="grid lg:grid-cols-9 md:grid-cols-4 sm:grid-cols-2 gap-2 w-[100%]">
         {products.map((product) => {
-          return <ProductCardShowcase key={product.id} product={product} />;
+          return <ProductCard key={product.id} product={product} />;
         })}
       </div>
 

@@ -11,7 +11,7 @@ import { getUserWishlist } from "@/services/wishlist-services";
 
 // Import components
 import LoadingSpinner from "@/components/LoadingSpinner";
-import ProductCardShowcase from "@/components/ProductCardShowcase";
+import ProductCard from "@/components/ProductCard";
 
 export default function page() {
   // State to store user wishlist data (array of products)
@@ -120,7 +120,7 @@ export default function page() {
         {userWishlistProducts &&
           userWishlistProducts.map((product) => {
             return (
-              <ProductCardShowcase
+              <ProductCard
                 key={product.id}
                 product={product}
                 isWishlist // to remove the wishlist button

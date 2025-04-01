@@ -156,10 +156,13 @@ export async function updateCart(productId: string, quantity: number) {
         };
       }
 
-      return { status: false, message: "Item not found in cart" };
+      return {
+        status: false,
+        message: "Item not found in cart",
+      };
     }
 
-    const response = await axios.put(
+    const response = await axios.post(
       `${process.env.NEXT_PUBLIC_APP_URI}/cart/${productId}`,
       { quantity },
       {

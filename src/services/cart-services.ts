@@ -26,7 +26,7 @@ export async function getUserCart() {
       return {
         status: true,
         message: "Cart items retrieved successfully",
-        cart: parsedCartItems,
+        cartItems: parsedCartItems,
         totalItemsInCart: 1, // Assuming only one item in local storage for simplicity
         totalPrice: parsedCartItems.quantity * parsedCartItems.price, // Assuming price is available in local storage
       };
@@ -44,7 +44,7 @@ export async function getUserCart() {
     return {
       status: true,
       message: response.data.message,
-      cart: response.data.cart,
+      cartItems: response.data.cart,
       totalItemsInCart: response.data.total_items,
       totalPrice: response.data.total_price,
     };

@@ -5,15 +5,22 @@ import React, { useEffect, useState } from "react";
 // Import types
 import { Wishlist } from "@/types/wishlist";
 import { Product } from "@/types/product";
+import { User } from "@/types/user";
 
 // Import services
 import { getUserWishlist } from "@/services/wishlist-services";
+
+// Import auth context which provides user data
+import { useAuth } from "@/contexts/AuthContext";
 
 // Import components
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ProductCard from "@/components/ProductCard";
 
 export default function page() {
+  // Get the user data from the auth context
+  const { user } = useAuth() as { user: User };
+
   // State to store user wishlist data (array of products)
   const [userWishlistProducts, setUserWishlistProducts] = useState<Product[]>();
 
@@ -65,6 +72,17 @@ export default function page() {
   // If the loading status is true, display a loading message
   if (loading) {
     return <LoadingSpinner />;
+  }
+
+  // If the user is not authenticated, display a message
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center h-[50vh]">
+        <h1 className="text-2xl font-semibold text-gray-500">
+          Please login to see your wishlist
+        </h1>
+      </div>
+    );
   }
 
   return (

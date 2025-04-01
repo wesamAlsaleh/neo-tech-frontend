@@ -17,6 +17,7 @@ import { useAuth } from "@/contexts/AuthContext";
 // Import components
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ProductCard from "@/components/ProductCard";
+import { convertPriceToBHD } from "@/lib/helpers";
 
 export default function page() {
   // Get the user data from the auth context
@@ -165,7 +166,7 @@ export default function page() {
       {userCart && userCart.length > 0 && (
         <>
           {/* Table container */}
-          <div className="overflow-x-auto">
+          <div>
             <table className="min-w-full bg-white border border-gray-200">
               <thead>
                 <tr className="bg-gray-100">
@@ -211,7 +212,7 @@ export default function page() {
 
                       {/* Item Price */}
                       <td className="py-4 px-4 text-center">
-                        {cartItem.unit_price}
+                        {convertPriceToBHD(String(cartItem.unit_price))}
                       </td>
 
                       {/* Quantity Input */}
@@ -232,7 +233,7 @@ export default function page() {
 
                       {/* Subtotal */}
                       <td className="py-4 px-4 text-right">
-                        {cartItem.total_price}
+                        {convertPriceToBHD(String(cartItem.total_price))}
                       </td>
                     </tr>
                   ))
@@ -244,7 +245,7 @@ export default function page() {
           {/* Cart Actions */}
           <div className="flex justify-between mt-6">
             <Link
-              href="/shop"
+              href="/home"
               className="px-6 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-100 transition"
             >
               Return To Shop

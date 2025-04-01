@@ -97,7 +97,7 @@ export default function NavBar() {
           ) : null}
 
           <button>
-            <Link href="#">
+            <Link href="/cart">
               <Image
                 src={icons.outlineCartIcon48}
                 alt="Cart icon"

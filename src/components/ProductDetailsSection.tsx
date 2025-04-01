@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 // import icons
 import { icons } from "../../public/icons";
@@ -11,6 +12,7 @@ import { SingleProduct } from "@/types/product";
 
 // Import backend services
 import { addProductToWishlist } from "@/services/wishlist-services";
+import { addProductToCart } from "@/services/cart-services";
 
 // import helper functions
 import { convertPriceToBHD } from "@/lib/helpers";
@@ -18,7 +20,6 @@ import { convertPriceToBHD } from "@/lib/helpers";
 // import custom components
 import RatingStars from "./RatingStars";
 import Separator from "./Separator";
-import Link from "next/link";
 
 interface ProductCardProps {
   product: SingleProduct;
@@ -40,6 +41,15 @@ export default function ProductDetailsSection({ product }: ProductCardProps) {
   const handleAddToWishlist = async (productId: number) => {
     // request to add product to wishlist
     const response = await addProductToWishlist(productId);
+
+    // message alert
+    alert(response.message);
+  };
+
+  // Handle add to cart event
+  const handleAddToCart = async (productId: number, quantity: number) => {
+    // request to add product to cart
+    const response = await addProductToCart(String(productId), quantity);
 
     // message alert
     alert(response.message);
@@ -239,7 +249,7 @@ export default function ProductDetailsSection({ product }: ProductCardProps) {
           {/* Add to Cart Button */}
           <button
             className="flex-1 flex items-center justify-center px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 min-w-[150px]"
-            onClick={() => {}}
+            onClick={() => handleAddToCart(product.id, quantity)}
           >
             <span>Add to Cart</span>
           </button>

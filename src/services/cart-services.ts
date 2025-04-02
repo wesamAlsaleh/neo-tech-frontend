@@ -19,7 +19,7 @@ export async function getUserCart() {
     if (!userToken) {
       return {
         status: false,
-        message: "No user token found",
+        message: "Please login to add items to your cart",
       };
     }
 
@@ -68,7 +68,7 @@ export async function addProductToCart(productId: string, quantity: number) {
     if (!userToken) {
       return {
         status: false,
-        message: "No user token found",
+        message: "Please login to add items to your cart",
       };
     }
 
@@ -119,7 +119,7 @@ export async function updateCart(cartItemId: string, quantity: number) {
     if (!userToken) {
       return {
         status: false,
-        message: "No user token found",
+        message: "Please login to add items to your cart",
       };
     }
 
@@ -170,7 +170,7 @@ export async function removeProductFromCart(cartItemId: string) {
     if (!userToken) {
       return {
         status: false,
-        message: "No user token found",
+        message: "Please login to add items to your cart",
       };
     }
 

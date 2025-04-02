@@ -9,7 +9,11 @@ import { CartItem } from "@/types/cart";
 import { User } from "@/types/user";
 
 // Import services
-import { getUserCart, updateCart } from "@/services/cart-services";
+import {
+  getUserCart,
+  removeProductFromCart,
+  updateCart,
+} from "@/services/cart-services";
 
 // Import auth context which provides user data
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,6 +22,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ProductCard from "@/components/ProductCard";
 import { convertPriceToBHD } from "@/lib/helpers";
+import { icons } from "../../../../public/icons";
 
 export default function page() {
   // Get the user data from the auth context
@@ -31,6 +36,8 @@ export default function page() {
 
   // State to store the loading status
   const [loading, setLoading] = useState<boolean>(true);
+
+  // State to store the loading skeleton status
   const [loadingSkeleton, setLoadingSkeleton] = useState<boolean>(false);
 
   // State to store the server response
@@ -43,8 +50,6 @@ export default function page() {
   const fetchUserCart = async () => {
     // Call the getUserCart function to fetch the user's cart data
     const response = await getUserCart();
-
-    console.log("User Cart Response: ", response);
 
     // Update UI with the server response
     setServerResponse({
@@ -83,19 +88,41 @@ export default function page() {
       setLoadingSkeleton(true);
 
       // Request to update the cart item quantity in the server
-      const response = updateCart(cartItemId, newQuantity);
+      const response = await updateCart(cartItemId, newQuantity);
 
-      if ((await response).status) {
-        setServerResponse({
-          status: true,
-          message: (await response).message,
-        });
+      setServerResponse({
+        status: response.status,
+        message: response.message,
+      });
 
-        // Refetch the cart data to reflect the changes
+      // Refetch the cart data to reflect the changes
+      if (response.status) {
         fetchUserCart();
       }
     } finally {
       setLoadingSkeleton(false);
+    }
+  };
+
+  // Handle the remove item from cart
+  const handleRemoveItem = async (cartItemId: string) => {
+    try {
+      setLoading(true);
+
+      // Request to remove the cart item from the server
+      const response = await removeProductFromCart(cartItemId);
+
+      setServerResponse({
+        status: response.status,
+        message: response.message,
+      });
+
+      // Refetch the cart data to reflect the changes
+      if (response.status) {
+        fetchUserCart();
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -174,6 +201,7 @@ export default function page() {
                   <th className="py-3 px-4 text-center">Price</th>
                   <th className="py-3 px-4 text-center">Quantity</th>
                   <th className="py-3 px-4 text-right">Subtotal</th>
+                  <th className="py-3 px-4 text-right"></th>
                 </tr>
               </thead>
 
@@ -181,18 +209,19 @@ export default function page() {
                 {loadingSkeleton ? (
                   <>
                     {/* Show skeletons based on the item counts */}
+
                     {Array.from({ length: userCartItemsCount || 1 }).map(
+                      // Array.from creates an array of a given length
                       (_, index) => (
                         <CartSkeleton key={index} />
                       )
                     )}
                   </>
                 ) : (
-                  // Show actual cart items when data is loaded
                   userCart.map((cartItem) => (
                     <tr
                       key={cartItem.product.id}
-                      className="border-t border-gray-200"
+                      className="border-t border-gray-200 group relative"
                     >
                       {/* Item Name and Image */}
                       <td className="py-4 px-4">
@@ -235,6 +264,22 @@ export default function page() {
                       <td className="py-4 px-4 text-right">
                         {convertPriceToBHD(String(cartItem.total_price))}
                       </td>
+
+                      {/* Remove Item Button  */}
+                      <td className="absolute top-1/2 -translate-y-1/2 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200 cursor-pointer  ">
+                        <button
+                          onClick={() =>
+                            handleRemoveItem(cartItem.cart_item_id)
+                          }
+                        >
+                          <Image
+                            src={icons.removeAsTrashIcon48.src}
+                            alt={`remove ${cartItem.product.product_name} from cart`}
+                            width={24}
+                            height={24}
+                          />
+                        </button>
+                      </td>
                     </tr>
                   ))
                 )}
@@ -244,12 +289,14 @@ export default function page() {
 
           {/* Cart Actions */}
           <div className="flex justify-between mt-6">
+            {/* Bottom Actions */}
             <Link
               href="/home"
               className="px-6 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-100 transition"
             >
               Return To Shop
             </Link>
+
             <button
               className="px-6 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-100 transition"
               onClick={() => {

@@ -133,7 +133,7 @@ export async function addProductToCart(productId: string, quantity: number) {
  * @function updateCart - Update the quantity of an item in the user's cart
  * @param {string} productId - The ID of the product to update in the cart
  */
-export async function updateCart(productId: string, quantity: number) {
+export async function updateCart(cartItemId: string, quantity: number) {
   try {
     // get user token from cookies
     const cookieStore = await cookies();
@@ -143,7 +143,7 @@ export async function updateCart(productId: string, quantity: number) {
     if (!userToken) {
       const cartItems = JSON.parse(localStorage.getItem("cart_items") || "[]");
       const itemIndex = cartItems.findIndex(
-        (item: any) => item.productId === productId
+        (item: any) => item.productId === cartItemId
       );
 
       if (itemIndex !== -1) {
@@ -163,7 +163,7 @@ export async function updateCart(productId: string, quantity: number) {
     }
 
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_APP_URI}/cart/${productId}`,
+      `${process.env.NEXT_PUBLIC_APP_URI}/cart/${cartItemId}`,
       { quantity },
       {
         headers: {
@@ -199,7 +199,7 @@ export async function updateCart(productId: string, quantity: number) {
  * @function removeFromCart - Remove an item from the user's cart
  * @param {string} productId - The ID of the product to remove from the cart
  */
-export async function removeProductFromCart(productId: string) {
+export async function removeProductFromCart(cartItemId: string) {
   try {
     // get user token from cookies
     const cookieStore = await cookies();
@@ -209,13 +209,13 @@ export async function removeProductFromCart(productId: string) {
     if (!userToken) {
       const cartItems = JSON.parse(localStorage.getItem("cart_items") || "[]");
       const filteredCart = cartItems.filter(
-        (item: any) => item.productId !== productId
+        (item: any) => item.productId !== cartItemId
       );
       localStorage.setItem("cart_items", JSON.stringify(filteredCart));
     }
 
     const response = await axios.delete(
-      `${process.env.NEXT_PUBLIC_APP_URI}/cart/{cartItemId}${productId}`,
+      `${process.env.NEXT_PUBLIC_APP_URI}/cart/${cartItemId}`,
       {
         headers: {
           Authorization: `Bearer ${userToken}`, // this method requires the user to be authenticated and the token is to pass the sanctum middleware in the backend

@@ -15,20 +15,11 @@ export async function getUserCart() {
     const cookieStore = await cookies();
     const userToken = cookieStore.get("userToken")?.value;
 
-    // If the user token is not found, get the cart from local storage
+    // If the user token is not found
     if (!userToken) {
-      // Check if there are items in local storage
-      const cartItems = JSON.parse(localStorage.getItem("cart_items") || "[]");
-
-      // Parse the cart items from local storage into a JavaScript object
-      const parsedCartItems = JSON.parse(cartItems);
-
       return {
-        status: true,
-        message: "Cart items retrieved successfully",
-        cartItems: parsedCartItems,
-        totalItemsInCart: 1, // Assuming only one item in local storage for simplicity
-        totalPrice: parsedCartItems.quantity * parsedCartItems.price, // Assuming price is available in local storage
+        status: false,
+        message: "No user token found",
       };
     }
 
@@ -73,26 +64,11 @@ export async function addProductToCart(productId: string, quantity: number) {
     const cookieStore = await cookies();
     const userToken = cookieStore.get("userToken")?.value;
 
-    // If the user token is not found, store the cart in local storage
+    // If the user token is not found
     if (!userToken) {
-      const cartItems = JSON.parse(localStorage.getItem("cart_items") || "[]");
-
-      // Check if the item already exists in the cart
-      const existingItemIndex = cartItems.findIndex(
-        (item: any) => item.productId === productId
-      );
-      if (existingItemIndex !== -1) {
-        cartItems[existingItemIndex].quantity += quantity;
-      } else {
-        cartItems.push({ productId, quantity });
-      }
-
-      // Save back to localStorage
-      localStorage.setItem("cart_items", JSON.stringify(cartItems));
-
       return {
-        status: true,
-        message: "Added to cart successfully",
+        status: false,
+        message: "No user token found",
       };
     }
 
@@ -139,26 +115,11 @@ export async function updateCart(cartItemId: string, quantity: number) {
     const cookieStore = await cookies();
     const userToken = cookieStore.get("userToken")?.value;
 
-    // If the user token is not found, update the cart in local storage
+    // If the user token is not found
     if (!userToken) {
-      const cartItems = JSON.parse(localStorage.getItem("cart_items") || "[]");
-      const itemIndex = cartItems.findIndex(
-        (item: any) => item.productId === cartItemId
-      );
-
-      if (itemIndex !== -1) {
-        cartItems[itemIndex].quantity = quantity;
-        localStorage.setItem("cart_items", JSON.stringify(cartItems));
-        return {
-          status: true,
-          message: "Cart updated successfully",
-          cart: cartItems,
-        };
-      }
-
       return {
         status: false,
-        message: "Item not found in cart",
+        message: "No user token found",
       };
     }
 
@@ -205,13 +166,12 @@ export async function removeProductFromCart(cartItemId: string) {
     const cookieStore = await cookies();
     const userToken = cookieStore.get("userToken")?.value;
 
-    // If the user token is not found, remove the cart from local storage
+    // If the user token is not found
     if (!userToken) {
-      const cartItems = JSON.parse(localStorage.getItem("cart_items") || "[]");
-      const filteredCart = cartItems.filter(
-        (item: any) => item.productId !== cartItemId
-      );
-      localStorage.setItem("cart_items", JSON.stringify(filteredCart));
+      return {
+        status: false,
+        message: "No user token found",
+      };
     }
 
     const response = await axios.delete(

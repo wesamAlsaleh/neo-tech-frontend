@@ -69,15 +69,6 @@ export default function ProductCard(props: ProductCardProps) {
     }, 1000);
   };
 
-  // Handle add to cart
-  const handleAddToCart = async (productId: number) => {
-    // request to add product to cart
-    const response = await addProductToWishlist(productId);
-
-    // message alert
-    alert(response.message);
-  };
-
   return (
     // product container
     <div className="relative p-4 rounded-lg flex flex-col justify-between bg-white hover:shadow-lg transition-shadow duration-300 ease-in-out h-full">

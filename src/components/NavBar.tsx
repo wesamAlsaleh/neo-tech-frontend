@@ -78,23 +78,16 @@ export default function NavBar() {
             <button className="bg-orange-500 text-white p-1">Search</button>
           </div>
 
-          {/* if logged in show the whishlist icon */}
-          {user ? (
-            loading ? (
-              <LoadingSpinner />
-            ) : (
-              <button>
-                <Link href="/wishlist">
-                  <Image
-                    src={icons.outlineHeartIcon48}
-                    alt="Wishlist icon"
-                    width={33}
-                    height={33}
-                  />
-                </Link>
-              </button>
-            )
-          ) : null}
+          <button>
+            <Link href={user ? "/wishlist" : "/login"}>
+              <Image
+                src={icons.outlineHeartIcon48}
+                alt="Wishlist icon"
+                width={33}
+                height={33}
+              />
+            </Link>
+          </button>
 
           <button>
             <Link href="/cart">

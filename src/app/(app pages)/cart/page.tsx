@@ -131,6 +131,28 @@ export default function page() {
     return <LoadingSpinner />;
   }
 
+  // If the user is not logged in, display a message
+  if (!user) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[50vh]">
+        <h1 className="text-2xl font-semibold text-gray-500 mb-4">
+          Please login to view your cart
+        </h1>
+
+        <p className="text-gray-500 mb-4">
+          You need to login to view your cart items and checkout.
+        </p>
+
+        <Link
+          href="/login"
+          className="px-6 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
+        >
+          Login
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* Header Container */}

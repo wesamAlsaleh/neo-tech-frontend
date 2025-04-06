@@ -16,6 +16,7 @@ import { useAuth } from "@/contexts/AuthContext";
 // Import components
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ProductCard from "@/components/ProductCard";
+import Link from "next/link";
 
 export default function page() {
   // Get the user data from the auth context
@@ -81,6 +82,12 @@ export default function page() {
         <h1 className="text-2xl font-semibold text-gray-500">
           Please login to see your wishlist
         </h1>
+
+        <h3>
+          <Link href="/login" className="text-orange-500 underline ml-2">
+            Login
+          </Link>
+        </h3>
       </div>
     );
   }

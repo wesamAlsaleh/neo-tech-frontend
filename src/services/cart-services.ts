@@ -19,7 +19,7 @@ export async function getUserCart() {
     if (!userToken) {
       return {
         status: false,
-        message: "Please login to add items to your cart",
+        message: "Please login to view your cart",
       };
     }
 

@@ -31,11 +31,8 @@ export default function page() {
   // Get the user data from the auth context
   const { user, setUserCartItemsCount, userCartItemsCount } = useAuth();
 
-  // State to store user wishlist data (array of products)
-  const [userCart, setUserCart] = useState<CartItem[] | undefined>();
-
-  // State to store the count of products in the user's wishlist
-  // const [userCartItemsCount, setUserCartItemsCount] = useState<number>(0);
+  // State to store user wishlist data (array of objects that contain product data)
+  const [userCart, setUserCart] = useState<CartItem[]>([]);
 
   // State to store the loading status
   const [loading, setLoading] = useState<boolean>(true);
@@ -61,8 +58,11 @@ export default function page() {
     });
 
     if (response.status) {
+      // Convert the cart items to an array of objects
+      const cartItemsArray = Object.values(response.cartItems || {});
+
       // Update the userWishlist state
-      setUserCart(response.cartItems);
+      setUserCart(cartItemsArray as CartItem[]);
 
       // Overwrite the userCartItemsCount state with the new count (almost useless)
       setUserCartItemsCount(response.totalItemsInCart);
@@ -71,14 +71,18 @@ export default function page() {
 
   // Fetch data from server
   useEffect(() => {
-    try {
-      // setLoading to true
+    const initFetch = async () => {
+      // Set loading to true while fetching data
       setLoading(true);
 
-      fetchUserCart();
-    } finally {
+      // Fetch the user cart data from the server
+      await fetchUserCart();
+
+      // Set loading to false after fetching data
       setLoading(false);
-    }
+    };
+
+    initFetch();
   }, []);
 
   // Handle the quantity change in the cart item
@@ -242,7 +246,7 @@ export default function page() {
                 ) : (
                   userCart.map((cartItem) => (
                     <tr
-                      key={cartItem.product.id}
+                      key={cartItem.cart_item_id}
                       className="border-t border-gray-200 group relative"
                     >
                       {/* Item Name and Image */}

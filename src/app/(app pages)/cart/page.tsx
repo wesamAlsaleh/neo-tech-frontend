@@ -172,9 +172,11 @@ export default function page() {
         </h1>
 
         {/* Add to cart button */}
-        <button className="px-6 py-3 border border-gray-500 text-black rounded">
-          <Link href="/home">Return To Shop</Link>
-        </button>
+        <Link href="/home">
+          <button className="px-6 py-3 border border-gray-500 text-black rounded-lg hover:bg-orange-100 transition">
+            Return To Shop
+          </button>
+        </Link>
       </div>
 
       {/* Display error message if something is wrong */}

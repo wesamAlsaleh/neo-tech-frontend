@@ -192,3 +192,49 @@ export async function removeProductFromWishlistByProductId(productId: number) {
     };
   }
 }
+
+/**
+ * @function moveToCart - Move a the user wishlist products to the cart
+ */
+export async function moveToCart() {
+  try {
+    // get user token from cookies
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    // Check if user token is not found
+    if (!userToken) {
+      return {
+        status: false,
+        message: "Authentication token not found.",
+      };
+    }
+
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_APP_URI}/move-to-cart`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+      cartItemsCount: response.data.total_cart_items_count,
+    };
+  } catch (error: any) {
+    // Log the error to the console
+    console.error(error.response.data);
+
+    // Return the details of the error
+    console.error(error.response.data.devMessage);
+
+    return {
+      status: false,
+      message: error.response.data.message || "An error occurred",
+    };
+  }
+}

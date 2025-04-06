@@ -8,7 +8,7 @@ import { Product } from "@/types/product";
 import { User } from "@/types/user";
 
 // Import services
-import { getUserWishlist } from "@/services/wishlist-services";
+import { getUserWishlist, moveToCart } from "@/services/wishlist-services";
 
 // Import auth context which provides user data
 import { useAuth } from "@/contexts/AuthContext";
@@ -20,7 +20,12 @@ import Link from "next/link";
 
 export default function page() {
   // Get the user data from the auth context
-  const { user, setUserWishlistCount, userWishlistCount } = useAuth();
+  const {
+    user,
+    setUserWishlistCount,
+    userWishlistCount,
+    setUserCartItemsCount,
+  } = useAuth();
 
   // State to store user wishlist data (array of products)
   const [userWishlistProducts, setUserWishlistProducts] = useState<Product[]>();
@@ -51,11 +56,17 @@ export default function page() {
         // Update UI with the server response
         setServerResponse({
           status: response.status,
-          message: response.message,
+          message: "",
         });
 
         // If the response status is false, return early
         if (!response.status) {
+          // Update UI with the server response
+          setServerResponse({
+            status: response.status,
+            message: response.message,
+          });
+
           return;
         }
 
@@ -69,6 +80,22 @@ export default function page() {
       setLoading(false);
     }
   }, []);
+
+  // Handle move to cart action
+  const handleMoveToCart = async () => {
+    const response = await moveToCart();
+
+    // Update UI with the server response
+    setServerResponse({
+      status: response.status,
+      message: response.message,
+    });
+
+    // If the response status is successful, update the user cart count
+    if (response.status) {
+      setUserCartItemsCount(response.cartItemsCount);
+    }
+  };
 
   // If the loading status is true, display a loading message
   if (loading) {
@@ -103,16 +130,14 @@ export default function page() {
         {/* Add to cart button */}
         <button
           className="px-6 py-3 border border-gray-500 text-black rounded"
-          onClick={() => {
-            // Add all products to the cart
-          }}
+          onClick={() => handleMoveToCart()}
         >
           Move All To Bag
         </button>
       </div>
 
       {/* Display error message if something is wrong */}
-      {serverResponse.message && !serverResponse.status && (
+      {serverResponse.message && (
         <div
           className={`px-4 py-3 rounded relative mb-4 ${
             serverResponse.status

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 
 // import the auth context to get the user data
@@ -9,14 +9,27 @@ import { useAuth } from "@/contexts/AuthContext";
 
 // import custom components
 import DropDownMenu from "./DropDownMenu";
+import LoadingSpinner from "./LoadingSpinner";
 
 // import the icons
 import { icons } from "../../public/icons";
-import LoadingSpinner from "./LoadingSpinner";
 
 export default function NavBar() {
   // get user data
   const { user, loading } = useAuth();
+
+  // State to store the cart items count and wishlist items count
+  const [cartItemsCount, setCartItemsCount] = React.useState<number>(0);
+  const [wishlistItemsCount, setWishlistItemsCount] = React.useState<number>(0);
+
+  useEffect(() => {
+    // setWishlistItemsCount(user?.userWishlistCount || 0);
+    // setCartItemsCount(user?.userCartItemsCount || 0);
+
+    console.log(user);
+
+    // console.log(cartItemsCount, wishlistItemsCount);
+  }, []);
 
   return (
     <div>

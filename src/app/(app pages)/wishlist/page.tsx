@@ -27,7 +27,7 @@ export default function page() {
 
   // State to store the count of products in the user's wishlist
   const [userWishlistProductsCount, setUserWishlistProductsCount] =
-    useState<number>();
+    useState<number>(0);
 
   // State to store the loading status
   const [loading, setLoading] = useState<boolean>(true);

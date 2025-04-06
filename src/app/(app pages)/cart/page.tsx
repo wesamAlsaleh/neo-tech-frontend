@@ -6,7 +6,6 @@ import Image from "next/image";
 
 // Import types
 import { CartItem } from "@/types/cart";
-import { User } from "@/types/user";
 
 // Import services
 import {
@@ -21,7 +20,11 @@ import { useAuth } from "@/contexts/AuthContext";
 // Import components
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ProductCard from "@/components/ProductCard";
+
+// Import helpers
 import { convertPriceToBHD } from "@/lib/helpers";
+
+// Import icons
 import { icons } from "../../../../public/icons";
 
 export default function page() {

@@ -20,14 +20,14 @@ import Link from "next/link";
 
 export default function page() {
   // Get the user data from the auth context
-  const { user } = useAuth() as { user: User };
+  const { user, setUserWishlistCount, userWishlistCount } = useAuth();
 
   // State to store user wishlist data (array of products)
   const [userWishlistProducts, setUserWishlistProducts] = useState<Product[]>();
 
   // State to store the count of products in the user's wishlist
-  const [userWishlistProductsCount, setUserWishlistProductsCount] =
-    useState<number>(0);
+  // const [userWishlistProductsCount, setUserWishlistProductsCount] =
+  //   useState<number>(0);
 
   // State to store the loading status
   const [loading, setLoading] = useState<boolean>(true);
@@ -61,7 +61,7 @@ export default function page() {
 
         // Update the userWishlist state
         setUserWishlistProducts(response.products);
-        setUserWishlistProductsCount(response.productsCount);
+        setUserWishlistCount(response.wishlistItemsCount);
       };
 
       fetchUserWishlist();
@@ -97,7 +97,7 @@ export default function page() {
       {/* Header Container */}
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-semibold text-gray-500 mb-4">
-          Your Wishlist ({userWishlistProductsCount})
+          Your Wishlist ({userWishlistCount})
         </h1>
 
         {/* Add to cart button */}

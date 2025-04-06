@@ -17,6 +17,9 @@ import {
   removeProductFromWishlistByProductId,
 } from "@/services/wishlist-services";
 
+// import custom hooks
+import { useAuth } from "@/contexts/AuthContext";
+
 // import icons
 import { icons } from "../../public/icons";
 
@@ -31,10 +34,17 @@ interface ProductCardProps {
 export default function ProductCard(props: ProductCardProps) {
   const { product, isWishlist } = props;
 
+  // Import the auth context to get the user data and user setters
+  const { setUserWishlistCount } = useAuth();
+
   // Handle adding product to wishlist
   const handleAddToWishlist = async (productId: number) => {
     // request to add product to wishlist
     const response = await addProductToWishlist(productId);
+
+    if (response.status) {
+      setUserWishlistCount(response.wishlistItemsCount);
+    }
 
     // message alert
     alert(response.message);
@@ -47,6 +57,11 @@ export default function ProductCard(props: ProductCardProps) {
 
     // message alert
     alert(response.message);
+
+    // update the wishlist count in the auth context
+    if (response.status) {
+      setUserWishlistCount(response.wishlistItemsCount);
+    }
 
     // reload the page after 1 sec to reflect the changes
     setTimeout(() => {

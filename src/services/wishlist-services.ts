@@ -37,7 +37,7 @@ export async function getUserWishlist() {
       message: response.data.message,
       // userWishlistInfo: response.data.userWishlist,
       products: response.data.products,
-      productsCount: response.data.productCount,
+      wishlistItemsCount: response.data.productCount,
     };
   } catch (error: any) {
     // Log the error to the console
@@ -86,6 +86,7 @@ export async function addProductToWishlist(productId: number) {
     return {
       status: true,
       message: response.data.message,
+      wishlistItemsCount: response.data.wishlist_items_count,
     };
   } catch (error: any) {
     // Log the error to the console
@@ -176,6 +177,7 @@ export async function removeProductFromWishlistByProductId(productId: number) {
     return {
       status: true,
       message: response.data.message,
+      wishlistItemsCount: response.data.wishlist_items_count,
     };
   } catch (error: any) {
     // Log the error to the console

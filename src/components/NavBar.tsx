@@ -80,20 +80,31 @@ export default function NavBar() {
             <button className="bg-orange-500 text-white p-1">Search</button>
           </div>
 
-          {/* Wishlist Button */}
-          <button>
-            <Link href={user ? "/wishlist" : "/login"}>
-              <Image
-                src={icons.outlineHeartIcon48}
-                alt="Wishlist icon"
-                width={33}
-                height={33}
-              />
-            </Link>
-          </button>
+          {/* Wishlist Button Container */}
+          <Link
+            href={user ? "/wishlist" : "/login"}
+            className="relative inline-block"
+          >
+            <Image
+              src={icons.outlineHeartIcon48}
+              alt="Wishlist icon"
+              width={33}
+              height={33}
+            />
+
+            {/* wishlist items count badge */}
+            {userWishlistCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center shadow">
+                {userWishlistCount}
+              </span>
+            )}
+          </Link>
 
           {/* Cart Button Container */}
-          <Link href="/cart" className="relative inline-block">
+          <Link
+            href={user ? "/cart" : "/login"}
+            className="relative inline-block"
+          >
             <Image
               src={icons.outlineCartIcon48}
               alt="Cart icon"
@@ -103,7 +114,7 @@ export default function NavBar() {
 
             {/* Cart items count badge */}
             {userCartItemsCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center shadow">
+              <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center shadow">
                 {userCartItemsCount}
               </span>
             )}

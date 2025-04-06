@@ -1,12 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 
 // Import the useRouter hook from the next/navigation module
 import { useRouter } from "next/navigation";
 
 // Import the handleLogout function from the auth-services
 import { handleLogout } from "@/services/auth-services";
+
+// Import the icons
+import { icons } from "../../public/icons";
 
 export default function DropDownMenu() {
   // Get the router object
@@ -57,8 +61,7 @@ export default function DropDownMenu() {
         onClick={toggleDropdown} // Toggles the dropdown visibility (open/close)
         className="py-2 px-4 bg-primary text-white rounded cursor-pointer w-32"
       >
-        {/* Display the selected item or the placeholder text */}
-        {selectedItem} ▼
+        <Image src={icons.userIcon48} alt="User Icon" width={20} height={20} />
       </button>
 
       {/* Dropdown menu */}

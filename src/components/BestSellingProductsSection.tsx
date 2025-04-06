@@ -10,7 +10,7 @@ import { Product } from "@/types/product";
 
 // import custom components
 import HomeComponentTitle from "./HomeComponentTitle";
-import ProductCardShowcase from "@/components/ProductCardShowcase";
+import ProductCard from "@/components/ProductCard";
 
 export default function BestSellingProductsSection() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -47,7 +47,7 @@ export default function BestSellingProductsSection() {
       {/* Product Cards Grid */}
       <div className="grid lg:grid-cols-8 md:grid-cols-4 sm:grid-cols-1 gap-2 w-[100%] ">
         {products.map((product) => {
-          return <ProductCardShowcase key={product.id} product={product} />;
+          return <ProductCard key={product.id} product={product} />;
         })}
       </div>
     </>

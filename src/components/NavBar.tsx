@@ -1,17 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
+import Image from "next/image";
 
 // import the auth context to get the user data
 import { useAuth } from "@/contexts/AuthContext";
 
 // import custom components
 import DropDownMenu from "./DropDownMenu";
+import LoadingSpinner from "./LoadingSpinner";
+
+// import the icons
+import { icons } from "../../public/icons";
 
 export default function NavBar() {
   // get user data
-  const { user, loading } = useAuth();
+  const { user, loading, userCartItemsCount, userWishlistCount } = useAuth();
 
   return (
     <div>
@@ -19,7 +24,9 @@ export default function NavBar() {
       <div className="flex p-4 items-center justify-between bg-gray-100/10 border-b-2 border-gray-300 sticky top-0 z-50">
         {/* Shop name */}
         <div className="flex items-center ml-10">
-          <h1 className="text-3xl font-bold text-primary">neoTech</h1>
+          <Link href="/home">
+            <h1 className="text-3xl font-bold text-primary">neoTech</h1>
+          </Link>
         </div>
 
         {/* pages links */}
@@ -73,20 +80,63 @@ export default function NavBar() {
             <button className="bg-orange-500 text-white p-1">Search</button>
           </div>
 
-          <button>
-            <Link href="#">
-              <h1>Wish list icon</h1>
-            </Link>
-          </button>
+          {/* Wishlist Button Container */}
+          <Link
+            href={user ? "/wishlist" : "/login"}
+            className="relative inline-block"
+          >
+            <Image
+              src={icons.outlineHeartIcon48}
+              alt="Wishlist icon"
+              width={33}
+              height={33}
+            />
 
-          <button>
-            <Link href="#">
-              <h1>Cart icon</h1>
-            </Link>
-          </button>
+            {/* wishlist items count badge */}
+            {userWishlistCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center shadow">
+                {userWishlistCount}
+              </span>
+            )}
+          </Link>
 
-          {/* if logged in show the profile icon here */}
-          {user ? loading ? null : <DropDownMenu /> : null}
+          {/* Cart Button Container */}
+          <Link
+            href={user ? "/cart" : "/login"}
+            className="relative inline-block"
+          >
+            <Image
+              src={icons.outlineCartIcon48}
+              alt="Cart icon"
+              width={33}
+              height={33}
+            />
+
+            {/* Cart items count badge */}
+            {userCartItemsCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center shadow">
+                {userCartItemsCount}
+              </span>
+            )}
+          </Link>
+
+          {/* if logged in show the profile icon */}
+          {user ? (
+            loading ? (
+              <LoadingSpinner />
+            ) : (
+              <button>
+                <Link href="#">
+                  <Image
+                    src={icons.userIcon48}
+                    alt="Cart icon"
+                    width={33}
+                    height={33}
+                  />
+                </Link>
+              </button>
+            )
+          ) : null}
         </div>
       </div>
     </div>

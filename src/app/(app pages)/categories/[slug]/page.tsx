@@ -11,7 +11,7 @@ import { searchProductBySlug } from "@/services/products-services";
 
 // import custom components
 import LoadingSpinner from "@/components/LoadingSpinner";
-import ProductCard from "@/components/ProductCard";
+import ProductDetailsSection from "@/components/ProductDetailsSection";
 import Breadcrumb from "@/components/PageBreadcrumb";
 
 const CategoriesPage = ({ params }: { params: Promise<{ slug: string }> }) => {

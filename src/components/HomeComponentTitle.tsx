@@ -26,21 +26,23 @@ export default function HomeComponentTitle({
     <>
       {/* component sub-name container */}
       <div className="flex items-center gap-x-2 mb-2">
-        {/* red box container */}
+        {/* subtitle box container */}
         <div>
           <div className="w-5 h-10 bg-primary rounded-md" />
         </div>
 
         {/* category name container */}
         <div>
-          <h1 className="text-primary font-bold text-base ml-1">{subtitle}</h1>
+          <h1 className="text-orange-500 font-bold text-base ml-1">
+            {subtitle}
+          </h1>
         </div>
       </div>
 
       {/* component main name container + navigation buttons if available */}
       <div className="mb-4 flex items-center justify-between">
         {/* title */}
-        <h1 className="font-bold text-3xl">{title}</h1>
+        <h1 className="font-bold text-3xl text-black">{title}</h1>
 
         {/* actions */}
         {viewAllButton && url && (

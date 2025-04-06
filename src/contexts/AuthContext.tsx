@@ -9,6 +9,10 @@ import { User } from "@/types/user";
 interface AuthContextType {
   user: User | null;
   setUser: Dispatch<SetStateAction<User | null>>;
+  userCartItemsCount: number;
+  userWishlistCount: number;
+  setUserCartItemsCount: Dispatch<SetStateAction<number>>;
+  setUserWishlistCount: Dispatch<SetStateAction<number>>;
   loading: boolean;
   setLoading: Dispatch<SetStateAction<boolean>>;
 }

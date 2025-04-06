@@ -378,31 +378,6 @@ export default function AddProductForm() {
           </div>
         </div>
 
-        {/* Star Rating field container */}
-        {/* <div>
-          <label
-            htmlFor="product_rating"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Product Rating (0-5) stars
-          </label>
-
-          <select
-            id="product_rating"
-            value={productRating}
-            onChange={(event) => setProductRating(Number(event.target.value))} // set the product rating state when the user selects a rating
-            className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
-            required
-          >
-            <option value="0">Default Rating (0)</option>
-            <option value="1">⭐</option>
-            <option value="2">⭐⭐</option>
-            <option value="3">⭐⭐⭐</option>
-            <option value="4">⭐⭐⭐⭐</option>
-            <option value="5">⭐⭐⭐⭐⭐</option>
-          </select>
-        </div> */}
-
         {/* Action buttons container */}
         <div className="flex gap-2">
           <button
@@ -410,7 +385,7 @@ export default function AddProductForm() {
             disabled={isSubmitting}
             className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? "Adding..." : "Add Category"}
+            {isSubmitting ? "Adding..." : "Add Product"}
           </button>
 
           <button
@@ -419,7 +394,7 @@ export default function AddProductForm() {
             disabled={isSubmitting}
             className="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Create Another Category
+            Create Another Product
           </button>
         </div>
       </form>

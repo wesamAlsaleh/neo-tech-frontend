@@ -73,29 +73,6 @@ export async function handleRegisterSubmit(prevState: any, formData: FormData) {
   }
 }
 
-// Response from the server when a user is registered successfully
-// {
-//   "message": "User created successfully",
-//   "userData": {
-//       "user": {
-//           "first_name": "Ali",
-//           "last_name": "Esa",
-//           "email": "wesammuneerali800@gmail.com",
-//           "phone_number": "23232323",
-//           "updated_at": "2025-01-16T00:25:58.000000Z",
-//           "created_at": "2025-01-16T00:25:58.000000Z",
-//           "id": 6
-//       },
-//       "token": "14|D8qNtchclDPec24scFFTp9IzwvYxeNUbp37sk4bic5bc1bbc"
-//   }
-// }
-
-// Response from the server when a user is not registered unsuccessfully
-// {
-//   "message": "User not created",
-//   "errorMessage": "The email has already been taken. (and 1 more error)"
-// }
-
 // Handle login form submission to the server
 export async function handleLoginSubmit(prevState: any, formData: FormData) {
   // Get the cookies to save the token
@@ -143,30 +120,6 @@ export async function handleLoginSubmit(prevState: any, formData: FormData) {
     };
   }
 }
-
-// Response from the server when a user is logged in successfully
-// {
-//   "message": "User logged in successfully",
-//   "userData": {
-//       "user": {
-//           "id": 5,
-//           "first_name": "Wesam",
-//           "last_name": "Muneer",
-//           "email": "wesammuneer@gmail.com",
-//           "email_verified_at": null,
-//           "role": "user",
-//           "phone_number": "37234155",
-//           "created_at": "2025-01-13T17:45:12.000000Z",
-//           "updated_at": "2025-01-13T17:45:12.000000Z"
-//       },
-//       "token": "15|bFIVNgp1o95cGOBa5DZOPd8xHpFfD8R4YkSgZbrfff4a287a"
-//   }
-// }
-
-// Response from the server when a user is not logged in successfully
-// {
-//   "message": "Invalid credentials"
-// }
 
 // Handle get user data to the server
 export async function getUser() {
@@ -222,6 +175,8 @@ export async function getUser() {
       success: true,
       message: response.data.message,
       userData: response.data.userData,
+      userCartItemsCount: response.data.userCartItemsCount,
+      userWishlistItemsCount: response.data.userWishlistCount,
     };
   } catch (error: any) {
     return {
@@ -232,27 +187,6 @@ export async function getUser() {
     };
   }
 }
-
-// Response from the server when a user is retrieved successfully
-// {
-//   "message": "User retrieved successfully",
-//   "userData": {
-//       "id": 5,
-//       "first_name": "Wesam",
-//       "last_name": "Muneer",
-//       "email": "wesammuneer@gmail.com",
-//       "email_verified_at": null,
-//       "role": "user",
-//       "phone_number": "37234155",
-//       "created_at": "2025-01-13T17:45:12.000000Z",
-//       "updated_at": "2025-01-13T17:45:12.000000Z"
-//   }
-// }
-
-// Response from the server when a user is not retrieved successfully
-// {
-//   "message": "Unauthenticated."
-// }
 
 /**
  * Retrieves the user role by accessing the authentication token from cookies
@@ -310,17 +244,6 @@ export async function getUserRole(): Promise<{
   }
 }
 
-// Response from the server when a user role is retrieved successfully
-// {
-//   "message": "User role retrieved successfully",
-//   "userRole": "admin"
-// }
-
-// Response from the server when a user role is not retrieved successfully
-// {
-//   "message": "Unauthenticated."
-// }
-
 // Handle logout
 export async function handleLogout() {
   try {
@@ -363,8 +286,3 @@ export async function handleLogout() {
     };
   }
 }
-
-// Response from the server when a user is logged out successfully
-// {
-//   "message": "User logged out successfully"
-// }

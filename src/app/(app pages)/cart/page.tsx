@@ -32,7 +32,7 @@ export default function page() {
   const [userCart, setUserCart] = useState<CartItem[] | undefined>();
 
   // State to store the count of products in the user's wishlist
-  const [userCartItemsCount, setUserCartItemsCount] = useState<number>();
+  const [userCartItemsCount, setUserCartItemsCount] = useState<number>(0);
 
   // State to store the loading status
   const [loading, setLoading] = useState<boolean>(true);
@@ -57,14 +57,11 @@ export default function page() {
       message: response.message,
     });
 
-    // If the response status is false, return early
-    if (!response.status) {
-      return;
+    if (response.status) {
+      // Update the userWishlist state
+      setUserCart(response.cartItems);
+      setUserCartItemsCount(response.totalItemsInCart);
     }
-
-    // Update the userWishlist state
-    setUserCart(response.cartItems);
-    setUserCartItemsCount(response.totalItemsInCart);
   };
 
   // Fetch data from server
@@ -162,14 +159,8 @@ export default function page() {
         </h1>
 
         {/* Add to cart button */}
-        <button
-          className="px-6 py-3 border border-gray-500 text-black rounded"
-          onClick={() => {
-            console.log("products: " + userCart);
-            // Add all products to the cart
-          }}
-        >
-          Checkout
+        <button className="px-6 py-3 border border-gray-500 text-black rounded">
+          <Link href="/home">Return To Shop</Link>
         </button>
       </div>
 
@@ -235,7 +226,7 @@ export default function page() {
                     {Array.from({ length: userCartItemsCount || 1 }).map(
                       // Array.from creates an array of a given length
                       (_, index) => (
-                        <CartSkeleton key={index} />
+                        <CartItemSkeleton key={index} />
                       )
                     )}
                   </>
@@ -308,33 +299,13 @@ export default function page() {
               </tbody>
             </table>
           </div>
-
-          {/* Cart Actions */}
-          <div className="flex justify-between mt-6">
-            {/* Bottom Actions */}
-            <Link
-              href="/home"
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-100 transition"
-            >
-              Return To Shop
-            </Link>
-
-            <button
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded hover:bg-gray-100 transition"
-              onClick={() => {
-                // Implement update cart functionality
-              }}
-            >
-              Update Cart
-            </button>
-          </div>
         </>
       )}
     </>
   );
 }
 
-function CartSkeleton() {
+function CartItemSkeleton() {
   return (
     <tr className="border-t border-gray-200 animate-pulse">
       {/* Item Name and Image Skeleton */}

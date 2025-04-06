@@ -26,13 +26,13 @@ import { icons } from "../../../../public/icons";
 
 export default function page() {
   // Get the user data from the auth context
-  const { user } = useAuth() as { user: User };
+  const { user, setUserCartItemsCount, userCartItemsCount } = useAuth();
 
   // State to store user wishlist data (array of products)
   const [userCart, setUserCart] = useState<CartItem[] | undefined>();
 
   // State to store the count of products in the user's wishlist
-  const [userCartItemsCount, setUserCartItemsCount] = useState<number>(0);
+  // const [userCartItemsCount, setUserCartItemsCount] = useState<number>(0);
 
   // State to store the loading status
   const [loading, setLoading] = useState<boolean>(true);
@@ -60,6 +60,8 @@ export default function page() {
     if (response.status) {
       // Update the userWishlist state
       setUserCart(response.cartItems);
+
+      // Overwrite the userCartItemsCount state with the new count (almost useless)
       setUserCartItemsCount(response.totalItemsInCart);
     }
   };
@@ -116,6 +118,10 @@ export default function page() {
 
       // Refetch the cart data to reflect the changes
       if (response.status) {
+        // Update the userCart state
+        setUserCartItemsCount(response.totalItemsInCart);
+
+        // Update the userCart state
         fetchUserCart();
       }
     } finally {

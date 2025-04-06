@@ -17,6 +17,9 @@ import { addProductToCart } from "@/services/cart-services";
 // import helper functions
 import { convertPriceToBHD } from "@/lib/helpers";
 
+// Import the auth context to get the global user data
+import { useAuth } from "@/contexts/AuthContext";
+
 // import custom components
 import RatingStars from "./RatingStars";
 import Separator from "./Separator";
@@ -26,6 +29,9 @@ interface ProductCardProps {
 }
 
 export default function ProductDetailsSection({ product }: ProductCardProps) {
+  // Get the user setter functions from the auth context to update the cart and wishlist counts
+  const { setUserCartItemsCount, setUserWishlistCount } = useAuth();
+
   // State to store the quantity of the product
   const [quantity, setQuantity] = useState<number>(1); // Quantity state
 
@@ -42,6 +48,11 @@ export default function ProductDetailsSection({ product }: ProductCardProps) {
     // request to add product to wishlist
     const response = await addProductToWishlist(productId);
 
+    if (response.status) {
+      // Update the wishlist count in the auth context
+      // setUserWishlistCount(response);
+    }
+
     // message alert
     alert(response.message);
   };
@@ -50,6 +61,11 @@ export default function ProductDetailsSection({ product }: ProductCardProps) {
   const handleAddToCart = async (productId: number, quantity: number) => {
     // request to add product to cart
     const response = await addProductToCart(String(productId), quantity);
+
+    // if the request was successful update the cart count in the auth context
+    if (response.status) {
+      setUserCartItemsCount(response.totalItemsInCart);
+    }
 
     // message alert
     alert(response.message);

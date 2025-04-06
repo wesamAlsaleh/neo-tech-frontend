@@ -175,6 +175,8 @@ export async function getUser() {
       success: true,
       message: response.data.message,
       userData: response.data.userData,
+      userCartItemsCount: response.data.userCartItemsCount,
+      userWishlistItemsCount: response.data.userWishlistCount,
     };
   } catch (error: any) {
     return {

@@ -16,20 +16,7 @@ import { icons } from "../../public/icons";
 
 export default function NavBar() {
   // get user data
-  const { user, loading } = useAuth();
-
-  // State to store the cart items count and wishlist items count
-  const [cartItemsCount, setCartItemsCount] = React.useState<number>(0);
-  const [wishlistItemsCount, setWishlistItemsCount] = React.useState<number>(0);
-
-  useEffect(() => {
-    // setWishlistItemsCount(user?.userWishlistCount || 0);
-    // setCartItemsCount(user?.userCartItemsCount || 0);
-
-    console.log(user);
-
-    // console.log(cartItemsCount, wishlistItemsCount);
-  }, []);
+  const { user, loading, userCartItemsCount, userWishlistCount } = useAuth();
 
   return (
     <div>
@@ -93,6 +80,7 @@ export default function NavBar() {
             <button className="bg-orange-500 text-white p-1">Search</button>
           </div>
 
+          {/* Wishlist Button */}
           <button>
             <Link href={user ? "/wishlist" : "/login"}>
               <Image
@@ -104,16 +92,22 @@ export default function NavBar() {
             </Link>
           </button>
 
-          <button>
-            <Link href="/cart">
-              <Image
-                src={icons.outlineCartIcon48}
-                alt="Cart icon"
-                width={33}
-                height={33}
-              />
-            </Link>
-          </button>
+          {/* Cart Button Container */}
+          <Link href="/cart" className="relative inline-block">
+            <Image
+              src={icons.outlineCartIcon48}
+              alt="Cart icon"
+              width={33}
+              height={33}
+            />
+
+            {/* Cart items count badge */}
+            {userCartItemsCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-bold rounded-full w-5 h-5 flex items-center justify-center shadow">
+                {userCartItemsCount}
+              </span>
+            )}
+          </Link>
 
           {/* if logged in show the profile icon */}
           {user ? (

@@ -90,6 +90,7 @@ export async function addProductToCart(productId: string, quantity: number) {
       quantity: response.data.cart_item.quantity,
       unitPrice: response.data.cart_item.unit_price,
       totalPrice: response.data.cart_item.total_price,
+      totalItemsInCart: response.data.total_items_in_user_cart,
     };
   } catch (error: any) {
     // Log the error to the console
@@ -141,6 +142,7 @@ export async function updateCart(cartItemId: string, quantity: number) {
       quantity: response.data.cart_item.quantity,
       unitPrice: response.data.cart_item.unit_price,
       totalPrice: response.data.cart_item.total_price,
+      totalItemsInCart: response.data.total_items_in_user_cart,
     };
   } catch (error: any) {
     // Log the error to the console
@@ -186,6 +188,7 @@ export async function removeProductFromCart(cartItemId: string) {
     return {
       status: true,
       message: response.data.message,
+      totalItemsInCart: response.data.total_items_in_user_cart,
     };
   } catch (error: any) {
     // Log the error to the console

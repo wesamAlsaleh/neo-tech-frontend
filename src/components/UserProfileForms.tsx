@@ -19,9 +19,20 @@ interface UserProfileFormsProps {
 // import the cities
 import { cities } from "@/types/cities";
 
+// import the auth context to get the user data
+import { useAuth } from "@/contexts/AuthContext";
+
 export default function UserProfileForms(props: UserProfileFormsProps) {
   // Get the user from props
   const { user, userAddress } = props;
+
+  // Get the user setter from the auth context
+  const {
+    setUser,
+    setUserAddress,
+    setUserCartItemsCount,
+    setUserWishlistCount,
+  } = useAuth();
 
   // Router instance
   const router = useRouter();
@@ -200,11 +211,17 @@ export default function UserProfileForms(props: UserProfileFormsProps) {
       message: response.message,
     });
 
-    // Redirect to the home page after 3 seconds if the logout is successful
+    // Redirect to the home page after 2 seconds if the logout is successful
     if (response.status) {
       setTimeout(() => {
+        // Clear the user data from the auth context and redirect to the home page after 2 seconds
+        setUser(null);
+        setUserAddress(null);
+        setUserCartItemsCount(0);
+        setUserWishlistCount(0);
+
         router.push("/home");
-      }, 3000);
+      }, 2000);
     }
   };
 

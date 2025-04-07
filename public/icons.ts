@@ -95,6 +95,12 @@ import removeCircleIcon96 from "../public/assets/button-icons/icons8-remove-circ
 import removeAsTrashIcon48 from "../public/assets/button-icons/icons8-remove-trash-48.png";
 import removeAsTrashIcon96 from "../public/assets/button-icons/icons8-remove-trash-96.png";
 
+// Left and right arrow icons
+import leftArrowIcon48 from "../public/assets/button-icons/icons8-left-arrow-48.png";
+import leftArrowIcon96 from "../public/assets/button-icons/icons8-left-arrow-96.png";
+import rightArrowIcon48 from "../public/assets/button-icons/icons8-right-arrow-48.png";
+import rightArrowIcon96 from "../public/assets/button-icons/icons8-right-arrow-96.png";
+
 export const icons = {
   userIcon48,
   userIcon96,
@@ -155,4 +161,8 @@ export const icons = {
   removeCircleIcon96,
   removeAsTrashIcon48,
   removeAsTrashIcon96,
+  leftArrowIcon48,
+  leftArrowIcon96,
+  rightArrowIcon48,
+  rightArrowIcon96,
 };

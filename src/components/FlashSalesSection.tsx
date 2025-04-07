@@ -13,6 +13,8 @@ import { Product } from "@/types/product";
 import HomeComponentTitle from "./HomeComponentTitle";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ProductCard from "@/components/ProductCard";
+import Image from "next/image";
+import { icons } from "../../public/icons";
 
 export default function FlashSalesSection() {
   // pagination state
@@ -77,26 +79,36 @@ export default function FlashSalesSection() {
         <button
           onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
           disabled={page === 1}
-          className={`px-4 py-2 border rounded-full ${
+          className={`p-3 border rounded-full ${
             page === 1
               ? "bg-gray-200 cursor-not-allowed"
               : "bg-orange-300 text-white"
           }`}
         >
-          {"<"}
+          <Image
+            src={icons.leftArrowIcon48.src}
+            alt="left-arrow"
+            width={20}
+            height={20}
+          />
         </button>
 
         {/* Next Button */}
         <button
           onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
           disabled={page === totalPages}
-          className={`px-4 py-2 border rounded-full ${
+          className={`p-3 border rounded-full ${
             page === totalPages
               ? "bg-gray-200 cursor-not-allowed"
               : "bg-orange-300 text-white"
           }`}
         >
-          {">"}
+          <Image
+            src={icons.rightArrowIcon48.src}
+            alt="left-arrow"
+            width={20}
+            height={20}
+          />
         </button>
       </div>
     );

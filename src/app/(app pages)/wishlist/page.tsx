@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 
 // Import types
 import { Wishlist } from "@/types/wishlist";
@@ -16,7 +17,6 @@ import { useAuth } from "@/contexts/AuthContext";
 // Import components
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ProductCard from "@/components/ProductCard";
-import Link from "next/link";
 
 export default function page() {
   // Get the user data from the auth context

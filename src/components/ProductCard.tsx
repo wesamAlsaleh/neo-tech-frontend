@@ -28,11 +28,11 @@ import RatingStars from "./RatingStars";
 
 interface ProductCardProps {
   product: Product;
-  isWishlist?: boolean; // Optional prop to show wishlist icon if true
+  isWishlistCard?: boolean; // Optional prop to show wishlist icon if true
 }
 
 export default function ProductCard(props: ProductCardProps) {
-  const { product, isWishlist } = props;
+  const { product, isWishlistCard } = props;
 
   // Import the auth context to get the user data and user setters
   const { setUserWishlistCount } = useAuth();
@@ -81,8 +81,8 @@ export default function ProductCard(props: ProductCardProps) {
 
       {/* Wishlist & View Icons container */}
       <div className="absolute top-2 right-2 sm:top-2 sm:right-2 md:top-3 md:right-3 lg:top-3 lg:right-3 flex flex-col space-y-2">
-        {/* whishlist button */}
-        {isWishlist ? (
+        {/* remove whishlist product button */}
+        {isWishlistCard ? (
           <button
             onClick={() => handleRemoveFromWishlist(product.id)}
             className="p-2 bg-red-50 rounded-full shadow hover:bg-red-200"
@@ -95,6 +95,7 @@ export default function ProductCard(props: ProductCardProps) {
             />
           </button>
         ) : (
+          // add to wishlist button
           <button
             onClick={() => handleAddToWishlist(product.id)}
             className="p-2 bg-orange-50 rounded-full shadow hover:bg-orange-200"

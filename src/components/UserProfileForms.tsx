@@ -7,6 +7,7 @@ import { User, UserAddress } from "@/types/User";
 
 // import services
 import { putAddress } from "@/services/user-address-services";
+import { updateProfile } from "@/services/auth-services";
 
 // interface for the form component props
 interface UserProfileFormsProps {
@@ -69,6 +70,19 @@ export default function UserProfileForms(props: UserProfileFormsProps) {
     // Prepare form data
     const formData = new FormData();
 
+    // Check no values are empty
+    if (!firstName || !lastName || !email || !phone) {
+      setServerResponse({
+        status: false,
+        message: `${firstName ? "" : "First Name"}${
+          lastName ? "" : "Last Name"
+        }${email ? "" : "Email"}${
+          phone ? "" : "Phone Number"
+        } cannot be empty!`,
+      });
+      return;
+    }
+
     // Append the form data
     formData.append("first_name", firstName);
     formData.append("last_name", lastName);
@@ -79,15 +93,15 @@ export default function UserProfileForms(props: UserProfileFormsProps) {
       setIsSubmitting(true);
 
       // Submit the form data using the service
-      //   const result = await
+      const result = await updateProfile(formData);
+
       // Update UI with the response
-      //   setStatus({
-      //     success: result.status,
-      //     message: result.message,
-      //   });
+      setServerResponse({
+        status: result.status,
+        message: result.message,
+      });
     } finally {
-      // Set the form submission status to false to enable the submit button
-      setIsSubmitting(false);
+      setIsSubmitting(false); // Set the form submission status to false to enable the submit button
     }
   };
 
@@ -170,6 +184,7 @@ export default function UserProfileForms(props: UserProfileFormsProps) {
 
   return (
     <div className="flex flex-col gap-6">
+      {/* TODO: Convert this to Toast Message */}
       {/* Form Status Message */}
       {serverResponse.message && (
         <div
@@ -256,7 +271,8 @@ export default function UserProfileForms(props: UserProfileFormsProps) {
 
           <input
             type="tel"
-            pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+            // Pattern for Bahrain phone number format (e.g., 37234155)
+            pattern="^(?:[0-9]{8})$"
             id="phone_number"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}

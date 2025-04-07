@@ -7,8 +7,9 @@ import axios from "axios";
 import { cookies } from "next/headers";
 
 /**
- * @function putAddress - Create or update the user address
+ * @function putAddress - Create or update the user address based on the newAddress parameter
  * @param formData - The form data to be sent to the server
+ * @param newAddress - A boolean indicating whether to create a new address or update an existing one
  */
 export async function putAddress(formData: FormData, newAddress: boolean) {
   try {

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 
 // import services
 import { displayFlashSale } from "@/services/sale-services";
@@ -9,12 +10,13 @@ import { displayFlashSale } from "@/services/sale-services";
 import { FlashSale } from "@/types/sale";
 import { Product } from "@/types/product";
 
+// Import icons
+import { icons } from "../../public/icons";
+
 // import custom components
 import HomeComponentTitle from "./HomeComponentTitle";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ProductCard from "@/components/ProductCard";
-import Image from "next/image";
-import { icons } from "../../public/icons";
 
 export default function FlashSalesSection() {
   // pagination state

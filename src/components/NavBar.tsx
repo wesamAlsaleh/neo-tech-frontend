@@ -120,23 +120,15 @@ export default function NavBar() {
             )}
           </Link>
 
-          {/* if logged in show the profile icon */}
-          {user ? (
-            loading ? (
-              <LoadingSpinner />
-            ) : (
-              <button>
-                <Link href="#">
-                  <Image
-                    src={icons.userIcon48}
-                    alt="Cart icon"
-                    width={33}
-                    height={33}
-                  />
-                </Link>
-              </button>
-            )
-          ) : null}
+          {/* Profile Button */}
+          <Link href="/profile" className="relative inline-block">
+            <Image
+              src={icons.userIcon48}
+              alt="Cart icon"
+              width={33}
+              height={33}
+            />
+          </Link>
         </div>
       </div>
     </div>

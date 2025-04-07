@@ -66,7 +66,7 @@ function ImageSliderSkeleton() {
 
       {/* Pagination Dots Skeleton */}
       <div className="flex justify-center mt-4">
-        {[...Array(5)].map((_, index) => (
+        {[...Array(2)].map((_, index) => (
           <div key={index} className="h-1 w-10 mx-1 bg-gray-300 rounded-xl" />
         ))}
       </div>

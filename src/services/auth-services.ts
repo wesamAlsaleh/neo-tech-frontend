@@ -19,7 +19,11 @@ type LoginUserData = {
   password: string;
 };
 
-// Handle registration form submission to the server
+/**
+ * @function handleRegisterSubmit - Handles the registration form submission to the server.
+ * @param prevState - The previous state of the form (not used in this function)
+ * @param formData - The form data submitted by the user
+ */
 export async function handleRegisterSubmit(prevState: any, formData: FormData) {
   // Get the cookies
   const cookieStore = await cookies();
@@ -57,8 +61,12 @@ export async function handleRegisterSubmit(prevState: any, formData: FormData) {
 
     // Return the response data
     return {
-      success: true,
+      status: true,
       message: response.data.message,
+      userData: response.data.userData.user,
+      userCartItemsCount: response.data.userCartItemsCount,
+      userWishlistItemsCount: response.data.userWishlistCount,
+      userAddress: response.data.userAddress, // User address data or null if not available
     };
   } catch (error: any) {
     // Log the error to the console
@@ -74,7 +82,11 @@ export async function handleRegisterSubmit(prevState: any, formData: FormData) {
   }
 }
 
-// Handle login form submission to the server
+/**
+ * @function handleLoginSubmit - Handles the login form submission to the server.
+ * @param prevState - The previous state of the form (not used in this function)
+ * @param formData - The form data submitted by the user
+ */
 export async function handleLoginSubmit(prevState: any, formData: FormData) {
   // Get the cookies to save the token
   const cookieStore = await cookies();
@@ -109,8 +121,12 @@ export async function handleLoginSubmit(prevState: any, formData: FormData) {
 
     // Return the response data
     return {
-      success: true,
+      status: true,
       message: response.data.message,
+      userData: response.data.userData.user,
+      userCartItemsCount: response.data.userCartItemsCount,
+      userWishlistItemsCount: response.data.userWishlistCount,
+      userAddress: response.data.userAddress, // User address data or null if not available
     };
   } catch (error: any) {
     // Log the error to the console
@@ -126,7 +142,9 @@ export async function handleLoginSubmit(prevState: any, formData: FormData) {
   }
 }
 
-// Handle get user data to the server
+/**
+ * @function getUser - Retrieves the user data from the server using the auth token stored in cookies.s
+ */
 export async function getUser() {
   try {
     // Access the cookies
@@ -277,6 +295,7 @@ export async function handleLogout() {
     // Revoke the user token from the server
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_APP_URI}/logout`,
+      {}, // empty body
       {
         headers: {
           "Content-Type": "application/json",
@@ -288,7 +307,7 @@ export async function handleLogout() {
     );
 
     return {
-      success: true,
+      status: true,
       message: response.data.message,
     };
   } catch (error: any) {

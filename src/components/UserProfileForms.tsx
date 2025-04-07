@@ -1,13 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 // import types
 import { User, UserAddress } from "@/types/User";
 
 // import services
 import { putAddress } from "@/services/user-address-services";
-import { updateProfile } from "@/services/auth-services";
+import { handleLogout, updateProfile } from "@/services/auth-services";
 
 // interface for the form component props
 interface UserProfileFormsProps {
@@ -21,6 +22,9 @@ import { cities } from "@/types/cities";
 export default function UserProfileForms(props: UserProfileFormsProps) {
   // Get the user from props
   const { user, userAddress } = props;
+
+  // Router instance
+  const router = useRouter();
 
   // State to store the user profile data
   const [firstName, setFirstName] = useState<string>(user.first_name);
@@ -179,6 +183,28 @@ export default function UserProfileForms(props: UserProfileFormsProps) {
     } finally {
       // Set the form submission status to false to enable the submit button
       setIsSubmitting(false);
+    }
+  };
+
+  // Function to handle the logout form submission
+  const handleLogoutSubmit = async () => {
+    // Set the form submission status to true to disable the submit button
+    setIsSubmitting(true);
+
+    // Call the logout service
+    const response = await handleLogout();
+
+    // Update UI with the response
+    setServerResponse({
+      status: response.status,
+      message: response.message,
+    });
+
+    // Redirect to the home page after 3 seconds if the logout is successful
+    if (response.status) {
+      setTimeout(() => {
+        router.push("/home");
+      }, 3000);
     }
   };
 
@@ -459,6 +485,18 @@ export default function UserProfileForms(props: UserProfileFormsProps) {
           </button>
         </div>
       </form>
+
+      {/* Logout Button */}
+      <div className="flex gap-2">
+        <button
+          type="button"
+          disabled={isSubmitting}
+          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed w-full"
+          onClick={() => handleLogoutSubmit()}
+        >
+          {isSubmitting ? "Logging Out" : "Logout"}
+        </button>
+      </div>
     </div>
   );
 }

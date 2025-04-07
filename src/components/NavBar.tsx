@@ -81,10 +81,7 @@ export default function NavBar() {
           </div>
 
           {/* Wishlist Button Container */}
-          <Link
-            href={user ? "/wishlist" : "/login"}
-            className="relative inline-block"
-          >
+          <Link href="/wishlist" className="relative inline-block">
             <Image
               src={icons.outlineHeartIcon48}
               alt="Wishlist icon"
@@ -101,10 +98,7 @@ export default function NavBar() {
           </Link>
 
           {/* Cart Button Container */}
-          <Link
-            href={user ? "/cart" : "/login"}
-            className="relative inline-block"
-          >
+          <Link href="/cart" className="relative inline-block">
             <Image
               src={icons.outlineCartIcon48}
               alt="Cart icon"
@@ -121,10 +115,7 @@ export default function NavBar() {
           </Link>
 
           {/* Profile Button */}
-          <Link
-            href={user ? "/profile" : "/login"}
-            className="relative inline-block"
-          >
+          <Link href="/profile" className="relative inline-block">
             <Image
               src={icons.userIcon48}
               alt="Cart icon"

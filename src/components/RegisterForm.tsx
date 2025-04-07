@@ -10,7 +10,18 @@ import { handleRegisterSubmit } from "@/services/auth-services";
 // import router from the next/navigation module to redirect the user to the home page after successful registration
 import { useRouter } from "next/navigation";
 
+// Import the useAuth hook from the auth context
+import { useAuth } from "@/contexts/AuthContext";
+
 export default function RegisterForm() {
+  // Get the user setter from the auth context
+  const {
+    setUser,
+    setUserAddress,
+    setUserCartItemsCount,
+    setUserWishlistCount,
+  } = useAuth();
+
   // Get the router object from the useRouter hook
   const router = useRouter();
 
@@ -19,10 +30,17 @@ export default function RegisterForm() {
 
   // Redirect the user to the home page after registration is successful
   useEffect(() => {
-    if (state?.success) {
-      router.push("/");
+    if (state?.status) {
+      // Set the user data in the auth context to access them in the app
+      setUser(state.userData);
+      setUserAddress(state.userAddress);
+      setUserCartItemsCount(state.userCartItemsCount);
+      setUserWishlistCount(state.userWishlistItemsCount);
+
+      // Redirect the user to the home page
+      router.push("/home");
     }
-  }, [state?.success, router]);
+  }, [state?.status, router]);
 
   return (
     <>
@@ -83,17 +101,17 @@ export default function RegisterForm() {
         {state && (
           <div
             className={`mt-4 p-2 text-center ${
-              state.success ? "text-green-500" : "text-red-500"
+              state.status ? "text-green-500" : "text-red-500"
             }`}
           >
             {/* success or fail message with details */}
-            {`${state.message} ${state.error && `: ${state.error}`}`}
+            {`${state.message}`}
           </div>
         )}
       </form>
 
       {/* home page button */}
-      {state?.success === false && (
+      {state?.status === false && (
         <Link href="/">
           <button
             className={`border p-2 font-bold mt-4 shadow-md text-red-500`}

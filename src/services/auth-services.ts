@@ -199,30 +199,23 @@ export async function getUser() {
 }
 
 /**
- * Retrieves the user role by accessing the authentication token from cookies
- * and making a request to the user-role endpoint.
- *
- * @returns {Promise<{ success: boolean; message?: string; userRole?: string }>}
- * An object containing the success status, an optional message, and the user role if successful.
- *
- * @throws {Error} If an unexpected error occurs during the request.
+ * @function getUserRole - Retrieves the user role from the server using the auth token stored in cookies.
  */
 export async function getUserRole(): Promise<{
-  success: boolean;
+  status: boolean;
   message?: string;
   userRole?: string;
 }> {
   try {
-    // Access the cookies
-    const cookieStore = cookies();
+    // get user token from cookies
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
 
-    // Extract the auth token from the cookies
-    const userToken = (await cookieStore).get("userToken")?.value;
-
+    // If the user token is not found
     if (!userToken) {
       return {
-        success: false,
-        message: "Token not found in cookies.",
+        status: false,
+        message: "Please login to update your profile",
       };
     }
 
@@ -241,7 +234,7 @@ export async function getUserRole(): Promise<{
 
     // Return success and user role
     return {
-      success: true,
+      status: true,
       userRole: response.data.userRole,
     };
   } catch (error: any) {
@@ -252,29 +245,34 @@ export async function getUserRole(): Promise<{
     console.error(error.response.data.devMessage);
 
     return {
-      success: false,
+      status: false,
       message: error.response.data.message || "An error occurred",
     };
   }
 }
 
-// Handle logout
+/**
+ * @function handleLogout - Handles the logout process by removing the user token and role from cookies
+ */
 export async function handleLogout() {
   try {
-    // Get the cookies
+    // get user token from cookies
     const cookieStore = await cookies();
-
-    // Get the user token from the cookies
     const userToken = cookieStore.get("userToken")?.value;
+
+    // If the user token is not found
+    if (!userToken) {
+      return {
+        status: false,
+        message: "Token not found in cookies.",
+      };
+    }
 
     // Remove the user token from the cookies
     cookieStore.delete("userToken");
 
     // Remove the user role from the cookies
     cookieStore.delete("userRole");
-
-    // Remove the local storage data
-    localStorage.removeItem("user");
 
     // Revoke the user token from the server
     const response = await axios.post(
@@ -285,7 +283,7 @@ export async function handleLogout() {
           Accept: "application/json",
           Authorization: `Bearer ${userToken}`,
         },
-        timeout: 5000, // 5 seconds timeout
+        timeout: 5000, // 5 seconds timeout (meaning the server will wait for 5 seconds before timing out)
       }
     );
 

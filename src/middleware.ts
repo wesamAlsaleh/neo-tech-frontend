@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+
+// Import backend services
 import { getUserRole } from "./services/auth-services";
 
 export async function middleware(request: NextRequest) {
@@ -12,7 +14,7 @@ export async function middleware(request: NextRequest) {
   // Extract the role from the server response
   const userRole = userRoleServerResponse?.userRole;
 
-  // If the user is not an admin, redirect to the home page
+  // If the user is not an admin or the cookie is not available, redirect to the home page
   if (
     !userRoleCookie ||
     !userRole ||

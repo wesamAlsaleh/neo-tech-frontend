@@ -57,50 +57,55 @@ export default function SliderImagesList() {
   // State to store the modals visibility
   const [deleteModal, setDeleteModalVisible] = useState(false);
 
-  // Fetch slider images from the server
-  useEffect(() => {
-    try {
-      // Fetch slider images
-      const fetchSliderImages = async () => {
-        // Set loading to true to display loading spinner while request is in progress
-        setLoading(true);
+  // Function to fetch slider images from the server
+  const fetchSliderImages = async () => {
+    // Set loading to true to display loading spinner while request is in progress
+    setLoading(true);
 
-        // Fetch slider images from the server
-        const response = await getSliderImagesAdmin(currentPage, 10);
+    // Fetch slider images from the server
+    const response = await getSliderImagesAdmin(currentPage, 10);
 
-        // Check if the response is successful
-        if (response.status) {
-          // Set the UI response state
-          setServerResponse({
-            status: true,
-            message: "", // Clear the message
-          });
+    // Check if the response is successful
+    if (response.status) {
+      // Set the UI response state
+      setServerResponse({
+        status: true,
+        message: "", // Clear the message
+      });
 
-          // Set the slider images state
-          setSliderImages(response.sliderImages);
+      // Set the slider images state
+      setSliderImages(response.sliderImages);
 
-          // Set the pagination details if available
-          if (response.pagination) {
-            setCurrentPage(response.pagination.currentPage);
-            setTotalPages(response.pagination.totalPages);
-            setTotalItems(response.pagination.totalItems);
-            setFirstPageUrl(response.pagination.firstPageUrl);
-            setLastPageUrl(response.pagination.lastPageUrl);
-            setNextPageUrl(response.pagination.nextPageUrl);
-            setPrevPageUrl(response.pagination.prevPageUrl);
-            setFrom(response.pagination.from);
-            setTo(response.pagination.to);
-            setPerPage(response.pagination.perPage);
-          }
-        }
-      };
-
-      // Call the function to fetch slider images
-      fetchSliderImages();
-    } finally {
-      // Set the loading state to false
-      setLoading(false);
+      // Set the pagination details if available
+      if (response.pagination) {
+        setCurrentPage(response.pagination.currentPage);
+        setTotalPages(response.pagination.totalPages);
+        setTotalItems(response.pagination.totalItems);
+        setFirstPageUrl(response.pagination.firstPageUrl);
+        setLastPageUrl(response.pagination.lastPageUrl);
+        setNextPageUrl(response.pagination.nextPageUrl);
+        setPrevPageUrl(response.pagination.prevPageUrl);
+        setFrom(response.pagination.from);
+        setTo(response.pagination.to);
+        setPerPage(response.pagination.perPage);
+      }
     }
+  };
+
+  // Fetch data from server
+  useEffect(() => {
+    const initFetch = async () => {
+      // Set loading to true while fetching data
+      setLoading(true);
+
+      // Fetch the slider images
+      await fetchSliderImages();
+
+      // Set loading to false after fetching data
+      setLoading(false);
+    };
+
+    initFetch();
   }, [currentPage]); // Fetch slider images when the component mounts or the currentPage state changes
 
   // Handle toggle activity feature

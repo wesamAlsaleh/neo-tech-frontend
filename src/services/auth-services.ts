@@ -177,6 +177,7 @@ export async function getUser() {
       userData: response.data.userData,
       userCartItemsCount: response.data.userCartItemsCount,
       userWishlistItemsCount: response.data.userWishlistCount,
+      userAddress: response.data.userAddress, // User address data or null if not available
     };
   } catch (error: any) {
     return {

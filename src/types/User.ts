@@ -6,8 +6,17 @@ export type User = {
   email_verified_at?: string | null;
   role: string;
   phone_number: string;
-  cart_items: Array<any>; // Replace with the actual type of cart items if available
-  wishlist: Array<any>; // Replace with the actual type of wishlist items if available
+  created_at: string;
+  updated_at: string;
+};
+
+export type UserAddress = {
+  id: number;
+  user_id: number;
+  home_number: string;
+  street_number: string;
+  block_number: string;
+  city: string;
   created_at: string;
   updated_at: string;
 };
@@ -24,10 +33,18 @@ export type User = {
 //       "role": "admin",
 //       "phone_number": "12345678",
 //       "created_at": "2025-03-08T22:47:32.000000Z",
-//       "updated_at": "2025-03-08T22:47:32.000000Z",
-//       "cart_items": [],
-//       "wishlist": [],
+//       "updated_at": "2025-03-08T22:47:32.000000Z"
 //   },
-//   "userCartItemsCount": 1,
-//   "userWishlistCount": 4
+//   "userCartItemsCount": 2,
+//   "userWishlistCount": 1,
+//   "userAddress": {
+//       "id": 1,
+//       "user_id": 1,
+//       "home_number": "456",
+//       "street_number": "1709",
+//       "block_number": "316",
+//       "city": "Sitra",
+//       "created_at": "2025-04-07T15:57:03.000000Z",
+//       "updated_at": "2025-04-07T15:57:03.000000Z"
+//   }
 // }

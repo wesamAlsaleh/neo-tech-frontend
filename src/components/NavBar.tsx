@@ -121,7 +121,10 @@ export default function NavBar() {
           </Link>
 
           {/* Profile Button */}
-          <Link href="/profile" className="relative inline-block">
+          <Link
+            href={user ? "/profile" : "/login"}
+            className="relative inline-block"
+          >
             <Image
               src={icons.userIcon48}
               alt="Cart icon"

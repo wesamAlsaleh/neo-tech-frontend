@@ -5,37 +5,37 @@ import React from "react";
 interface BreadcrumbProps {
   firstTitle: string;
   firstLink: string;
-  firstTitleColor?: string;
+  firstTitleCN?: string;
   secondTitle?: string;
   secondLink?: string;
-  secondTitleColor?: string;
+  secondTitleCN?: string;
   thirdTitle?: string;
   thirdLink?: string;
-  thirdTitleColor?: string;
+  thirdTitleCN?: string;
   fourthTitle?: string;
   fourthLink?: string;
-  fourthTitleColor?: string;
+  fourthTitleCN?: string;
   fifthTitle?: string;
   fifthLink?: string;
-  fifthTitleColor?: string;
+  fifthTitleCN?: string;
 }
 
 const Breadcrumb: React.FC<BreadcrumbProps> = ({
   firstTitle,
   firstLink,
-  firstTitleColor,
+  firstTitleCN: firstTitleColor,
   secondTitle,
   secondLink,
-  secondTitleColor,
+  secondTitleCN: secondTitleColor,
   thirdTitle,
   thirdLink,
-  thirdTitleColor,
+  thirdTitleCN: thirdTitleColor,
   fourthTitle,
   fourthLink,
-  fourthTitleColor,
+  fourthTitleCN: fourthTitleColor,
   fifthTitle,
   fifthLink,
-  fifthTitleColor,
+  fifthTitleCN: fifthTitleColor,
 }) => {
   const router = useRouter();
 
@@ -56,7 +56,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({
   );
 
   return (
-    <div className="flex items-center mb-4 mt-2 text-base text-gray-500">
+    <div className="flex items-center mb-8 mt-2 text-base text-gray-500">
       {/* Go back button */}
       {/* <button
         onClick={() => router.back()}

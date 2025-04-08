@@ -52,7 +52,7 @@ export default function page() {
           firstTitleCN="text-black font-semibold"
         />
 
-        <h1 className="font-bold">
+        <h1 className="font-bold text-black">
           Welcome{" "}
           <span className="text-orange-600">{`${user?.first_name} ${user?.last_name}`}</span>
         </h1>

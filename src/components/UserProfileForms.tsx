@@ -6,9 +6,16 @@ import { useRouter } from "next/navigation";
 // import types
 import { User, UserAddress } from "@/types/User";
 
+// import the auth context to get the user data
+import { useAuth } from "@/contexts/AuthContext";
+
 // import services
 import { putAddress } from "@/services/user-address-services";
-import { handleLogout, updateProfile } from "@/services/auth-services";
+import {
+  changePassword,
+  handleLogout,
+  updateProfile,
+} from "@/services/auth-services";
 
 // interface for the form component props
 interface UserProfileFormsProps {
@@ -18,9 +25,6 @@ interface UserProfileFormsProps {
 
 // import the cities
 import { cities } from "@/types/cities";
-
-// import the auth context to get the user data
-import { useAuth } from "@/contexts/AuthContext";
 
 export default function UserProfileForms(props: UserProfileFormsProps) {
   // Get the user from props
@@ -140,12 +144,13 @@ export default function UserProfileForms(props: UserProfileFormsProps) {
       setIsSubmitting(true);
 
       // Submit the form data using the service
-      //   const result = await
+      const result = await changePassword(formData);
+
       // Update UI with the response
-      //   setStatus({
-      //     success: result.status,
-      //     message: result.message,
-      //   });
+      setServerResponse({
+        status: result.status,
+        message: result.message,
+      });
     } finally {
       // Set the form submission status to false to enable the submit button
       setIsSubmitting(false);

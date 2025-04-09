@@ -8,8 +8,56 @@ import { cookies } from "next/headers";
 
 // Client-side API URL
 /**
- * @function get -
+ * @function checkout - Checkout the cart items
  */
+export async function checkout(paymentMethod: string) {
+  try {
+    // get user token from cookies
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    // If the user token is not found
+    if (!userToken) {
+      return {
+        status: false,
+        message: "No authentication token found.",
+      };
+    }
+
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_APP_URI}/checkout`,
+      {
+        payment_method: paymentMethod,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`, // this method requires the user to be authenticated and the token is to pass the sanctum middleware in the backend
+        },
+      }
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+      orderId: response.data.order_id,
+      totalPrice: response.data.total_price,
+      shippingAddress: response.data.shipping_address,
+      paymentMethod: response.data.payment_method,
+      orderStatus: response.data.order_status,
+    };
+  } catch (error: any) {
+    // Log the error to the console
+    console.error(error.response.data);
+
+    // Return the details of the error
+    console.error(error.response.data.devMessage);
+
+    return {
+      status: false,
+      message: error.response.data.message || "An error occurred",
+    };
+  }
+}
 
 /**
  * @function getAllOrders - Get all orders for admin

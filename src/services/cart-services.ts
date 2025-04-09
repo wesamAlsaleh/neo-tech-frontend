@@ -203,3 +203,48 @@ export async function removeProductFromCart(cartItemId: string) {
     };
   }
 }
+
+/**
+ * @function getCartSummary - Get the user's cart summary
+ */
+export async function getCartSummary() {
+  try {
+    // get user token from cookies
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    // If the user token is not found
+    if (!userToken) {
+      return {
+        status: false,
+        message: "Please login to view your cart",
+      };
+    }
+
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/cart/summary`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`, // this method requires the user to be authenticated and the token is to pass the sanctum middleware in the backend
+        },
+      }
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+      totalPrice: response.data.total_price,
+    };
+  } catch (error: any) {
+    // Log the error to the console
+    console.error(error.response.data);
+
+    // Return the details of the error
+    console.error(error.response.data.devMessage);
+
+    return {
+      status: false,
+      message: error.response.data.message || "An error occurred",
+    };
+  }
+}

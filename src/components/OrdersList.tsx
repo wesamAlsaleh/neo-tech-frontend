@@ -40,7 +40,7 @@ export default function OrdersList() {
   // Fetch data from server
   const fetchData = async () => {
     // Call the server API to get the orders data
-    const response = await getAllOrders(5, 1);
+    const response = await getAllOrders(2, currentPage);
 
     console.log(response);
 
@@ -170,6 +170,40 @@ export default function OrdersList() {
           ))}
         </tbody>
       </table>
+
+      {/* Pagination Control */}
+      {totalPages > 1 && (
+        <div className="flex items-center mt-4 gap-x-4">
+          {/* Previous Button */}
+          <button
+            onClick={() => setCurrentPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className={`px-4 py-2 border rounded ${
+              currentPage === 1
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-orange-500 text-white"
+            }`}
+          >
+            Previous
+          </button>
+
+          {/* Counter of current page */}
+          <span className="font-semibold">{`${currentPage} of ${totalPages}`}</span>
+
+          {/* Next Button */}
+          <button
+            onClick={() => setCurrentPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className={`px-4 py-2 border rounded ${
+              currentPage === totalPages
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-orange-500 text-white"
+            }`}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </>
   );
 }

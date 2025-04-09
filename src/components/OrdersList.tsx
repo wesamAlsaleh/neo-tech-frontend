@@ -103,26 +103,30 @@ export default function OrdersList() {
       )}
 
       {/* Orders table */}
-      <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
-        <thead>
+      <table className="min-w-full table-auto border-collapse border border-gray-300">
+        <thead className="bg-gray-200 h-12">
           <tr>
             <th className="px-4 py-2 border border-gray-300 w-11">Order ID</th>
-            <th className="px-4 py-2 border border-gray-300 w-48">
+            <th className="px-4 py-2 border border-gray-300 w-32">
               Customer Name
             </th>
-            <th className="px-4 py-2 border border-gray-300 w-48">Status</th>
-            <th className="px-4 py-2 border border-gray-300 w-48">
+            <th className="px-4 py-2 border border-gray-300 w-56">
+              Shipping Address
+            </th>
+            <th className="px-4 py-2 border border-gray-300 w-28">Status</th>
+            <th className="px-4 py-2 border border-gray-300 w-24">
               Total Price
             </th>
-            <th className="px-4 py-2 border border-gray-300 w-48">
+            <th className="px-4 py-2 border border-gray-300 w-24">
               Order Date
             </th>
+            <th className="px-4 py-2 border border-gray-300 w-48">Actions</th>
           </tr>
         </thead>
 
         {orders?.length === 0 && (
           <tbody>
-            <tr>
+            <tr className="h-12">
               <td colSpan={5} className="text-center py-4">
                 No orders found.
               </td>
@@ -132,8 +136,10 @@ export default function OrdersList() {
 
         <tbody>
           {orders?.map((order) => (
-            <tr key={order.id} className="hover:bg-gray-100 even:bg-gray-50">
-              {/* Name Column */}
+            <tr
+              key={order.id}
+              className="hover:bg-gray-100 even:bg-gray-50 h-16"
+            >
               <td className="px-4 py-2 border border-gray-300 text-center">
                 {order.id}
               </td>
@@ -143,6 +149,13 @@ export default function OrdersList() {
               </td>
 
               <td className="px-4 py-2 border border-gray-300 text-center">
+                <p className="text-xs text-gray-500 whitespace-normal break-words max-w-md">
+                  {order.shipping_address}
+                </p>
+              </td>
+
+              <td className="px-4 py-2 border border-gray-300 text-center">
+                {/* Status Container */}
                 <div
                   className={`text-xs px-2 py-1 rounded inline-block ${
                     order.status === "pending"
@@ -154,7 +167,7 @@ export default function OrdersList() {
                       : "bg-gray-100 border border-gray-400 text-gray-700"
                   }`}
                 >
-                  <h1 className="font-semibold capitalize">{order.status}</h1>
+                  <h1 className="font-bold capitalize">{order.status}</h1>
                 </div>
               </td>
 
@@ -162,9 +175,12 @@ export default function OrdersList() {
                 {convertPriceToBHD(String(order.total_price))}
               </td>
 
-              {/* Date Column */}
               <td className="px-4 py-2 border border-gray-300 text-center">
                 {formatDateTime(order.created_at)}
+              </td>
+
+              <td className="px-4 py-2 border border-gray-300 text-center">
+                Actions
               </td>
             </tr>
           ))}
@@ -194,10 +210,9 @@ export default function OrdersList() {
           <button
             onClick={() => setCurrentPage(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`px-4 py-2 border rounded ${
-              currentPage === totalPages
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-orange-500 text-white"
+            className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
+              currentPage === totalPages &&
+              "bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"
             }`}
           >
             Next

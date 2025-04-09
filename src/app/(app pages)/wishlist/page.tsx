@@ -177,7 +177,7 @@ export default function page() {
               <ProductCard
                 key={product.id}
                 product={product}
-                isWishlist // to remove the wishlist button
+                isWishlistCard // to remove the wishlist button
               />
             );
           })}

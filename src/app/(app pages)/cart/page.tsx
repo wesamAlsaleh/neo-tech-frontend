@@ -175,6 +175,7 @@ export default function page() {
       // Set the user cart items count to 0
       setUserCartItemsCount(0);
 
+      // Refresh the user cart data
       await fetchUserCart();
 
       // TODO: Redirect to the order details page, NOT SECURE YET

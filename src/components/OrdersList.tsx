@@ -40,7 +40,7 @@ export default function OrdersList() {
   // Fetch data from server
   const fetchData = async () => {
     // Call the server API to get the orders data
-    const response = await getAllOrders(2, currentPage);
+    const response = await getAllOrders(10, currentPage);
 
     console.log(response);
 
@@ -194,11 +194,7 @@ export default function OrdersList() {
           <button
             onClick={() => setCurrentPage(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`px-4 py-2 border rounded ${
-              currentPage === 1
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-orange-500 text-white"
-            }`}
+            className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${"bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"}`}
           >
             Previous
           </button>
@@ -210,10 +206,7 @@ export default function OrdersList() {
           <button
             onClick={() => setCurrentPage(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-              currentPage === totalPages &&
-              "bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"
-            }`}
+            className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${"bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"}`}
           >
             Next
           </button>

@@ -29,9 +29,7 @@ export default function Button({
     <button
       className={` rounded-md border border-gray-300 border-input bg-transparent hover:bg-accent hover:text-accent-foreground flex items-center justify-center transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ${
         text ? "px-3 py-2" : "p-2 "
-      } ${
-        disabled && "opacity-50 cursor-not-allowed"
-      } ${buttonClassName} hover:bg-orange-50`}
+      } ${disabled && "opacity-50 cursor-not-allowed"} ${buttonClassName} `}
       onClick={onClick}
       disabled={disabled}
       type={type}

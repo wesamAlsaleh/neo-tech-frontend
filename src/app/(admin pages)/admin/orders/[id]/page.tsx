@@ -138,10 +138,10 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
                           Quantity
                         </th>
                         <th className="h-12 px-4 text-right align-middle font-medium text-muted-foreground">
-                          Price
+                          Unit Price
                         </th>
                         <th className="h-12 px-4 text-right align-middle font-medium text-muted-foreground">
-                          Total
+                          Total Price
                         </th>
                       </tr>
                     </thead>

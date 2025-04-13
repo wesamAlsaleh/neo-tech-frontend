@@ -9,18 +9,20 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    // Layout container with sidebar and main section
-    <div className="flex w-full min-h-screen bg-gray-200">
-      {/* Side navbar*/}
+    // Main layout: column layout to support full height
+    <div className="min-h-screen flex">
+      {/* Sidebar: fixed width, stretch full height */}
       <AdminSidebar />
 
-      {/* content page container*/}
-      <div className="flex-1">
+      {/* Main content area */}
+      <div className="flex-1 flex flex-col">
         {/* page header */}
         <AdminHeader />
 
         {/* main content */}
-        <AdminPageLayout>{children}</AdminPageLayout>
+        <main className="flex-1 overflow-auto">
+          <AdminPageLayout>{children}</AdminPageLayout>
+        </main>
       </div>
     </div>
   );

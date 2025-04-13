@@ -200,7 +200,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
             <Card
               CardTitle="Order Summary"
               CardContent={
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
                   {/* Order Summary Row Container */}
                   <div className="flex justify-between items-center">
                     <h1 className="text-gray-800 font-semibold">Subtotal:</h1>
@@ -238,7 +238,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
             <Card
               CardTitle="Shipping Information"
               CardContent={
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
                   {/* Shipping Address Row Container */}
                   <div className="flex flex-col gap-2">
                     <h1 className="text-gray-800 font-semibold">
@@ -272,7 +272,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
             <Card
               CardTitle="Payment Information"
               CardContent={
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
                   {/* Payment Method Row Container */}
                   <div className="flex justify-between items-center">
                     <h1 className="text-gray-800 font-semibold">

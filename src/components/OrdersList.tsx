@@ -14,13 +14,14 @@ import { formatDateTime, convertPriceToBHD } from "@/lib/helpers";
 
 // import custom components
 import LoadingSpinner from "./LoadingSpinner";
+import { useRouter } from "next/navigation";
 
 export default function OrdersList() {
+  // Router Instance
+  const router = useRouter();
+
   // State to store the loading status
   const [loading, setLoading] = useState<boolean>(true);
-
-  // State to store the action submission status
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // State to store the orders data
   const [orders, setOrders] = useState<Order[]>();
@@ -120,7 +121,6 @@ export default function OrdersList() {
             <th className="px-4 py-2 border border-gray-300 w-24">
               Order Date
             </th>
-            <th className="px-4 py-2 border border-gray-300 w-48">Actions</th>
           </tr>
         </thead>
 
@@ -138,7 +138,11 @@ export default function OrdersList() {
           {orders?.map((order) => (
             <tr
               key={order.id}
-              className="hover:bg-gray-100 even:bg-gray-50 h-16"
+              className="hover:bg-gray-100 even:bg-gray-50 h-16 cursor-pointer transition duration-200 ease-in-out"
+              onClick={() => {
+                router.push(`/admin/orders/${order.id}`); // navigate to order details page without refreshing the page
+                window.scrollTo({ top: 0, behavior: "smooth" }); // 'smooth' or 'auto'
+              }}
             >
               <td className="px-4 py-2 border border-gray-300 text-center">
                 {order.id}
@@ -177,10 +181,6 @@ export default function OrdersList() {
 
               <td className="px-4 py-2 border border-gray-300 text-center">
                 {formatDateTime(order.created_at)}
-              </td>
-
-              <td className="px-4 py-2 border border-gray-300 text-center">
-                Actions
               </td>
             </tr>
           ))}

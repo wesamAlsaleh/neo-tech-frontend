@@ -111,9 +111,6 @@ export default function OrdersList() {
             <th className="px-4 py-2 border border-gray-300 w-32">
               Customer Name
             </th>
-            <th className="px-4 py-2 border border-gray-300 w-56">
-              Shipping Address
-            </th>
             <th className="px-4 py-2 border border-gray-300 w-28">Status</th>
             <th className="px-4 py-2 border border-gray-300 w-24">
               Total Price
@@ -153,12 +150,6 @@ export default function OrdersList() {
               </td>
 
               <td className="px-4 py-2 border border-gray-300 text-center">
-                <p className="text-xs text-gray-500 whitespace-normal break-words max-w-md">
-                  {order.shipping_address}
-                </p>
-              </td>
-
-              <td className="px-4 py-2 border border-gray-300 text-center">
                 {/* Status Container */}
                 <div
                   className={`text-xs px-2 py-1 rounded inline-block ${
@@ -194,7 +185,9 @@ export default function OrdersList() {
           <button
             onClick={() => setCurrentPage(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${"bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"}`}
+            className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${"bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"} ${
+              currentPage === 1 ? "cursor-not-allowed" : ""
+            }`}
           >
             Previous
           </button>
@@ -206,7 +199,9 @@ export default function OrdersList() {
           <button
             onClick={() => setCurrentPage(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${"bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"}`}
+            className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${"bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"} ${
+              currentPage === totalPages ? "cursor-not-allowed" : ""
+            }`}
           >
             Next
           </button>

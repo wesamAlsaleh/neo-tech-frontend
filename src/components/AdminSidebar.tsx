@@ -4,15 +4,19 @@ import Link from "next/link";
 import React from "react";
 import { usePathname } from "next/navigation";
 
+// import icons
+import { icons } from "../../public/icons";
+import Image from "next/image";
+
 // Custom LI element
 const LI = ({
   href,
   name,
-  icon,
+  iconSrc,
 }: {
   href: string;
   name: string;
-  icon?: React.ReactNode;
+  iconSrc?: string;
 }) => {
   // Get the url of the current page and highlight the corresponding link
   const pathname = usePathname();
@@ -24,14 +28,16 @@ const LI = ({
     <li>
       <Link
         href={href}
-        className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ease-in-out ${
+        className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-all duration-200 ease-in-out ${
           isActive
             ? "bg-orange-600 text-white font-medium shadow-md"
             : "text-gray-300 hover:bg-gray-800/70 hover:text-white"
         }`}
       >
         {/* Display Icon on the left if there is one */}
-        {icon && <span className="text-lg">{icon}</span>}
+        {iconSrc && (
+          <Image src={iconSrc} alt="SideBar Icon" width={23} height={23} />
+        )}
 
         {/* Display the name of the link */}
         <span className="text-base font-medium">{name}</span>
@@ -64,21 +70,85 @@ export default function AdminSidebar() {
 
       {/* Content Container */}
       <nav className="flex-1">
-        {/* Group 1 */}
-        <GroupTitle title="Shop" />
+        {/* Shop Management */}
+        <GroupTitle title="Shop Management" />
         <ul className="space-y-1.5">
-          <LI href="/admin/dashboard" name="Dashboard" />
-          <LI href="/admin/categories" name="Categories" />
-          <LI href="/admin/products" name="Products" />
-          <LI href="/admin/orders" name="Orders" />
-          <LI href="/admin/customize" name="Customize Shop" />
+          <LI
+            href="/admin/dashboard"
+            name="Dashboard"
+            iconSrc={icons.dashboardIcon96.src}
+          />
+          <LI
+            href="/admin/categories"
+            name="Categories"
+            iconSrc={icons.categoryIcon96.src}
+          />
+          <LI
+            href="#/admin/brands"
+            name="Brands"
+            iconSrc={icons.brandIcon96.src}
+          />
+          <LI
+            href="/admin/products"
+            name="Products"
+            iconSrc={icons.productsIcon96.src}
+          />
+          <LI
+            href="/admin/orders"
+            name="Orders"
+            iconSrc={icons.ordersIcon96.src}
+          />
+          <LI
+            href="/admin/customize/sales"
+            name="Flash Sales"
+            iconSrc={icons.flashSaleIcon96.src}
+          />
         </ul>
 
         {/* Group 2 */}
-        {/* <GroupTitle title="Shop" mt /> */}
+        <GroupTitle title="Customize Shop" mt />
         <ul className="space-y-1.5">
-          {/* <LI href="/admin/settings" name="Settings" /> */}
-          {/* <LI href="/admin/help" name="Help & Support" /> */}
+          <LI href="#" name="Banner" iconSrc={icons.bannerIcon96.src} />
+          <LI
+            href="/admin/customize/slider"
+            name="Image Carousel"
+            iconSrc={icons.carouselImageIcon96.src}
+          />
+          <LI
+            href="/admin/customize/features"
+            name="Trust Badges"
+            iconSrc={icons.trustBadgeIcon96.src}
+          />
+        </ul>
+
+        {/* Analytics & Reports */}
+        <GroupTitle title="Analytics" mt />
+        <ul className="space-y-1.5">
+          <LI
+            href="/admin/analytics"
+            name="Sales Reports"
+            iconSrc={icons.analyticsIcon96.src}
+          />
+          <LI
+            href="/admin/insights"
+            name="Customer Insights"
+            iconSrc={icons.customerInsightsIcon96.src}
+          />
+        </ul>
+
+        {/* System */}
+        <GroupTitle title="System" mt />
+        <ul className="space-y-1.5">
+          <LI
+            href="/admin/staff"
+            name="Staff Accounts"
+            iconSrc={icons.adminIcon96.src}
+          />
+          <LI
+            href="/profile"
+            name="User Settings"
+            iconSrc={icons.settingsIcon96.src}
+          />
         </ul>
       </nav>
     </aside>

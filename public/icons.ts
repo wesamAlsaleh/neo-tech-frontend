@@ -101,6 +101,57 @@ import leftArrowIcon96 from "../public/assets/button-icons/icons8-left-arrow-96.
 import rightArrowIcon48 from "../public/assets/button-icons/icons8-right-arrow-48.png";
 import rightArrowIcon96 from "../public/assets/button-icons/icons8-right-arrow-96.png";
 
+// dashboard icons
+import dashboardIcon48 from "../public/assets/button-icons/icons8-white-dashboard-48.png";
+import dashboardIcon96 from "../public/assets/button-icons/icons8-white-dashboard-96.png";
+
+//  category icons
+import categoryIcon48 from "../public/assets/button-icons/icons8-category-48.png";
+import categoryIcon96 from "../public/assets/button-icons/icons8-category-96.png";
+
+// brand icons
+import brandIcon48 from "../public/assets/button-icons/icons8-brand-48.png";
+import brandIcon96 from "../public/assets/button-icons/icons8-brand-96.png";
+
+// products icons
+import productsIcon48 from "../public/assets/button-icons/icons8-item-48.png";
+import productsIcon96 from "../public/assets/button-icons/icons8-item-96.png";
+
+// orders icons
+import ordersIcon48 from "../public/assets/button-icons/icons8-bill-48.png";
+import ordersIcon96 from "../public/assets/button-icons/icons8-bill-96.png";
+
+// flash sale icons
+import flashSaleIcon48 from "../public/assets/button-icons/icons8-season-sale-48.png";
+import flashSaleIcon96 from "../public/assets/button-icons/icons8-season-sale-96.png";
+
+// image carousel icons
+import carouselImageIcon48 from "../public/assets/button-icons/icons8-image-48.png";
+import carouselImageIcon96 from "../public/assets/button-icons/icons8-image-96.png";
+
+// trust badge icons
+import trustBadgeIcon48 from "../public/assets/button-icons/icons8-badge-48.png";
+import trustBadgeIcon96 from "../public/assets/button-icons/icons8-badge-96.png";
+
+// analytics icons
+import analyticsIcon96 from "../public/assets/button-icons/icons8-statistics-report-96.png";
+
+// admin icons
+import adminIcon48 from "../public/assets/button-icons/icons8-system-administrator-male-48.png";
+import adminIcon96 from "../public/assets/button-icons/icons8-system-administrator-male-96.png";
+
+// settings icons
+import settingsIcon48 from "../public/assets/button-icons/icons8-settings-48.png";
+import settingsIcon96 from "../public/assets/button-icons/icons8-settings-96.png";
+
+// customer insights icons
+import customerInsightsIcon48 from "../public/assets/button-icons/icons8-customer-insight-48.png";
+import customerInsightsIcon96 from "../public/assets/button-icons/icons8-customer-insight-96.png";
+
+// banner icons
+import bannerIcon48 from "../public/assets/button-icons/icons8-banner-48.png";
+import bannerIcon96 from "../public/assets/button-icons/icons8-banner-96.png";
+
 export const icons = {
   userIcon48,
   userIcon96,
@@ -165,4 +216,29 @@ export const icons = {
   leftArrowIcon96,
   rightArrowIcon48,
   rightArrowIcon96,
+  dashboardIcon48,
+  dashboardIcon96,
+  categoryIcon48,
+  categoryIcon96,
+  productsIcon48,
+  productsIcon96,
+  ordersIcon48,
+  ordersIcon96,
+  brandIcon48,
+  brandIcon96,
+  flashSaleIcon48,
+  flashSaleIcon96,
+  carouselImageIcon48,
+  carouselImageIcon96,
+  trustBadgeIcon48,
+  trustBadgeIcon96,
+  analyticsIcon96,
+  adminIcon48,
+  adminIcon96,
+  settingsIcon48,
+  settingsIcon96,
+  customerInsightsIcon48,
+  customerInsightsIcon96,
+  bannerIcon48,
+  bannerIcon96,
 };

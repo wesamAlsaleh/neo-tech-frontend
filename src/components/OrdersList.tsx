@@ -41,7 +41,7 @@ export default function OrdersList() {
   // Fetch data from server
   const fetchData = async () => {
     // Call the server API to get the orders data
-    const response = await getAllOrders(10, currentPage);
+    const response = await getAllOrders(15, currentPage);
 
     console.log(response);
 

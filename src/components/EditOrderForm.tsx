@@ -4,11 +4,12 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 // import types
-import { Order, OrderDetails } from "@/types/order";
+import { OrderDetails } from "@/types/order";
+import { Product } from "@/types/product";
 
 // import backend services
 import { getOrderById, updateOrderDetails } from "@/services/order-services";
-import { getProducts, searchProduct } from "@/services/products-services";
+import { searchProduct } from "@/services/products-services";
 
 // import the cities
 import { cities } from "@/types/cities";
@@ -19,11 +20,13 @@ import { convertPriceToBHD, formatDateTime } from "@/lib/helpers";
 // import custom hooks
 import { useDebounce } from "@/lib/hooks";
 
+// import icons
+import { icons } from "../../public/icons";
+
 // import custom components
 import Card from "./Card";
 import LoadingSpinner from "./LoadingSpinner";
 import Button from "./Button";
-import { Product } from "@/types/product";
 
 interface propsType {
   orderId: string;
@@ -65,53 +68,18 @@ export default function EditOrderForm(props: propsType) {
     blockNumber: "",
     city: "",
   });
-  const [items, setItems] = useState<
-    { product_id: number; quantity: number }[]
+
+  // State to manage order items being edited
+  const [editedOrderItems, setEditedOrderItems] = useState<
+    { product_id: number; quantity: number; originalQuantity?: number }[]
   >([]);
+
+  // State to track selected product from search
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [quantityToAdd, setQuantityToAdd] = useState<number>(1);
 
   // State to store search term
   const [searchTerm, setSearchTerm] = useState<string>("");
-
-  // Function to handle form submission
-  const handleSubmit = async () => {
-    // Set the form submission status to true to disable the submit button
-    setIsSubmitting(true);
-
-    // Prepare form data
-    const formData = new FormData();
-
-    // Append the form data
-    formData.append("status", orderStatus || "");
-    formData.append("payment_method", orderPaymentMethod || "");
-    formData.append("home_number", address.homeNumber || "");
-    formData.append("street_number", address.streetNumber || "");
-    formData.append("block_number", address.blockNumber || "");
-    formData.append("city", address.city || "");
-    try {
-      // Submit the form data using the service
-      const result = await updateOrderDetails(order?.id!, formData);
-
-      // Update UI with the response
-      setServerResponse({
-        status: result.status,
-        message: result.message,
-      });
-
-      // Reload the page after the category is created successfully
-      if (result.status) {
-      }
-    } finally {
-      // Set the form submission status to false to enable the submit button
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleAddressChange = (field: string, value: string) => {
-    setAddress((prev) => ({
-      ...prev, // preserve previous state (in other words, spread operator to copy the previous state of the object to the new object)
-      [field]: value, // update the specific field based on the field name
-    }));
-  };
 
   // Function to fetch order details and products available
   const fetchData = async (orderId: string) => {
@@ -177,6 +145,138 @@ export default function EditOrderForm(props: propsType) {
 
     fetchProducts();
   }, [debouncedSearchTerm]);
+
+  // Populate the editedOrderItems when orderItems are loaded
+  useEffect(() => {
+    if (orderItems && orderItems.length > 0) {
+      setEditedOrderItems(
+        orderItems.map((item) => ({
+          product_id: item.product.id,
+          quantity: item.quantity, // quantity of the product that is being edited
+          originalQuantity: item.quantity, // original quantity of the product
+        }))
+      );
+    }
+  }, [orderItems]);
+
+  // Function to handle address changes
+  const handleAddressChange = (field: string, value: string) => {
+    setAddress((prev) => ({
+      ...prev, // preserve previous state (in other words, spread operator to copy the previous state of the object to the new object)
+      [field]: value, // update the specific field based on the field name
+    }));
+  };
+
+  // Function to handle quantity change for existing order items
+  const handleQuantityChange = (productId: number, newQuantity: number) => {
+    // Change the quantity of the product that is being edited based on the product id
+    setEditedOrderItems((prevItems) =>
+      prevItems.map(
+        (item) =>
+          item.product_id === productId // get the product id from the order items
+            ? { ...item, quantity: newQuantity } // update the quantity of the product
+            : item // preserve the previous state of the product
+      )
+    );
+  };
+
+  // Function to remove an item from the order
+  const handleRemoveItem = (productId: number) => {
+    setEditedOrderItems(
+      (prevItems) => prevItems.filter((item) => item.product_id !== productId) // get every item that is not equal to the product id
+    );
+  };
+
+  // Function to add a new product to the order
+  const handleAddProduct = () => {
+    // If no product is selected, return early
+    if (!selectedProduct) return;
+
+    // Check if product already exists in the order
+    const existingItemIndex = editedOrderItems.findIndex(
+      (item) => item.product_id === selectedProduct.id // get the index of the product that is selected from the search results
+    );
+
+    // If product already exists (not -1), update the quantity
+    if (existingItemIndex >= 0) {
+      // Initialize array of all order items that are being manipulated
+      const updatedItems = [...editedOrderItems];
+
+      // Update the quantity of the existing product using the index
+      updatedItems[existingItemIndex].quantity += quantityToAdd;
+
+      // Save the updated order items to the state to be sent to the server after the form is submitted
+      setEditedOrderItems(updatedItems);
+    } else {
+      // Add new product to order
+      setEditedOrderItems([
+        ...editedOrderItems,
+        {
+          product_id: selectedProduct.id,
+          quantity: quantityToAdd,
+        },
+      ]);
+    }
+
+    // Reset selection
+    setSelectedProduct(null);
+
+    // Reset quantity to add to 1 to avoid adding more than 1 product at a time
+    setQuantityToAdd(1);
+
+    // Reset search term to clear the search input field
+    setSearchTerm("");
+  };
+
+  // Function to handle product selection from the search results
+  const handleSelectProduct = (productId: number) => {
+    // Find the selected product from the search results
+    const product = products.find(
+      (resultProduct) => resultProduct.id === productId
+    );
+
+    // Set the selected product state to the selected product or null if not found
+    setSelectedProduct(product || null);
+  };
+
+  // Function to handle form submission
+  const handleSubmit = async () => {
+    // Set the form submission status to true to disable the submit button
+    setIsSubmitting(true);
+
+    // Prepare form data
+    const formData = new FormData();
+
+    const requestData = {
+      status: orderStatus || "",
+      payment_method: orderPaymentMethod || "",
+      home_number: address.homeNumber || "",
+      street_number: address.streetNumber || "",
+      block_number: address.blockNumber || "",
+      city: address.city || "",
+      items: editedOrderItems, // This will be sent as an array
+    };
+
+    try {
+      // Submit the form data using the service
+      const result = await updateOrderDetails(order?.id!, requestData);
+
+      // Update UI with the response
+      setServerResponse({
+        status: result.status,
+        message: result.message,
+      });
+
+      // Reload the page after successful update
+      if (result.status) {
+        // Refresh data
+        await fetchData(orderId);
+      }
+    } finally {
+      // Set the form submission status to false to enable the submit button
+      setIsSubmitting(false);
+    }
+  };
 
   // Handle loading state
   if (loading) {
@@ -400,8 +500,9 @@ export default function EditOrderForm(props: propsType) {
               <div className="flex flex-col gap-4">
                 {/* Search Bar Container */}
                 <div className="relative">
-                  {/* Text Field */}
+                  {/* Search Bar Text Field Container */}
                   <div>
+                    {/* Input Field */}
                     <input
                       type="text"
                       id="search"
@@ -441,19 +542,24 @@ export default function EditOrderForm(props: propsType) {
                       </div>
                     )}
 
-                    {/* Handle 0 products  */}
-                    {!productsLoading && products?.length === 0 && (
-                      <div className="w-full bg-gray-100 border border-gray-200 p-2 rounded-lg ">
-                        <p className="text-gray-500 text-base">
-                          {productsCount} products found
-                        </p>
-                      </div>
-                    )}
+                    {/* Handle 0 products */}
+                    {!productsLoading &&
+                      products?.length === 0 &&
+                      searchTerm && (
+                        <div className="w-full bg-gray-100 border border-gray-200 p-2 rounded-lg">
+                          <p className="text-gray-500 text-base">
+                            {productsCount} products found
+                          </p>
+                        </div>
+                      )}
 
                     {/* Handle many products */}
                     {!productsLoading && products?.length > 0 && (
                       <select
-                        defaultValue=""
+                        value={selectedProduct?.id || ""}
+                        onChange={(e) =>
+                          handleSelectProduct(parseInt(e.target.value))
+                        } // pass the selected product id to the function to set the selected product state
                         className="w-full appearance-none bg-gray-50 border border-gray-200 text-gray-700 p-2 rounded-lg text-base font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                       >
                         {/* Default Option */}
@@ -468,7 +574,7 @@ export default function EditOrderForm(props: propsType) {
                             key={product.id}
                             value={product.id}
                             disabled={
-                              product.product_stock < 5 || !product.is_active
+                              product.product_stock <= 5 || !product.is_active
                             }
                           >
                             {product.product_name} -{" "}
@@ -488,10 +594,44 @@ export default function EditOrderForm(props: propsType) {
                       </select>
                     )}
                   </div>
+
+                  {/* Add new Item Section Container*/}
+                  {selectedProduct && (
+                    <div className="flex items-center gap-2 mt-2">
+                      {/* Quantity Field Container */}
+                      <div className="flex-1">
+                        <label className="block text-base font-medium text-gray-700 mb-1">
+                          Quantity:
+                        </label>
+
+                        <input
+                          type="number"
+                          min="1"
+                          max={selectedProduct.product_stock}
+                          value={quantityToAdd}
+                          onChange={(e) =>
+                            setQuantityToAdd(parseInt(e.target.value))
+                          }
+                          className="w-full p-2 border rounded-lg"
+                        />
+                      </div>
+
+                      <button
+                        onClick={handleAddProduct}
+                        className="h-10 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors mt-6"
+                      >
+                        Add to Order
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* Products Table */}
-                <div className="w-full overflow-auto">
+                <div className="w-full overflow-auto mt-4">
+                  {/* Table Title */}
+                  <h3 className="font-medium text-lg mb-2">Order Items</h3>
+
+                  {/* Table */}
                   <table className="w-full caption-bottom text-sm">
                     <thead className="[&_tr]:border-b">
                       <tr className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted">
@@ -514,53 +654,230 @@ export default function EditOrderForm(props: propsType) {
                           New Quantity
                         </th>
                         <th className="h-12 px-4 align-middle font-medium text-muted-foreground">
-                          Remove Item
+                          Actions
                         </th>
                       </tr>
                     </thead>
 
                     <tbody className="[&_tr:last-child]:border-0">
-                      {orderItems?.map((item) => (
-                        <tr
-                          key={item.id}
-                          className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
-                        >
-                          {/* Product Image */}
-                          <td className="p-4 align-middle">
-                            <Image
-                              src={item.product.images[0] || "/placeholder.svg"}
-                              alt={item.product.product_name}
-                              width={80}
-                              height={80}
-                              className="rounded-md object-cover"
-                            />
-                          </td>
-
-                          {/* Product Name */}
-                          <td className="p-4 align-middle text-left">
-                            {item.product.product_name}
-                          </td>
-
-                          {/* Order Item Quantity */}
-                          <td className="p-4 align-middle text-right">
-                            {item.quantity}
-                          </td>
-
-                          {/* Product Unit Price */}
-                          <td className="p-4 align-middle text-right">
-                            {item.product.onSale
-                              ? convertPriceToBHD(
-                                  item.product.product_price_after_discount
-                                )
-                              : convertPriceToBHD(item.product.product_price)}
-                          </td>
-
-                          {/* Order Item Total Price */}
-                          <td className="p-4 align-middle text-right">
-                            {convertPriceToBHD(String(item.price))}
+                      {/* Handle no items */}
+                      {editedOrderItems.length === 0 && (
+                        <tr>
+                          <td
+                            colSpan={7}
+                            className="text-center py-4 text-gray-500"
+                          >
+                            No items in the order.
                           </td>
                         </tr>
-                      ))}
+                      )}
+
+                      {/* Note: orderItems from order and the editedOrderItems is the same but can be edited */}
+                      {orderItems?.map((item) => {
+                        // Get the edited item from the
+                        const editedItem = editedOrderItems.find(
+                          (editItem) => editItem.product_id === item.product.id // return the product that its id is equal to the product id of the order item
+                        );
+
+                        // Skip showing items that have been removed
+                        if (!editedItem) return null;
+
+                        // Get the current quantity of the product that is being edited
+                        const currentQuantity =
+                          editedItem?.quantity || item.quantity;
+
+                        // Get the unit price of the product based on whether it is on sale or not
+                        const unitPrice = item.product.onSale
+                          ? item.product.product_price_after_discount
+                          : item.product.product_price;
+
+                        // Get the total price of the product based on the quantity and unit price
+                        const totalPrice =
+                          Number(unitPrice) * Number(currentQuantity);
+
+                        return (
+                          <tr
+                            key={item.id}
+                            className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                          >
+                            {/* Product Image */}
+                            <td className="p-4 align-middle">
+                              <Image
+                                src={
+                                  item.product.images[0] || "/placeholder.svg"
+                                }
+                                alt={item.product.product_name}
+                                width={80}
+                                height={80}
+                                className="rounded-md object-cover"
+                              />
+                            </td>
+
+                            {/* Product Name */}
+                            <td className="p-4 align-middle text-left">
+                              {item.product.product_name}
+                            </td>
+
+                            {/* Order Item Quantity */}
+                            <td className="p-4 align-middle text-right">
+                              {item.quantity}
+                            </td>
+
+                            {/* Product Unit Price */}
+                            <td className="p-4 align-middle text-right">
+                              {item.product.onSale
+                                ? convertPriceToBHD(
+                                    item.product.product_price_after_discount
+                                  )
+                                : convertPriceToBHD(item.product.product_price)}
+                            </td>
+
+                            {/* Order Item Total Price */}
+                            <td className="p-4 align-middle text-right">
+                              {convertPriceToBHD(String(totalPrice))}
+                            </td>
+
+                            {/* Quantity Selector */}
+                            <td className="p-4 align-middle">
+                              <input
+                                type="number"
+                                min="1"
+                                max={item.product.product_stock + item.quantity} // Allow for the original quantity plus available stock
+                                value={currentQuantity}
+                                onChange={(e) =>
+                                  handleQuantityChange(
+                                    item.product.id,
+                                    parseInt(e.target.value)
+                                  )
+                                }
+                                className="w-20 p-2 border rounded"
+                              />
+                            </td>
+
+                            {/* Remove Button */}
+                            <td className="p-4 align-middle">
+                              <button
+                                onClick={() =>
+                                  handleRemoveItem(item.product.id)
+                                }
+                                className="p-2 text-red-500 hover:text-red-700"
+                                title="Remove item"
+                              >
+                                <Image
+                                  src={icons.delete100.src}
+                                  alt="delete Icon"
+                                  width={27}
+                                  height={27}
+                                  loading="lazy"
+                                />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+
+                      {/* Show newly added products that weren't in the original order */}
+                      {editedOrderItems
+                        .filter(
+                          // Bring the items that are not in the order items (available in the edited array ONLY)
+                          (item) =>
+                            !orderItems?.some(
+                              (orderItem) =>
+                                orderItem.product.id === item.product_id // From the (edited array) return true if the product id is equal to the product id of the order item
+                            )
+                        )
+                        .map((newItem) => {
+                          // Get the product details from the search results
+                          const product = products.find(
+                            (product) => product.id === newItem.product_id // Return the product that his id is equal to the product id of the edited order item
+                          );
+
+                          // Skip if product not found
+                          if (!product) return null;
+
+                          // Get the unit price of the product based on whether it is on sale or not
+                          const unitPrice = product.onSale
+                            ? product.product_price_after_discount
+                            : product.product_price;
+
+                          // Get the total price of the product based on the quantity and unit price
+                          const totalPrice =
+                            Number(unitPrice) * Number(newItem.quantity);
+
+                          return (
+                            <tr
+                              key={product.id}
+                              className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                            >
+                              {/* Product Image */}
+                              <td className="p-4 align-middle">
+                                <Image
+                                  src={product.images[0] || "/placeholder.svg"}
+                                  alt={product.product_name}
+                                  width={80}
+                                  height={80}
+                                  className="rounded-md object-cover"
+                                />
+                              </td>
+
+                              {/* Product Name */}
+                              <td className="p-4 align-middle text-left">
+                                {product.product_name}
+                              </td>
+
+                              {/* Order Item Quantity */}
+                              <td className="p-4 align-middle text-right">
+                                {newItem.quantity}
+                              </td>
+
+                              {/* Product Unit Price */}
+                              <td className="p-4 align-middle text-right">
+                                {convertPriceToBHD(unitPrice)}
+                              </td>
+
+                              {/* Order Item Total Price */}
+                              <td className="p-4 align-middle text-right">
+                                {convertPriceToBHD(String(totalPrice))}
+                              </td>
+
+                              {/* Quantity Selector */}
+                              <td className="p-4 align-middle">
+                                <input
+                                  type="number"
+                                  min="1"
+                                  max={product.product_stock}
+                                  value={newItem.quantity}
+                                  onChange={(e) =>
+                                    handleQuantityChange(
+                                      newItem.product_id,
+                                      parseInt(e.target.value)
+                                    )
+                                  }
+                                  className="w-20 p-2 border rounded"
+                                />
+                              </td>
+
+                              {/* Remove Button */}
+                              <td className="p-4 align-middle">
+                                <button
+                                  onClick={() =>
+                                    handleRemoveItem(newItem.product_id)
+                                  }
+                                  className="p-2 text-red-500 hover:text-red-700"
+                                  title="Remove item"
+                                >
+                                  <Image
+                                    src={icons.delete100.src}
+                                    alt="delete Icon"
+                                    width={27}
+                                    height={27}
+                                    loading="lazy"
+                                  />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
                     </tbody>
                   </table>
                 </div>
@@ -577,7 +894,7 @@ export default function EditOrderForm(props: propsType) {
           type="submit"
           text="Save Changes"
           buttonClassName="w-full hover:bg-green-50"
-          disabled={isSubmitting}
+          disabled={isSubmitting || !editedOrderItems.length} // Disable button if submitting or no items in the order
         />
       </div>
     </div>

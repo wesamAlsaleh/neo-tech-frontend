@@ -160,7 +160,7 @@ export async function getOrderById(orderId: string) {
 /**
  * @function updateOrderDetails - Update order details for admin
  */
-export async function updateOrderDetails(orderId: number, formData: FormData) {
+export async function updateOrderDetails(orderId: number, formData: any) {
   try {
     // get user token from cookies
     const cookieStore = await cookies();

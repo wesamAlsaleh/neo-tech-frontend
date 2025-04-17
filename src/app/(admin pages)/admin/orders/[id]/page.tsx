@@ -109,8 +109,15 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
         actionButton={
           <Button iconSize={21} text="Back" onClick={() => router.back()} />
         }
-        actionButton2={<Button text="Download" />}
-        actionButton3={<Button text="Print" />}
+        actionButton2={
+          <Button
+            text="Edit"
+            onClick={() => router.push(`/admin/orders/${order?.id}/edit`)}
+            iconSrc={icons.edit100.src}
+          />
+        }
+        actionButton3={<Button text="Download" />}
+        actionButton4={<Button text="Print" />}
       />
 
       {/* Content Container */}

@@ -3,7 +3,7 @@
 import React from "react";
 
 interface CardProps {
-  CardHeader?: string;
+  // CardHeader?: string;
   CardTitle?: string;
   CardDescription?: string;
   CardContent?: React.ReactNode;
@@ -11,7 +11,7 @@ interface CardProps {
 }
 
 export default function Card({
-  CardHeader,
+  // CardHeader,
   CardTitle,
   CardDescription,
   CardContent,
@@ -21,9 +21,9 @@ export default function Card({
     // Card Layout
     <div className="rounded-xl border bg-white text-gray-800 shadow-sm">
       {/* Header Container */}
-      {CardHeader && (
-        <div className="px-6 pt-6 text-sm text-gray-400">{CardHeader}</div>
-      )}
+      {/* {CardHeader && (
+        <div className="px-6 pt-4 text-sm text-gray-400">{CardHeader}</div>
+      )} */}
 
       {/* Title & Description Container */}
       {(CardTitle || CardDescription) && (

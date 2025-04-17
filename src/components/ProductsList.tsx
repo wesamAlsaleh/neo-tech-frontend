@@ -51,36 +51,11 @@ export default function ProductsList() {
     undefined
   );
 
-  // Pagination state
+  // State to store the pagination details
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-
-  // Fetch Data function
-  const fetchProductsData = async () => {
-    try {
-      // Fetch products
-      const response = await getProducts(currentPage);
-
-      // Update the UI with the fetched data
-      setServerResponse({
-        status: response.status,
-        message: response.message!,
-      });
-
-      if (response.status) {
-        setProducts(response.products);
-        setCurrentPage(response.currentPage);
-        setTotalPages(response.totalPages);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Fetch data
-  useEffect(() => {
-    fetchProductsData();
-  }, [currentPage]); // Fetch data when the page changes (pagination) or on initial load
+  const [totalItems, setTotalItems] = useState<number>(0);
+  const [perPage, setPerPage] = useState<number>(10); // Set default items per page to 10
 
   // Handle edit product (to open modal with product data)
   const handleEditClick = (product: Product) => {
@@ -112,7 +87,7 @@ export default function ProductsList() {
       // Refresh products list by fetching data again
       if (response.status) {
         // Refresh products list by fetching data again
-        fetchProductsData();
+        fetchData();
 
         // Close the modal after successful delete
         setIsDeleteModalOpen(false);
@@ -144,7 +119,7 @@ export default function ProductsList() {
       // Refresh products list by fetching data again
       if (response.status) {
         // Refetch products data
-        fetchProductsData();
+        fetchData();
       }
     } catch (error) {
       // Update the UI with the error message
@@ -160,6 +135,43 @@ export default function ProductsList() {
     setSelectedProduct(product);
     setIsSaleModalOpen(true);
   };
+
+  // Fetch data from server
+  const fetchData = async () => {
+    // Call the server API to get the orders data
+    const response = await getProducts(currentPage, perPage);
+
+    // Set the server response
+    setServerResponse({
+      status: response.status,
+      message: response.message, // message will be empty if fetching is successful
+    });
+
+    if (response.status) {
+      setProducts(response.products);
+      setTotalPages(response.totalPages);
+      setCurrentPage(response.currentPage);
+      setPerPage(response.perPage);
+      setTotalPages(response.totalPages);
+      setTotalItems(response.totalProducts);
+    }
+  };
+
+  // Fetch data from server
+  useEffect(() => {
+    const initFetch = async () => {
+      // Set loading to true while fetching data
+      setLoading(true);
+
+      // Fetch the user cart data from the server
+      await fetchData();
+
+      // Set loading to false after fetching data
+      setLoading(false);
+    };
+
+    initFetch();
+  }, [currentPage, perPage]);
 
   // If loading, show loading spinner
   if (loading) {
@@ -418,29 +430,24 @@ export default function ProductsList() {
         <div className="flex items-center mt-4 gap-x-4">
           {/* Previous Button */}
           <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            onClick={() => setCurrentPage(currentPage - 1)}
             disabled={currentPage === 1}
-            className={`px-4 py-2 border rounded ${
-              currentPage === 1
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-orange-500 text-white"
+            className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${"bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"} ${
+              currentPage === 1 ? "cursor-not-allowed" : ""
             }`}
           >
             Previous
           </button>
 
+          {/* Counter of current page */}
           <span className="font-semibold">{`${currentPage} of ${totalPages}`}</span>
 
           {/* Next Button */}
           <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
+            onClick={() => setCurrentPage(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className={`px-4 py-2 border rounded ${
-              currentPage === totalPages
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-orange-500 text-white"
+            className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${"bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"} ${
+              currentPage === totalPages ? "cursor-not-allowed" : ""
             }`}
           >
             Next
@@ -455,7 +462,7 @@ export default function ProductsList() {
         onClose={() => {
           setIsEditModalOpen(false);
           // Refresh data after edit modal closes
-          fetchProductsData();
+          fetchData();
         }}
       />
 

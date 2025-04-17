@@ -57,3 +57,6 @@ export const cities = [
   { id: 56, name: "Karzakan" },
   { id: 57, name: "Other" },
 ];
+
+// Reorder the cities array in alphabetical order by name
+cities.sort((a, b) => a.name.localeCompare(b.name));

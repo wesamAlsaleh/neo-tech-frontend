@@ -8,7 +8,11 @@ import { OrderDetails } from "@/types/order";
 import { Product } from "@/types/product";
 
 // import backend services
-import { getOrderById, updateOrderDetails } from "@/services/order-services";
+import {
+  getOrderById,
+  removeOrderItem,
+  updateOrderDetails,
+} from "@/services/order-services";
 import { searchProduct } from "@/services/products-services";
 
 // import the cities
@@ -27,6 +31,7 @@ import { icons } from "../../public/icons";
 import Card from "./Card";
 import LoadingSpinner from "./LoadingSpinner";
 import Button from "./Button";
+import DeleteModal from "./DeleteModal";
 
 interface propsType {
   orderId: string;
@@ -76,10 +81,15 @@ export default function EditOrderForm(props: propsType) {
 
   // State to track selected product from search
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [quantityToAdd, setQuantityToAdd] = useState<number>(1);
+
+  // State to track order item to be removed
+  const [orderItemId, setOrderItemId] = useState<number>();
 
   // State to store search term
   const [searchTerm, setSearchTerm] = useState<string>("");
+
+  // State to store Modal state
+  const [openModal, setOpenModal] = useState(false);
 
   // Function to fetch order details and products available
   const fetchData = async (orderId: string) => {
@@ -168,65 +178,20 @@ export default function EditOrderForm(props: propsType) {
   };
 
   // Function to handle quantity change for existing order items
-  const handleQuantityChange = (productId: number, newQuantity: number) => {
-    // Change the quantity of the product that is being edited based on the product id
-    setEditedOrderItems((prevItems) =>
-      prevItems.map(
-        (item) =>
-          item.product_id === productId // get the product id from the order items
-            ? { ...item, quantity: newQuantity } // update the quantity of the product
-            : item // preserve the previous state of the product
-      )
-    );
-  };
+  const handleQuantityChange = (productId: number, newQuantity: number) => {};
 
   // Function to remove an item from the order
-  const handleRemoveItem = (productId: number) => {
-    setEditedOrderItems(
-      (prevItems) => prevItems.filter((item) => item.product_id !== productId) // get every item that is not equal to the product id
-    );
+  const handleRemoveItem = async (orderItemId: number) => {
+    const response = await removeOrderItem(orderId, String(orderItemId));
+
+    setServerResponse({
+      status: response.status,
+      message: response.message,
+    });
   };
 
   // Function to add a new product to the order
-  const handleAddProduct = () => {
-    // If no product is selected, return early
-    if (!selectedProduct) return;
-
-    // Check if product already exists in the order
-    const existingItemIndex = editedOrderItems.findIndex(
-      (item) => item.product_id === selectedProduct.id // get the index of the product that is selected from the search results
-    );
-
-    // If product already exists (not -1), update the quantity
-    if (existingItemIndex >= 0) {
-      // Initialize array of all order items that are being manipulated
-      const updatedItems = [...editedOrderItems];
-
-      // Update the quantity of the existing product using the index
-      updatedItems[existingItemIndex].quantity += quantityToAdd;
-
-      // Save the updated order items to the state to be sent to the server after the form is submitted
-      setEditedOrderItems(updatedItems);
-    } else {
-      // Add new product to order
-      setEditedOrderItems([
-        ...editedOrderItems,
-        {
-          product_id: selectedProduct.id,
-          quantity: quantityToAdd,
-        },
-      ]);
-    }
-
-    // Reset selection
-    setSelectedProduct(null);
-
-    // Reset quantity to add to 1 to avoid adding more than 1 product at a time
-    setQuantityToAdd(1);
-
-    // Reset search term to clear the search input field
-    setSearchTerm("");
-  };
+  const handleAddProduct = () => {};
 
   // Function to handle product selection from the search results
   const handleSelectProduct = (productId: number) => {
@@ -247,19 +212,17 @@ export default function EditOrderForm(props: propsType) {
     // Prepare form data
     const formData = new FormData();
 
-    const requestData = {
-      status: orderStatus || "",
-      payment_method: orderPaymentMethod || "",
-      home_number: address.homeNumber || "",
-      street_number: address.streetNumber || "",
-      block_number: address.blockNumber || "",
-      city: address.city || "",
-      items: editedOrderItems, // This will be sent as an array
-    };
+    // Append the form data
+    formData.append("status", orderStatus || "");
+    formData.append("payment_method", orderPaymentMethod || "");
+    formData.append("home_number", address.homeNumber || "");
+    formData.append("street_number", address.streetNumber || "");
+    formData.append("block_number", address.blockNumber || "");
+    formData.append("city", address.city || "");
 
     try {
       // Submit the form data using the service
-      const result = await updateOrderDetails(order?.id!, requestData);
+      const result = await updateOrderDetails(order?.id!, formData);
 
       // Update UI with the response
       setServerResponse({
@@ -305,7 +268,7 @@ export default function EditOrderForm(props: propsType) {
         </div>
       )}
 
-      {/* Order Quick Details Container */}
+      {/* Order Details Container */}
       <div>
         <Card
           CardTitle={`Order #${orderId} Details`}
@@ -487,6 +450,18 @@ export default function EditOrderForm(props: propsType) {
                     ))}
                   </select>
                 </div>
+
+                {/* Save Button Container */}
+                <div className="mt-4">
+                  <Button
+                    onClick={() => {}}
+                    // onClick={() => handleSubmit()}
+                    type="submit"
+                    text="Save Changes"
+                    buttonClassName="w-full hover:bg-green-50"
+                    disabled={isSubmitting || !editedOrderItems.length} // Disable button if submitting or no items in the order
+                  />
+                </div>
               </form>
             }
           />
@@ -608,10 +583,8 @@ export default function EditOrderForm(props: propsType) {
                           type="number"
                           min="1"
                           max={selectedProduct.product_stock}
-                          value={quantityToAdd}
-                          onChange={(e) =>
-                            setQuantityToAdd(parseInt(e.target.value))
-                          }
+                          value={""}
+                          onChange={(e) => {}}
                           className="w-full p-2 border rounded-lg"
                         />
                       </div>
@@ -674,27 +647,6 @@ export default function EditOrderForm(props: propsType) {
 
                       {/* Note: orderItems from order and the editedOrderItems is the same but can be edited */}
                       {orderItems?.map((item) => {
-                        // Get the edited item from the
-                        const editedItem = editedOrderItems.find(
-                          (editItem) => editItem.product_id === item.product.id // return the product that its id is equal to the product id of the order item
-                        );
-
-                        // Skip showing items that have been removed
-                        if (!editedItem) return null;
-
-                        // Get the current quantity of the product that is being edited
-                        const currentQuantity =
-                          editedItem?.quantity || item.quantity;
-
-                        // Get the unit price of the product based on whether it is on sale or not
-                        const unitPrice = item.product.onSale
-                          ? item.product.product_price_after_discount
-                          : item.product.product_price;
-
-                        // Get the total price of the product based on the quantity and unit price
-                        const totalPrice =
-                          Number(unitPrice) * Number(currentQuantity);
-
                         return (
                           <tr
                             key={item.id}
@@ -734,7 +686,15 @@ export default function EditOrderForm(props: propsType) {
 
                             {/* Order Item Total Price */}
                             <td className="p-4 align-middle text-right">
-                              {convertPriceToBHD(String(totalPrice))}
+                              {item.product.onSale
+                                ? convertPriceToBHD(
+                                    String(
+                                      item.product.product_price_after_discount
+                                    )
+                                  )
+                                : convertPriceToBHD(
+                                    String(item.product.product_price)
+                                  )}
                             </td>
 
                             {/* Quantity Selector */}
@@ -742,8 +702,8 @@ export default function EditOrderForm(props: propsType) {
                               <input
                                 type="number"
                                 min="1"
-                                max={item.product.product_stock + item.quantity} // Allow for the original quantity plus available stock
-                                value={currentQuantity}
+                                // max={item.product.product_stock + item.quantity} // Allow for the original quantity plus available stock
+                                value={item.quantity}
                                 onChange={(e) =>
                                   handleQuantityChange(
                                     item.product.id,
@@ -757,9 +717,16 @@ export default function EditOrderForm(props: propsType) {
                             {/* Remove Button */}
                             <td className="p-4 align-middle">
                               <button
-                                onClick={() =>
-                                  handleRemoveItem(item.product.id)
-                                }
+                                onClick={() => {
+                                  // Pass the item to the modal
+                                  setSelectedProduct(item.product);
+
+                                  // Set the order item id to be removed
+                                  setOrderItemId(item.id);
+
+                                  // Set the modal open state to true
+                                  setOpenModal(true);
+                                }}
                                 className="p-2 text-red-500 hover:text-red-700"
                                 title="Remove item"
                               >
@@ -775,109 +742,6 @@ export default function EditOrderForm(props: propsType) {
                           </tr>
                         );
                       })}
-
-                      {/* Show newly added products that weren't in the original order */}
-                      {editedOrderItems
-                        .filter(
-                          // Bring the items that are not in the order items (available in the edited array ONLY)
-                          (item) =>
-                            !orderItems?.some(
-                              (orderItem) =>
-                                orderItem.product.id === item.product_id // From the (edited array) return true if the product id is equal to the product id of the order item
-                            )
-                        )
-                        .map((newItem) => {
-                          // Get the product details from the search results
-                          const product = products.find(
-                            (product) => product.id === newItem.product_id // Return the product that his id is equal to the product id of the edited order item
-                          );
-
-                          // Skip if product not found
-                          if (!product) return null;
-
-                          // Get the unit price of the product based on whether it is on sale or not
-                          const unitPrice = product.onSale
-                            ? product.product_price_after_discount
-                            : product.product_price;
-
-                          // Get the total price of the product based on the quantity and unit price
-                          const totalPrice =
-                            Number(unitPrice) * Number(newItem.quantity);
-
-                          return (
-                            <tr
-                              key={product.id}
-                              className="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
-                            >
-                              {/* Product Image */}
-                              <td className="p-4 align-middle">
-                                <Image
-                                  src={product.images[0] || "/placeholder.svg"}
-                                  alt={product.product_name}
-                                  width={80}
-                                  height={80}
-                                  className="rounded-md object-cover"
-                                />
-                              </td>
-
-                              {/* Product Name */}
-                              <td className="p-4 align-middle text-left">
-                                {product.product_name}
-                              </td>
-
-                              {/* Order Item Quantity */}
-                              <td className="p-4 align-middle text-right">
-                                {newItem.quantity}
-                              </td>
-
-                              {/* Product Unit Price */}
-                              <td className="p-4 align-middle text-right">
-                                {convertPriceToBHD(unitPrice)}
-                              </td>
-
-                              {/* Order Item Total Price */}
-                              <td className="p-4 align-middle text-right">
-                                {convertPriceToBHD(String(totalPrice))}
-                              </td>
-
-                              {/* Quantity Selector */}
-                              <td className="p-4 align-middle">
-                                <input
-                                  type="number"
-                                  min="1"
-                                  max={product.product_stock}
-                                  value={newItem.quantity}
-                                  onChange={(e) =>
-                                    handleQuantityChange(
-                                      newItem.product_id,
-                                      parseInt(e.target.value)
-                                    )
-                                  }
-                                  className="w-20 p-2 border rounded"
-                                />
-                              </td>
-
-                              {/* Remove Button */}
-                              <td className="p-4 align-middle">
-                                <button
-                                  onClick={() =>
-                                    handleRemoveItem(newItem.product_id)
-                                  }
-                                  className="p-2 text-red-500 hover:text-red-700"
-                                  title="Remove item"
-                                >
-                                  <Image
-                                    src={icons.delete100.src}
-                                    alt="delete Icon"
-                                    width={27}
-                                    height={27}
-                                    loading="lazy"
-                                  />
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })}
                     </tbody>
                   </table>
                 </div>
@@ -887,16 +751,15 @@ export default function EditOrderForm(props: propsType) {
         </div>
       </div>
 
-      {/* Save Button Container */}
-      <div className="mt-4">
-        <Button
-          onClick={() => handleSubmit()}
-          type="submit"
-          text="Save Changes"
-          buttonClassName="w-full hover:bg-green-50"
-          disabled={isSubmitting || !editedOrderItems.length} // Disable button if submitting or no items in the order
-        />
-      </div>
+      {/* Delete Modal */}
+      <DeleteModal
+        isOpen={openModal}
+        onClose={() => setOpenModal(false)}
+        permanentAlert
+        name={`${selectedProduct?.product_name}`}
+        customButtonText="Remove"
+        onConfirm={() => handleRemoveItem(orderItemId!)} // Pass the order item id to be removed
+      />
     </div>
   );
 }

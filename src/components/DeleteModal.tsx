@@ -2,14 +2,16 @@ export default function DeleteModal({
   isOpen,
   onClose,
   onConfirm,
-  name,
   permanentAlert,
+  name,
+  customButtonText,
 }: {
   isOpen: boolean;
   permanentAlert?: boolean;
   onClose: () => void;
   onConfirm: () => void;
   name: string;
+  customButtonText?: string;
 }) {
   // close the modal if it's not open
   if (!isOpen) return null;
@@ -23,7 +25,7 @@ export default function DeleteModal({
         <div className="">
           {/* Modal Name */}
           <h2 className="text-xl font-semibold text-gray-800">
-            Confirm Deletion
+            Confirm {`${customButtonText ? customButtonText : "Deletion"}`}
           </h2>
 
           {/* Permanent Alert */}
@@ -35,8 +37,9 @@ export default function DeleteModal({
 
           {/* Product Name container*/}
           <p className="mt-2 text-gray-600 text-base">
-            Are you sure you want to delete <strong className="">{name}</strong>
-            ?
+            Are you sure you want to{" "}
+            {`${customButtonText ? customButtonText : "delete"}`}{" "}
+            <strong className="">{name}</strong>?
           </p>
         </div>
 
@@ -55,7 +58,7 @@ export default function DeleteModal({
             className="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded"
             onClick={onConfirm}
           >
-            Delete
+            {customButtonText ? customButtonText : "Delete"}
           </button>
         </div>
       </div>

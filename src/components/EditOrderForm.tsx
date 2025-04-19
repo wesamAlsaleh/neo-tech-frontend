@@ -213,6 +213,7 @@ export default function EditOrderForm(props: propsType) {
     const formData = new FormData();
 
     // Append the form data
+    formData.append("id", orderId);
     formData.append("status", orderStatus || "");
     formData.append("payment_method", orderPaymentMethod || "");
     formData.append("home_number", address.homeNumber || "");
@@ -222,19 +223,13 @@ export default function EditOrderForm(props: propsType) {
 
     try {
       // Submit the form data using the service
-      const result = await updateOrderDetails(order?.id!, formData);
+      const result = await updateOrderDetails(formData);
 
       // Update UI with the response
       setServerResponse({
         status: result.status,
         message: result.message,
       });
-
-      // Reload the page after successful update
-      if (result.status) {
-        // Refresh data
-        await fetchData(orderId);
-      }
     } finally {
       // Set the form submission status to false to enable the submit button
       setIsSubmitting(false);
@@ -454,8 +449,8 @@ export default function EditOrderForm(props: propsType) {
                 {/* Save Button Container */}
                 <div className="mt-4">
                   <Button
-                    onClick={() => {}}
-                    // onClick={() => handleSubmit()}
+                    // onClick={() => {}}
+                    onClick={() => handleSubmit()}
                     type="submit"
                     text="Save Changes"
                     buttonClassName="w-full hover:bg-green-50"

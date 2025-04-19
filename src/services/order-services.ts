@@ -160,7 +160,7 @@ export async function getOrderById(orderId: string) {
 /**
  * @function updateOrderDetails - Update order details for admin
  */
-export async function updateOrderDetails(orderId: number, formData: any) {
+export async function updateOrderDetails(formData: any) {
   try {
     // get user token from cookies
     const cookieStore = await cookies();
@@ -175,7 +175,7 @@ export async function updateOrderDetails(orderId: number, formData: any) {
     }
 
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_APP_URI}/admin/update-order/${orderId}`,
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/update-order`,
       formData,
       {
         headers: {

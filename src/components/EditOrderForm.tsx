@@ -105,6 +105,12 @@ export default function EditOrderForm(props: propsType) {
   // Fetch data from server
   useEffect(() => {
     const initFetch = async () => {
+      // Reset the sates
+      setProducts([]); // Reset the products state to empty array
+      setProductsCount(0); // Reset the products count state to 0
+      setSelectedProduct(null); // Reset the selected product state to null
+      setSearchTerm(""); // Reset the search term state to empty string
+
       // Set loading to true while fetching data
       setLoading(true);
 

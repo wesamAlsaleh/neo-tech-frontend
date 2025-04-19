@@ -98,7 +98,7 @@ export default function ProductCard(props: ProductCardProps) {
           // add to wishlist button
           <button
             onClick={() => handleAddToWishlist(product.id)}
-            className="p-2 bg-orange-50 rounded-full shadow hover:bg-orange-200"
+            className="p-2 rounded-full shadow hover:bg-orange-50"
           >
             <Image
               src={icons.outlineHeartIcon48}

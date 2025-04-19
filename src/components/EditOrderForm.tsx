@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 
 // import types
-import { OrderDetails } from "@/types/order";
+import { Order, OrderDetails } from "@/types/order";
 import { Product } from "@/types/product";
 
 // import backend services
@@ -13,6 +13,7 @@ import {
   getOrderById,
   removeOrderItem,
   updateOrderDetails,
+  updateOrderItemQuantity,
 } from "@/services/order-services";
 import { searchProduct } from "@/services/products-services";
 
@@ -68,7 +69,10 @@ export default function EditOrderForm(props: propsType) {
     blockNumber: "",
     city: "",
   }); // State to store order address to be updated
-  const [newItemQuantity, setNewItemQuantity] = useState<number>(1); // State to store item quantity to be updated
+  const [newItemQuantity, setNewItemQuantity] = useState<number>(1); // State to store new item quantity to be added to the order
+  const [orderItemQuantities, setOrderItemQuantities] = useState<{
+    [key: number]: number;
+  }>({}); // State to store quantities of all order items using key-value pairs (key is the order item id and value is the quantity)
 
   /**
    * Search term states
@@ -95,22 +99,37 @@ export default function EditOrderForm(props: propsType) {
       message: orderResponse.message,
     });
 
+    // Reset the sates
+    setProducts([]); // Reset the products state to empty array
+    setProductsCount(0); // Reset the products count state to 0
+    setSelectedProduct(null); // Reset the selected product state to null
+    setSearchTerm(""); // Reset the search term state to empty string
+
     if (orderResponse.status) {
       setOrder(orderResponse.order);
       setOrderStatus(orderResponse.order.status);
       setOrderPaymentMethod(orderResponse.order.payment_method);
+
+      // Set the quantity state to the default quantity of the order items
+      setOrderItemQuantities(() => {
+        // Create a new (object) to store the quantities of all order items
+        const quantities: { [key: number]: number } = {};
+
+        // Loop through the order items and set the quantity to the newQuantities object
+        orderResponse.order.order_items.forEach(
+          (item: OrderDetails["order_items"][number]) => {
+            quantities[item.id] = item.quantity;
+          }
+        );
+
+        return quantities;
+      });
     }
   };
 
   // Fetch data from server
   useEffect(() => {
     const initFetch = async () => {
-      // Reset the sates
-      setProducts([]); // Reset the products state to empty array
-      setProductsCount(0); // Reset the products count state to 0
-      setSelectedProduct(null); // Reset the selected product state to null
-      setSearchTerm(""); // Reset the search term state to empty string
-
       // Set loading to true while fetching data
       setLoading(true);
 
@@ -226,6 +245,32 @@ export default function EditOrderForm(props: propsType) {
     setSearchTerm(""); // Reset the search term state to empty string
     setProducts([]); // Reset the products state to empty array
     setProductsCount(0); // Reset the products count state to 0
+
+    // Refetch the order details after 2 seconds to update the UI
+    setTimeout(() => {
+      fetchData(orderId);
+    }, 2000); // Refetch the order details after 2 seconds
+  };
+
+  // Function to add new quantity to the order item
+  const handleUpdateQuantity = async (orderItemId: number) => {
+    // Set loading to true while calling the service
+    setLoading(true);
+
+    // Call the service to update the order item quantity
+    const response = await updateOrderItemQuantity(
+      orderId,
+      String(orderItemId),
+      orderItemQuantities[orderItemId]
+    );
+
+    setLoading(false); // Set loading to false after removing the item
+
+    // Update the UI with the response
+    setServerResponse({
+      status: response.status,
+      message: response.message,
+    });
 
     // Refetch the order details after 2 seconds to update the UI
     setTimeout(() => {
@@ -728,18 +773,36 @@ export default function EditOrderForm(props: propsType) {
                               <input
                                 type="number"
                                 min="1"
-                                // max={item.product.product_stock + item.quantity} // Allow for the original quantity plus available stock
-                                value={item.quantity}
-                                onChange={(e) => {}}
-                                className="w-20 p-2 border rounded"
+                                max={item.product.product_stock} // Limit the max quantity to the product stock
+                                value={
+                                  orderItemQuantities[item.id] ?? item.quantity
+                                } // Get the quantity from the state using the item id
+                                onChange={(e) => {
+                                  // The value
+                                  const newQuantity = +e.target.value;
+
+                                  // Update the order item quantity
+                                  setOrderItemQuantities((prev) => ({
+                                    ...prev,
+                                    [item.id]: newQuantity,
+                                  }));
+                                }}
+                                className="w-12 p-2 border rounded"
                               />
                             </td>
 
                             {/* Remove Button */}
-                            <td className="p-4 align-middle">
+                            <td className="flex p-4 align-middle gap-2">
+                              {/* Update Quantity Button */}
+                              <Button
+                                text="Update Quantity"
+                                onClick={() => handleUpdateQuantity(item.id)}
+                              />
+
+                              {/* Remove Item Button */}
                               <Button
                                 key={item.id}
-                                iconSrc={icons.delete100.src}
+                                text="Remove Item"
                                 type="button"
                                 onClick={() => {
                                   // Pass the item to the modal

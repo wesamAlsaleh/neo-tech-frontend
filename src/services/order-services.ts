@@ -307,3 +307,59 @@ export async function addOrderItem(
     };
   }
 }
+
+/**
+ * @function updateOrderItemQuantity - Update order item quantity for admin
+ * @param {string} orderId - The order id to update the order item quantity
+ * @param {string} orderItemId - The order item id to update the order item quantity
+ * @param {number} quantity - The quantity of the product to update the order item quantity
+ */
+export async function updateOrderItemQuantity(
+  orderId: string,
+  orderItemId: string,
+  quantity: number
+) {
+  try {
+    // get user token from cookies
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    // If the user token is not found
+    if (!userToken) {
+      return {
+        status: false,
+        message: "No authentication token found.",
+      };
+    }
+
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/order-items/update-item-quantity`,
+      {
+        order_id: orderId,
+        item_id: orderItemId,
+        quantity: quantity,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+    };
+  } catch (error: any) {
+    // // Log the error to the console
+    console.error(error.response.data);
+
+    // // Return the details of the error
+    console.error(error.response.data.devMessage);
+
+    return {
+      status: false,
+      message: error.response.data.message || "An error occurred",
+    };
+  }
+}

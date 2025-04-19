@@ -164,6 +164,9 @@ export default function EditOrderForm(props: propsType) {
     // Call the service to remove the order item
     const response = await removeOrderItem(orderId, String(orderItemId));
 
+    // Close the modal after removing the item
+    setOpenModal(false); // Close the modal
+
     setLoading(false); // Set loading to false after removing the item
 
     // Update the UI with the response
@@ -171,6 +174,11 @@ export default function EditOrderForm(props: propsType) {
       status: response.status,
       message: response.message,
     });
+
+    // Refetch the order details after 2 seconds to update the UI
+    setTimeout(() => {
+      fetchData(orderId);
+    }, 2000); // Refetch the order details after 2 seconds
   };
 
   // Function to handle product selection from the search results
@@ -205,6 +213,18 @@ export default function EditOrderForm(props: propsType) {
       status: response.status,
       message: response.message,
     });
+
+    // Reset the states after adding the product
+    setSelectedProduct(null); // Reset the selected product state to null
+    setNewItemQuantity(1); // Reset the new item quantity state to 1
+    setSearchTerm(""); // Reset the search term state to empty string
+    setProducts([]); // Reset the products state to empty array
+    setProductsCount(0); // Reset the products count state to 0
+
+    // Refetch the order details after 2 seconds to update the UI
+    setTimeout(() => {
+      fetchData(orderId);
+    }, 2000); // Refetch the order details after 2 seconds
   };
 
   // Function to handle form submission

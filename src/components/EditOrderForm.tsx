@@ -9,6 +9,7 @@ import { Product } from "@/types/product";
 
 // import backend services
 import {
+  addOrderItem,
   getOrderById,
   removeOrderItem,
   updateOrderDetails,
@@ -41,58 +42,47 @@ export default function EditOrderForm(props: propsType) {
   // Destructure the props
   const { orderId } = props;
 
-  // State to store products
-  const [products, setProducts] = useState<Product[]>([]);
-  const [productsCount, setProductsCount] = useState<number>(0);
-
   // State to store order details
   const [order, setOrder] = useState<OrderDetails>();
 
-  // State to store order items to manipulate the order items
-  const [orderItems, setOrderItems] = useState<OrderDetails["order_items"]>();
-
-  // State to store loading status
-  const [loading, setLoading] = useState(true);
-  const [productsLoading, setProductsLoading] = useState(false);
-
-  // State to store submission state
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // State to manage the visibility of the address form fields
-  const [showAddressFields, setShowAddressFields] = useState(false);
-
-  // State to store the server response
+  /**
+   * UI states
+   */
+  const [loading, setLoading] = useState(true); // State to store loading status
+  const [productsLoading, setProductsLoading] = useState(false); // State to store products loading status
+  const [isSubmitting, setIsSubmitting] = useState(false); // State to store submission state
+  const [showAddressFields, setShowAddressFields] = useState(false); // State to manage the visibility of the address form fields
   const [serverResponse, setServerResponse] = useState({
     status: false,
     message: "",
-  });
+  }); // State to store the server response
 
-  // States to append the form fields
-  const [orderStatus, setOrderStatus] = useState<string | null>();
-  const [orderPaymentMethod, setOrderPaymentMethod] = useState<string | null>();
+  /**
+   * Order details states
+   */
+  const [orderStatus, setOrderStatus] = useState<string | null>(); // State to store order status to be updated
+  const [orderPaymentMethod, setOrderPaymentMethod] = useState<string | null>(); // State to store order payment method to be updated
   const [address, setAddress] = useState({
     homeNumber: "",
     streetNumber: "",
     blockNumber: "",
     city: "",
-  });
+  }); // State to store order address to be updated
+  const [newItemQuantity, setNewItemQuantity] = useState<number>(1); // State to store item quantity to be updated
 
-  // State to manage order items being edited
-  const [editedOrderItems, setEditedOrderItems] = useState<
-    { product_id: number; quantity: number; originalQuantity?: number }[]
-  >([]);
+  /**
+   * Search term states
+   */
+  const [products, setProducts] = useState<Product[]>([]); // State to store products
+  const [searchTerm, setSearchTerm] = useState<string>(""); // State to store search term
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null); // State to track selected product from search
+  const [productsCount, setProductsCount] = useState<number>(0); // State to store search results count
 
-  // State to track selected product from search
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
-  // State to track order item to be removed
-  const [orderItemId, setOrderItemId] = useState<number>();
-
-  // State to store search term
-  const [searchTerm, setSearchTerm] = useState<string>("");
-
-  // State to store Modal state
-  const [openModal, setOpenModal] = useState(false);
+  /**
+   * Modal states
+   */
+  const [orderItemId, setOrderItemId] = useState<number>(); // State to track order item to be removed
+  const [openModal, setOpenModal] = useState(false); // State to store Modal state
 
   // Function to fetch order details and products available
   const fetchData = async (orderId: string) => {
@@ -107,7 +97,6 @@ export default function EditOrderForm(props: propsType) {
 
     if (orderResponse.status) {
       setOrder(orderResponse.order);
-      setOrderItems(orderResponse.order.order_items);
       setOrderStatus(orderResponse.order.status);
       setOrderPaymentMethod(orderResponse.order.payment_method);
     }
@@ -132,6 +121,7 @@ export default function EditOrderForm(props: propsType) {
   // Set debounced search term to avoid too many API calls
   const debouncedSearchTerm = useDebounce(searchTerm, 300);
 
+  // Use effect to fetch products based on the search term
   useEffect(() => {
     const fetchProducts = async () => {
       if (!debouncedSearchTerm) return;
@@ -159,19 +149,6 @@ export default function EditOrderForm(props: propsType) {
     fetchProducts();
   }, [debouncedSearchTerm]);
 
-  // Populate the editedOrderItems when orderItems are loaded
-  useEffect(() => {
-    if (orderItems && orderItems.length > 0) {
-      setEditedOrderItems(
-        orderItems.map((item) => ({
-          product_id: item.product.id,
-          quantity: item.quantity, // quantity of the product that is being edited
-          originalQuantity: item.quantity, // original quantity of the product
-        }))
-      );
-    }
-  }, [orderItems]);
-
   // Function to handle address changes
   const handleAddressChange = (field: string, value: string) => {
     setAddress((prev) => ({
@@ -180,21 +157,21 @@ export default function EditOrderForm(props: propsType) {
     }));
   };
 
-  // Function to handle quantity change for existing order items
-  const handleQuantityChange = (productId: number, newQuantity: number) => {};
-
   // Function to remove an item from the order
   const handleRemoveItem = async (orderItemId: number) => {
+    setLoading(true); // Set loading to true while removing the item
+
+    // Call the service to remove the order item
     const response = await removeOrderItem(orderId, String(orderItemId));
 
+    setLoading(false); // Set loading to false after removing the item
+
+    // Update the UI with the response
     setServerResponse({
       status: response.status,
       message: response.message,
     });
   };
-
-  // Function to add a new product to the order
-  const handleAddProduct = () => {};
 
   // Function to handle product selection from the search results
   const handleSelectProduct = (productId: number) => {
@@ -205,6 +182,29 @@ export default function EditOrderForm(props: propsType) {
 
     // Set the selected product state to the selected product or null if not found
     setSelectedProduct(product || null);
+  };
+
+  // Function to add a new product to the order
+  const handleAddProduct = async (productId: number) => {
+    // If no product is selected, return
+    if (!selectedProduct) return;
+
+    setLoading(true); // Set loading to true while removing the item
+
+    // Call the service to add the order item
+    const response = await addOrderItem(
+      orderId,
+      String(productId),
+      newItemQuantity
+    );
+
+    setLoading(false); // Set loading to false after removing the item
+
+    // Update the UI with the response
+    setServerResponse({
+      status: response.status,
+      message: response.message,
+    });
   };
 
   // Function to handle form submission
@@ -472,7 +472,7 @@ export default function EditOrderForm(props: propsType) {
                     type="submit"
                     text="Save Changes"
                     buttonClassName="w-full"
-                    disabled={isSubmitting || !editedOrderItems.length} // Disable button if submitting or no items in the order
+                    disabled={isSubmitting}
                   />
                 </div>
               </form>
@@ -585,29 +585,29 @@ export default function EditOrderForm(props: propsType) {
 
                   {/* Add new Item Section Container*/}
                   {selectedProduct && (
-                    <div className="flex items-center gap-2 mt-2">
+                    <div className="flex items-center gap-2 mt-4">
                       {/* Quantity Field Container */}
-                      <div className="flex-1">
-                        <label className="block text-base font-medium text-gray-700 mb-1">
-                          Quantity:
-                        </label>
+                      <label className="block text-base font-medium text-gray-700 mb-1">
+                        Quantity:
+                      </label>
 
+                      <div className="flex-1">
                         <input
                           type="number"
                           min="1"
-                          max={selectedProduct.product_stock}
-                          value={""}
-                          onChange={(e) => {}}
+                          max={selectedProduct.product_stock} // Limit the max quantity to the product stock
+                          value={newItemQuantity}
+                          onChange={(e) =>
+                            setNewItemQuantity(parseInt(e.target.value))
+                          }
                           className="w-full p-2 border rounded-lg"
                         />
                       </div>
 
-                      <button
-                        onClick={handleAddProduct}
-                        className="h-10 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors mt-6"
-                      >
-                        Add to Order
-                      </button>
+                      <Button
+                        text="Add to Order"
+                        onClick={() => handleAddProduct(selectedProduct.id)}
+                      />
                     </div>
                   )}
                 </div>
@@ -646,20 +646,7 @@ export default function EditOrderForm(props: propsType) {
                     </thead>
 
                     <tbody className="[&_tr:last-child]:border-0">
-                      {/* Handle no items */}
-                      {editedOrderItems.length === 0 && (
-                        <tr>
-                          <td
-                            colSpan={7}
-                            className="text-center py-4 text-gray-500"
-                          >
-                            No items in the order.
-                          </td>
-                        </tr>
-                      )}
-
-                      {/* Note: orderItems from order and the editedOrderItems is the same but can be edited */}
-                      {orderItems?.map((item) => {
+                      {order?.order_items?.map((item) => {
                         return (
                           <tr
                             key={item.id}
@@ -717,19 +704,17 @@ export default function EditOrderForm(props: propsType) {
                                 min="1"
                                 // max={item.product.product_stock + item.quantity} // Allow for the original quantity plus available stock
                                 value={item.quantity}
-                                onChange={(e) =>
-                                  handleQuantityChange(
-                                    item.product.id,
-                                    parseInt(e.target.value)
-                                  )
-                                }
+                                onChange={(e) => {}}
                                 className="w-20 p-2 border rounded"
                               />
                             </td>
 
                             {/* Remove Button */}
                             <td className="p-4 align-middle">
-                              <button
+                              <Button
+                                key={item.id}
+                                iconSrc={icons.delete100.src}
+                                type="button"
                                 onClick={() => {
                                   // Pass the item to the modal
                                   setSelectedProduct(item.product);
@@ -740,17 +725,8 @@ export default function EditOrderForm(props: propsType) {
                                   // Set the modal open state to true
                                   setOpenModal(true);
                                 }}
-                                className="p-2 text-red-500 hover:text-red-700"
-                                title="Remove item"
-                              >
-                                <Image
-                                  src={icons.delete100.src}
-                                  alt="delete Icon"
-                                  width={27}
-                                  height={27}
-                                  loading="lazy"
-                                />
-                              </button>
+                                buttonClassName="p-2"
+                              />
                             </td>
                           </tr>
                         );

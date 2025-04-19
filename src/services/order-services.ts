@@ -251,3 +251,59 @@ export async function removeOrderItem(orderId: string, orderItemId: string) {
     };
   }
 }
+
+/**
+ * @function addOrderItem - Add order item for admin
+ * @param {string} orderId - The order id to add the order item
+ * @param {string} productId - The product id to add the order item
+ * @param {number} quantity - The quantity of the product to add the order item
+ */
+export async function addOrderItem(
+  orderId: string,
+  productId: string,
+  quantity: number
+) {
+  try {
+    // get user token from cookies
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    // If the user token is not found
+    if (!userToken) {
+      return {
+        status: false,
+        message: "No authentication token found.",
+      };
+    }
+
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/order-items/add-item`,
+      {
+        order_id: orderId,
+        product_id: productId,
+        quantity: quantity,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+    };
+  } catch (error: any) {
+    // // Log the error to the console
+    console.error(error.response.data);
+
+    // // Return the details of the error
+    console.error(error.response.data.devMessage);
+
+    return {
+      status: false,
+      message: error.response.data.message || "An error occurred",
+    };
+  }
+}

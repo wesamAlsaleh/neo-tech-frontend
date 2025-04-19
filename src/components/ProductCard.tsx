@@ -71,7 +71,7 @@ export default function ProductCard(props: ProductCardProps) {
 
   return (
     // product container
-    <div className="relative p-4 rounded-lg flex flex-col justify-between bg-white hover:shadow-lg hover:shadow-orange-100 transition-shadow duration-300 ease-in-out h-full">
+    <div className="relative p-4 rounded-lg flex flex-col justify-between bg-white hover:shadow-md transition-shadow duration-300 ease-in-out h-full">
       {/* Discount Badge */}
       {product.onSale ? (
         <div className="absolute top-2 left-2 sm:top-2 sm:left-2 md:top-3 md:left-3 lg:top-3 lg:left-3 bg-red-500 text-white text-xs sm:text-sm font-semibold px-2 py-1 rounded-md">

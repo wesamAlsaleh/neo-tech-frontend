@@ -58,6 +58,9 @@ export default function EditOrderForm(props: propsType) {
   // State to store submission state
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // State to manage the visibility of the address form fields
+  const [showAddressFields, setShowAddressFields] = useState(false);
+
   // State to store the server response
   const [serverResponse, setServerResponse] = useState({
     status: false,
@@ -357,94 +360,109 @@ export default function EditOrderForm(props: propsType) {
                   </select>
                 </div>
 
-                {/* Home Number Field */}
-                <div>
-                  <label
-                    htmlFor="home_number"
-                    className="block text-base font-medium text-gray-700 mb-2"
-                  >
-                    Home Number:
-                  </label>
+                {/* Address Fields Toggle Button */}
+                <Button
+                  onClick={() => setShowAddressFields((prev) => !prev)}
+                  text={
+                    showAddressFields
+                      ? "Hide Address Fields"
+                      : "Edit Order Shipping Address"
+                  }
+                />
 
-                  <input
-                    type="text"
-                    placeholder="Enter new home number if needed"
-                    id="home_number"
-                    value={address.homeNumber}
-                    onChange={(e) =>
-                      handleAddressChange("homeNumber", e.target.value)
-                    }
-                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
-                  />
-                </div>
+                {/* Address Fields Container */}
+                {showAddressFields && (
+                  <div className="grid grid-cols-2 gap-4 mt-4">
+                    {/* Home Number Field */}
+                    <div>
+                      <label
+                        htmlFor="home_number"
+                        className="block text-base font-medium text-gray-700 mb-2"
+                      >
+                        Home Number:
+                      </label>
 
-                {/* Street Address Field */}
-                <div>
-                  <label
-                    htmlFor="street"
-                    className="block text-base font-medium text-gray-700 mb-2"
-                  >
-                    Street Address:
-                  </label>
+                      <input
+                        type="text"
+                        placeholder="Enter new home number if needed"
+                        id="home_number"
+                        value={address.homeNumber}
+                        onChange={(e) =>
+                          handleAddressChange("homeNumber", e.target.value)
+                        }
+                        className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
+                      />
+                    </div>
 
-                  <input
-                    type="text"
-                    placeholder="Enter new street address if needed"
-                    id="street"
-                    value={address.streetNumber}
-                    onChange={(e) =>
-                      handleAddressChange("street", e.target.value)
-                    }
-                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
-                  />
-                </div>
+                    {/* Street Address Field */}
+                    <div>
+                      <label
+                        htmlFor="street"
+                        className="block text-base font-medium text-gray-700 mb-2"
+                      >
+                        Street Address:
+                      </label>
 
-                {/* Block Number Field */}
-                <div>
-                  <label
-                    htmlFor="block"
-                    className="block text-base font-medium text-gray-700 mb-2"
-                  >
-                    Block Number:
-                  </label>
+                      <input
+                        type="text"
+                        placeholder="Enter new street address if needed"
+                        id="street"
+                        value={address.streetNumber}
+                        onChange={(e) =>
+                          handleAddressChange("street", e.target.value)
+                        }
+                        className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
+                      />
+                    </div>
 
-                  <input
-                    type="text"
-                    placeholder="Enter new block number if needed"
-                    id="block"
-                    value={address.blockNumber}
-                    onChange={(e) =>
-                      handleAddressChange("block", e.target.value)
-                    }
-                    className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
-                  />
-                </div>
+                    {/* Block Number Field */}
+                    <div>
+                      <label
+                        htmlFor="block"
+                        className="block text-base font-medium text-gray-700 mb-2"
+                      >
+                        Block Number:
+                      </label>
 
-                {/* City Field */}
-                <div>
-                  <label
-                    htmlFor="city"
-                    className="block text-base font-medium text-gray-700 mb-2"
-                  >
-                    City:
-                  </label>
+                      <input
+                        type="text"
+                        placeholder="Enter new block number if needed"
+                        id="block"
+                        value={address.blockNumber}
+                        onChange={(e) =>
+                          handleAddressChange("block", e.target.value)
+                        }
+                        className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
+                      />
+                    </div>
 
-                  <select
-                    id="city"
-                    value={address.city}
-                    onChange={(e) =>
-                      handleAddressChange("city", e.target.value)
-                    }
-                    className="w-full appearance-none bg-gray-50 border border-gray-200 text-gray-700 p-2 rounded-lg text-base font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
-                  >
-                    <option value="">Select City</option>
-                    {cities.map((city) => (
-                      <option key={city.id} value={city.name}>
-                        {city.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                    {/* City Field */}
+                    <div>
+                      <label
+                        htmlFor="city"
+                        className="block text-base font-medium text-gray-700 mb-2"
+                      >
+                        City:
+                      </label>
+
+                      <select
+                        id="city"
+                        value={address.city}
+                        onChange={(e) =>
+                          handleAddressChange("city", e.target.value)
+                        }
+                        className="w-full appearance-none bg-gray-50 border border-gray-200 text-gray-700 p-2 rounded-lg text-base font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                      >
+                        <option value="">Select City</option>
+                        {cities.map((city) => (
+                          <option key={city.id} value={city.name}>
+                            {city.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
 
                 {/* Save Button Container */}
                 <div className="mt-4">
@@ -453,7 +471,7 @@ export default function EditOrderForm(props: propsType) {
                     onClick={() => handleSubmit()}
                     type="submit"
                     text="Save Changes"
-                    buttonClassName="w-full hover:bg-green-50"
+                    buttonClassName="w-full"
                     disabled={isSubmitting || !editedOrderItems.length} // Disable button if submitting or no items in the order
                   />
                 </div>

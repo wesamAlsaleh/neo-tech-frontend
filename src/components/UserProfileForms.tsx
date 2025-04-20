@@ -75,6 +75,10 @@ export default function UserProfileForms(props: UserProfileFormsProps) {
     message: "",
   });
 
+  const [showPersonalDataForm, setShowPersonalDataForm] = useState(true);
+  const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
+  const [showAddressForm, setShowAddressForm] = useState(false);
+
   // State to store the form submission status
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -252,261 +256,318 @@ export default function UserProfileForms(props: UserProfileFormsProps) {
         </div>
       )}
 
-      {/* Update Personal Data Form  */}
-      <form onSubmit={(e) => handlePersonalDataSubmit(e)} className="space-y-4">
-        {/* First Name field container */}
-        <div className="space-y-2">
-          <label
-            htmlFor="first_name"
-            className="block text-sm font-medium text-gray-700"
-          >
-            First Name
-          </label>
-
-          <input
-            type="text"
-            id="first_name"
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
-          />
-        </div>
-
-        {/* Last Name field container */}
-        <div className="space-y-2">
-          <label
-            htmlFor="last_name"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Last Name
-          </label>
-
-          <input
-            type="text"
-            id="last_name"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
-          />
-        </div>
-
-        {/* Email field container */}
-        <div className="space-y-2">
-          <label
-            htmlFor="last_name"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Email Address
-          </label>
-
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
-          />
-        </div>
-
-        {/* Phone Number field container */}
-        <div className="space-y-2">
-          <label
-            htmlFor="phone_number"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Phone Number
-          </label>
-
-          <input
-            type="tel"
-            // Pattern for Bahrain phone number format (e.g., 37234155)
-            pattern="^(?:[0-9]{8})$"
-            id="phone_number"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
-          />
-        </div>
-
-        {/* Action buttons container */}
-        <div className="flex gap-2">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isSubmitting ? "Updating" : "Update Profile"}
-          </button>
-        </div>
-      </form>
-
-      {/* Change Password Form */}
-      <form
-        onSubmit={(e) => handleChangePasswordSubmit(e)}
-        className="space-y-4"
+      {/* Personal Data Button */}
+      <button
+        type="button"
+        className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed ${
+          showPersonalDataForm
+            ? "bg-orange-600 hover:bg-orange-700"
+            : "bg-orange-600 hover:bg-orange-700"
+        }`}
+        onClick={() => setShowPersonalDataForm(!showPersonalDataForm)}
       >
-        {/* Change Password Section */}
-        <div className="space-y-2">
-          <label
-            htmlFor="password"
-            className="block text-sm font-medium text-gray-700"
+        Modify Your Personal Data ({user.first_name} {user.last_name})
+      </button>
+
+      {/* Personal Data Section */}
+      {showPersonalDataForm && (
+        <div>
+          {/* Update Personal Data Form  */}
+          <form
+            onSubmit={(e) => handlePersonalDataSubmit(e)}
+            className="space-y-4"
           >
-            Change Password
-          </label>
+            {/* First Name field container */}
+            <div className="space-y-2">
+              <label
+                htmlFor="first_name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                First Name
+              </label>
 
-          <input
-            type="password"
-            id="current_password"
-            value={currentPassword}
-            placeholder="Current Password"
-            onChange={(e) => setCurrentPassword(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
-          />
+              <input
+                type="text"
+                id="first_name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
+              />
+            </div>
 
-          <input
-            type="password"
-            id="new_password"
-            value={newPassword}
-            placeholder="New Password"
-            onChange={(e) => setNewPassword(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
-          />
+            {/* Last Name field container */}
+            <div className="space-y-2">
+              <label
+                htmlFor="last_name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Last Name
+              </label>
 
-          <input
-            type="password"
-            id="confirm_password"
-            value={confirmPassword}
-            placeholder="Confirm Password"
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
-          />
+              <input
+                type="text"
+                id="last_name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
+              />
+            </div>
+
+            {/* Email field container */}
+            <div className="space-y-2">
+              <label
+                htmlFor="last_name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Email Address
+              </label>
+
+              <input
+                type="email"
+                id="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
+              />
+            </div>
+
+            {/* Phone Number field container */}
+            <div className="space-y-2">
+              <label
+                htmlFor="phone_number"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Phone Number
+              </label>
+
+              <input
+                type="tel"
+                // Pattern for Bahrain phone number format (e.g., 37234155)
+                pattern="^(?:[0-9]{8})$"
+                id="phone_number"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
+              />
+            </div>
+
+            {/* Action buttons container */}
+            <div className="flex gap-2">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? "Updating" : "Update Profile"}
+              </button>
+            </div>
+          </form>
         </div>
+      )}
 
-        {/* Action buttons container */}
-        <div className="flex gap-2">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
+      {/* Change Password Button */}
+      <button
+        type="button"
+        className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed ${
+          showPersonalDataForm
+            ? "bg-orange-600 hover:bg-orange-700"
+            : "bg-orange-600 hover:bg-orange-700"
+        }`}
+        onClick={() => setShowChangePasswordForm(!showChangePasswordForm)}
+      >
+        Change Your Password
+      </button>
+
+      {/* Change Password Section */}
+      {showChangePasswordForm && (
+        <div>
+          {/* Change Password Form */}
+          <form
+            onSubmit={(e) => handleChangePasswordSubmit(e)}
+            className="space-y-4"
           >
-            {isSubmitting ? "Updating" : "Change Password"}
-          </button>
+            {/* Change Password Section */}
+            <div className="space-y-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Change Password
+              </label>
+
+              <input
+                type="password"
+                id="current_password"
+                value={currentPassword}
+                placeholder="Current Password"
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
+              />
+
+              <input
+                type="password"
+                id="new_password"
+                value={newPassword}
+                placeholder="New Password"
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
+              />
+
+              <input
+                type="password"
+                id="confirm_password"
+                value={confirmPassword}
+                placeholder="Confirm Password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
+              />
+            </div>
+
+            {/* Action buttons container */}
+            <div className="flex gap-2">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? "Updating" : "Change Password"}
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+      )}
 
-      {/* Address Form */}
-      <form onSubmit={(e) => handleAddressSubmit(e)} className="space-y-4">
-        {/* Home Number field container */}
-        <div className="space-y-2">
-          <label
-            htmlFor="home_number"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Home Number
-            {homeNumber === null ? (
-              <span className="text-red-600">*</span>
-            ) : null}
-          </label>
+      {/* Address Button */}
+      <button
+        type="button"
+        className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white  focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed ${
+          showAddressForm
+            ? "bg-orange-600 hover:bg-orange-700"
+            : "bg-orange-600 hover:bg-orange-700"
+        }`}
+        onClick={() => setShowAddressForm(!showAddressForm)}
+      >
+        Modify Your Address
+      </button>
 
-          <input
-            type="number"
-            min="0"
-            id="home_number"
-            value={homeNumber || ""}
-            required={homeNumber === null}
-            onChange={(e) => setHomeNumber(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
-          />
+      {/* Address Section */}
+      {showAddressForm && (
+        <div>
+          {/* Address Form */}
+          <form onSubmit={(e) => handleAddressSubmit(e)} className="space-y-4">
+            {/* Home Number field container */}
+            <div className="space-y-2">
+              <label
+                htmlFor="home_number"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Home Number
+                {homeNumber === null ? (
+                  <span className="text-red-600">*</span>
+                ) : null}
+              </label>
+
+              <input
+                type="number"
+                min="0"
+                id="home_number"
+                value={homeNumber || ""}
+                required={homeNumber === null}
+                onChange={(e) => setHomeNumber(e.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
+              />
+            </div>
+
+            {/* Block Number field container */}
+            <div className="space-y-2">
+              <label
+                htmlFor="block_number"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Block Number
+                {blockNumber === null ? (
+                  <span className="text-red-600">*</span>
+                ) : null}
+              </label>
+
+              <input
+                type="number"
+                id="block_number"
+                value={blockNumber || ""}
+                min="0"
+                required={blockNumber === null}
+                onChange={(e) => setBlockNumber(e.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
+              />
+            </div>
+
+            {/* Street Number field container */}
+            <div className="space-y-2">
+              <label
+                htmlFor="street_number"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Street Number
+                {streetNumber === null ? (
+                  <span className="text-red-600">*</span>
+                ) : null}
+              </label>
+
+              <input
+                type="number"
+                id="street_number"
+                value={streetNumber || ""}
+                min="0"
+                required={streetNumber === null}
+                onChange={(e) => setStreetNumber(e.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
+              />
+            </div>
+
+            {/* City field container */}
+            <div className="space-y-2">
+              <label
+                htmlFor="city"
+                className="block text-sm font-medium text-gray-700"
+              >
+                City
+                {city === null ? <span className="text-red-600">*</span> : null}
+              </label>
+
+              <select
+                id="city"
+                value={city || ""}
+                required={city === null}
+                onChange={(e) => setCity(e.target.value)}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
+              >
+                {/* Default */}
+                <option value="" disabled>
+                  Select City
+                </option>
+
+                {/* Map through the cities array and create an option for each city */}
+                {cities.map((city) => (
+                  <option key={city.id} value={city.name}>
+                    {city.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Action buttons container */}
+            <div className="flex gap-2">
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? "Updating" : "Update Address"}
+              </button>
+            </div>
+          </form>
         </div>
-
-        {/* Block Number field container */}
-        <div className="space-y-2">
-          <label
-            htmlFor="block_number"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Block Number
-            {blockNumber === null ? (
-              <span className="text-red-600">*</span>
-            ) : null}
-          </label>
-
-          <input
-            type="number"
-            id="block_number"
-            value={blockNumber || ""}
-            min="0"
-            required={blockNumber === null}
-            onChange={(e) => setBlockNumber(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
-          />
-        </div>
-
-        {/* Street Number field container */}
-        <div className="space-y-2">
-          <label
-            htmlFor="street_number"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Street Number
-            {streetNumber === null ? (
-              <span className="text-red-600">*</span>
-            ) : null}
-          </label>
-
-          <input
-            type="number"
-            id="street_number"
-            value={streetNumber || ""}
-            min="0"
-            required={streetNumber === null}
-            onChange={(e) => setStreetNumber(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
-          />
-        </div>
-
-        {/* City field container */}
-        <div className="space-y-2">
-          <label
-            htmlFor="city"
-            className="block text-sm font-medium text-gray-700"
-          >
-            City
-            {city === null ? <span className="text-red-600">*</span> : null}
-          </label>
-
-          <select
-            id="city"
-            value={city || ""}
-            required={city === null}
-            onChange={(e) => setCity(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
-          >
-            {/* Default */}
-            <option value="" disabled>
-              Select City
-            </option>
-
-            {/* Map through the cities array and create an option for each city */}
-            {cities.map((city) => (
-              <option key={city.id} value={city.name}>
-                {city.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Action buttons container */}
-        <div className="flex gap-2">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isSubmitting ? "Updating" : "Update Address"}
-          </button>
-        </div>
-      </form>
+      )}
 
       {/* Logout Button */}
       <div className="flex gap-2">

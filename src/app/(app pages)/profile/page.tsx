@@ -10,6 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 // Import Components
 import Breadcrumb from "@/components/PageBreadcrumb";
 import UserProfileForms from "@/components/UserProfileForms";
+import UserOrdersHistory from "@/components/UserOrdersHistory";
 
 export default function page() {
   // Get the current user from the auth context

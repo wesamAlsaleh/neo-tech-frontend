@@ -95,6 +95,20 @@ export default function UserOrdersHistory() {
               </tr>
             </thead>
 
+            {/* Handle No Orders */}
+            {userOrders?.length === 0 && (
+              <tbody className="[&_tr:last-child]:border-0">
+                <tr className="transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted cursor-pointer">
+                  <td className="p-4 align-middle text-left" colSpan={4}>
+                    <h1 className="text-center text-gray-500 font-semibold">
+                      No orders found
+                    </h1>
+                  </td>
+                </tr>
+              </tbody>
+            )}
+
+            {/* Handle Products */}
             <tbody className="[&_tr:last-child]:border-0">
               {userOrders?.map((order) => {
                 return (

@@ -75,7 +75,7 @@ export default function page() {
 
   return (
     // Page Layout div
-    <div className="flex flex-col p-4">
+    <div className="flex flex-col p-4 w-full gap-4">
       {/* Header Section Container */}
       <div className="flex items-center justify-between">
         <Breadcrumb
@@ -90,14 +90,20 @@ export default function page() {
         </h1>
       </div>
 
-      {/* Profile Form's */}
-      <UserProfileForms user={user} userAddress={userAddress} />
+      <div className="flex flex-wrap md:flex-nowrap gap-4 w-full">
+        {/* Left Section: Orders History */}
+        <div className="w-full md:w-[70%]">
+          <UserOrdersHistory />
+        </div>
 
-      {/* Orders History */}
-      <UserOrdersHistory />
+        {/* Right Section: Profile Form's */}
+        <div className="w-full md:w-[30%]">
+          <UserProfileForms user={user} userAddress={userAddress} />
+        </div>
+      </div>
 
-      {/* Logout Button */}
-      <div className="flex gap-2">
+      {/* Logout Button Container */}
+      <div className="">
         <button
           type="button"
           disabled={isSubmitting}

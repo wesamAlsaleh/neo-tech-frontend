@@ -28,7 +28,7 @@ export default function UserOrdersHistory() {
   // State to store the pagination details
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [perPage, setPerPage] = useState<number>(10); // Set default items per page to 10
+  const [perPage, setPerPage] = useState<number>(20); // Set default items per page to 10
 
   // Function to fetch order details and products available
   const fetchData = async () => {
@@ -151,6 +151,36 @@ export default function UserOrdersHistory() {
               })}
             </tbody>
           </table>
+
+          {/* Navigation Control */}
+          {totalPages > 1 && (
+            <div className="flex items-center mt-4 gap-x-4">
+              {/* Previous Button */}
+              <button
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${"bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"} ${
+                  currentPage === 1 ? "cursor-not-allowed" : ""
+                }`}
+              >
+                Previous
+              </button>
+
+              {/* Counter of current page */}
+              <span className="font-semibold">{`${currentPage} of ${totalPages}`}</span>
+
+              {/* Next Button */}
+              <button
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${"bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"} ${
+                  currentPage === totalPages ? "cursor-not-allowed" : ""
+                }`}
+              >
+                Next
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

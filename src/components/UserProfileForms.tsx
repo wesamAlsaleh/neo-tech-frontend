@@ -56,7 +56,7 @@ export default function UserProfileForms(props: UserProfileFormsProps) {
     message: "",
   });
 
-  const [showPersonalDataForm, setShowPersonalDataForm] = useState(true);
+  const [showPersonalDataForm, setShowPersonalDataForm] = useState(false);
   const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
 

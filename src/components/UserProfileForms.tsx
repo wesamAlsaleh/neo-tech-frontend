@@ -206,34 +206,6 @@ export default function UserProfileForms(props: UserProfileFormsProps) {
     }
   };
 
-  // Function to handle the logout form submission
-  const handleLogoutSubmit = async () => {
-    // Set the form submission status to true to disable the submit button
-    setIsSubmitting(true);
-
-    // Call the logout service
-    const response = await handleLogout();
-
-    // Update UI with the response
-    setServerResponse({
-      status: response.status,
-      message: response.message,
-    });
-
-    // Redirect to the home page after 1 second if the logout is successful
-    if (response.status) {
-      setTimeout(() => {
-        // Clear the user data from the auth context and redirect to the home page after 1 second
-        setUser(null);
-        setUserAddress(null);
-        setUserCartItemsCount(0);
-        setUserWishlistCount(0);
-
-        router.push("/home");
-      }, 1000);
-    }
-  };
-
   return (
     <div className="flex flex-col gap-6">
       {/* TODO: Convert this to Toast Message */}
@@ -568,18 +540,6 @@ export default function UserProfileForms(props: UserProfileFormsProps) {
           </form>
         </div>
       )}
-
-      {/* Logout Button */}
-      <div className="flex gap-2">
-        <button
-          type="button"
-          disabled={isSubmitting}
-          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed w-full"
-          onClick={() => handleLogoutSubmit()}
-        >
-          {isSubmitting ? "Logging Out" : "Logout"}
-        </button>
-      </div>
     </div>
   );
 }

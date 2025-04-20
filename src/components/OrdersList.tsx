@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 // import backend services
 import { getAllOrders } from "@/services/order-services";
@@ -14,7 +15,6 @@ import { formatDateTime, convertPriceToBHD } from "@/lib/helpers";
 
 // import custom components
 import LoadingSpinner from "./LoadingSpinner";
-import { useRouter } from "next/navigation";
 
 export default function OrdersList() {
   // Router Instance
@@ -146,7 +146,7 @@ export default function OrdersList() {
               </td>
 
               <td className="px-4 py-2 border border-gray-300 text-center">
-                {order.user.first_name} {order.user.last_name}
+                {order.user?.first_name} {order.user?.last_name}
               </td>
 
               <td className="px-4 py-2 border border-gray-300 text-center">

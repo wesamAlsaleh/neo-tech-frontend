@@ -90,22 +90,18 @@ export default function page() {
         </h1>
       </div>
 
-      {/* Page title Container */}
-      <div className="mb-4">
-        <h1 className="text-2xl font-bold text-start text-gray-800">
-          Manage My Account
-        </h1>
-      </div>
-
-      {/* Form */}
+      {/* Profile Form's */}
       <UserProfileForms user={user} userAddress={userAddress} />
+
+      {/* Orders History */}
+      <UserOrdersHistory />
 
       {/* Logout Button */}
       <div className="flex gap-2">
         <button
           type="button"
           disabled={isSubmitting}
-          className="mt-8 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed w-full"
+          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed w-full"
           onClick={() => handleLogoutSubmit()}
         >
           {isSubmitting ? "Logging Out" : "Logout"}

@@ -3,6 +3,7 @@ import { User } from "./User";
 
 export type Order = {
   id: number;
+  uuid: string;
   user_id: number;
   total_price: number;
   status: string;
@@ -10,7 +11,7 @@ export type Order = {
   shipping_address: string;
   created_at: string;
   updated_at: string;
-  user: {
+  user?: {
     id: number;
     first_name: string;
     last_name: string;
@@ -20,6 +21,7 @@ export type Order = {
 
 export type OrderDetails = {
   id: number;
+  uuid: string;
   user_id: number;
   total_price: number;
   status: string;

@@ -1,21 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 
 // import types
 import { User, UserAddress } from "@/types/User";
 
-// import the auth context to get the user data
-import { useAuth } from "@/contexts/AuthContext";
-
 // import services
 import { putAddress } from "@/services/user-address-services";
-import {
-  changePassword,
-  handleLogout,
-  updateProfile,
-} from "@/services/auth-services";
+import { changePassword, updateProfile } from "@/services/auth-services";
 
 // interface for the form component props
 interface UserProfileFormsProps {
@@ -29,17 +21,6 @@ import { cities } from "@/types/cities";
 export default function UserProfileForms(props: UserProfileFormsProps) {
   // Get the user from props
   const { user, userAddress } = props;
-
-  // Get the user setter from the auth context
-  const {
-    setUser,
-    setUserAddress,
-    setUserCartItemsCount,
-    setUserWishlistCount,
-  } = useAuth();
-
-  // Router instance
-  const router = useRouter();
 
   // State to store the user profile data
   const [firstName, setFirstName] = useState<string>(user.first_name);
@@ -208,6 +189,11 @@ export default function UserProfileForms(props: UserProfileFormsProps) {
 
   return (
     <div className="flex flex-col gap-6">
+      {/* Section title */}
+      <h1 className="text-2xl font-bold text-start text-gray-800">
+        Manage My Account
+      </h1>
+
       {/* TODO: Convert this to Toast Message */}
       {/* Form Status Message */}
       {serverResponse.message && (

@@ -28,7 +28,7 @@ export default function UserOrdersHistory() {
   // State to store the pagination details
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [perPage, setPerPage] = useState<number>(20); // Set default items per page to 10
+  const [perPage, setPerPage] = useState<number>(10); // Set default items per page to 10
 
   // Function to fetch order details and products available
   const fetchData = async () => {
@@ -95,8 +95,33 @@ export default function UserOrdersHistory() {
               </tr>
             </thead>
 
+            {/* Handle Loading State */}
+            {loading && (
+              <tbody className="[&_tr:last-child]:border-0">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <tr
+                    key={`skeleton-${index}`}
+                    className="border-b transition-colors hover:bg-muted/50"
+                  >
+                    <td className="p-4 align-middle">
+                      <div className="h-6 bg-gray-200/80 rounded-md animate-pulse w-3/4"></div>
+                    </td>
+                    <td className="p-4 align-middle">
+                      <div className="h-8 bg-gray-200/80 rounded-full animate-pulse w-24"></div>
+                    </td>
+                    <td className="p-4 align-middle">
+                      <div className="h-6 bg-gray-200/80 rounded-md animate-pulse w-32"></div>
+                    </td>
+                    <td className="p-4 align-middle">
+                      <div className="h-6 bg-gray-200/80 rounded-md animate-pulse w-20"></div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            )}
+
             {/* Handle No Orders */}
-            {userOrders?.length === 0 && (
+            {!loading && userOrders?.length === 0 && (
               <tbody className="[&_tr:last-child]:border-0">
                 <tr className="transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted cursor-pointer">
                   <td className="p-4 align-middle text-left" colSpan={4}>
@@ -109,47 +134,51 @@ export default function UserOrdersHistory() {
             )}
 
             {/* Handle Products */}
-            <tbody className="[&_tr:last-child]:border-0">
-              {userOrders?.map((order) => {
-                return (
-                  <tr
-                    key={order.id}
-                    className="transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted cursor-pointer"
-                    onClick={() => {
-                      router.push(`/my-orders/${order.uuid}`); // navigate to order details page without refreshing the page
-                      window.scrollTo({ top: 0, behavior: "smooth" }); // 'smooth' or 'auto'
-                    }}
-                  >
-                    <td className="p-4 align-middle text-left">{order.id}</td>
+            {!loading && userOrders?.length! > 0 && (
+              <tbody className="[&_tr:last-child]:border-0">
+                {userOrders?.map((order) => {
+                  return (
+                    <tr
+                      key={order.id}
+                      className="transition-all duration-200 hover:bg-gray-100 origin-left cursor-pointer"
+                      onClick={() => {
+                        router.push(`/my-orders/${order.uuid}`); // navigate to order details page without refreshing the page
+                        window.scrollTo({ top: 0, behavior: "smooth" }); // 'smooth' or 'auto'
+                      }}
+                    >
+                      <td className="p-4 align-middle text-left">{order.id}</td>
 
-                    <td className="p-4 align-middle text-left">
-                      {/* Status Container */}
-                      <div
-                        className={`text-sm px-2 py-1 rounded inline-block ${
-                          order.status === "pending"
-                            ? "bg-yellow-100 border border-yellow-400 text-yellow-700"
-                            : order.status === "canceled"
-                            ? "bg-red-100 border border-red-400 text-red-700"
-                            : order.status === "completed"
-                            ? "bg-green-100 border border-green-400 text-green-700"
-                            : "bg-gray-100 border border-gray-400 text-gray-700"
-                        }`}
-                      >
-                        <h1 className="font-bold capitalize">{order.status}</h1>
-                      </div>
-                    </td>
+                      <td className="p-4 align-middle text-left">
+                        {/* Status Container */}
+                        <div
+                          className={`text-sm px-2 py-1 rounded inline-block ${
+                            order.status === "pending"
+                              ? "bg-yellow-100 border border-yellow-400 text-yellow-700"
+                              : order.status === "canceled"
+                              ? "bg-red-100 border border-red-400 text-red-700"
+                              : order.status === "completed"
+                              ? "bg-green-100 border border-green-400 text-green-700"
+                              : "bg-gray-100 border border-gray-400 text-gray-700"
+                          }`}
+                        >
+                          <h1 className="font-bold capitalize">
+                            {order.status}
+                          </h1>
+                        </div>
+                      </td>
 
-                    <td className="p-4 align-middle text-left">
-                      {formatDateTime(String(order.created_at))}
-                    </td>
+                      <td className="p-4 align-middle text-left">
+                        {formatDateTime(String(order.created_at))}
+                      </td>
 
-                    <td className="p-4 align-middle text-left">
-                      {convertPriceToBHD(String(order.total_price))}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
+                      <td className="p-4 align-middle text-left">
+                        {convertPriceToBHD(String(order.total_price))}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            )}
           </table>
 
           {/* Navigation Control */}

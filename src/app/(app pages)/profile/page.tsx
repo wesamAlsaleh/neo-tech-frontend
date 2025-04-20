@@ -103,7 +103,7 @@ export default function page() {
       </div>
 
       {/* Logout Button Container */}
-      <div className="">
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-200">
         <button
           type="button"
           disabled={isSubmitting}

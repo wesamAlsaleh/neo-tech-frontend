@@ -56,7 +56,7 @@ export default function UserProfileForms(props: UserProfileFormsProps) {
     message: "",
   });
 
-  const [showPersonalDataForm, setShowPersonalDataForm] = useState(false);
+  const [showPersonalDataForm, setShowPersonalDataForm] = useState(true);
   const [showChangePasswordForm, setShowChangePasswordForm] = useState(false);
   const [showAddressForm, setShowAddressForm] = useState(false);
 
@@ -222,7 +222,11 @@ export default function UserProfileForms(props: UserProfileFormsProps) {
             ? "bg-orange-600 hover:bg-orange-700"
             : "bg-orange-600 hover:bg-orange-700"
         }`}
-        onClick={() => setShowPersonalDataForm(!showPersonalDataForm)}
+        onClick={() => {
+          setShowPersonalDataForm(!showPersonalDataForm);
+          setShowChangePasswordForm(false);
+          setShowAddressForm(false);
+        }}
       >
         Modify Your Personal Data ({user.first_name} {user.last_name})
       </button>
@@ -331,7 +335,11 @@ export default function UserProfileForms(props: UserProfileFormsProps) {
             ? "bg-orange-600 hover:bg-orange-700"
             : "bg-orange-600 hover:bg-orange-700"
         }`}
-        onClick={() => setShowChangePasswordForm(!showChangePasswordForm)}
+        onClick={() => {
+          setShowChangePasswordForm(!showChangePasswordForm);
+          setShowPersonalDataForm(false);
+          setShowAddressForm(false);
+        }}
       >
         Change Your Password
       </button>
@@ -403,7 +411,11 @@ export default function UserProfileForms(props: UserProfileFormsProps) {
             ? "bg-orange-600 hover:bg-orange-700"
             : "bg-orange-600 hover:bg-orange-700"
         }`}
-        onClick={() => setShowAddressForm(!showAddressForm)}
+        onClick={() => {
+          setShowAddressForm(!showAddressForm);
+          setShowPersonalDataForm(false);
+          setShowChangePasswordForm(false);
+        }}
       >
         Modify Your Address
       </button>

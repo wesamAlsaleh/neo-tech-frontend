@@ -39,6 +39,7 @@ export default function RatingModal({
   // If the modal is not open, return null
   if (!isOpen) return null;
 
+  // Function to handle the submission of the rating
   const handleSubmit = async () => {
     // Check if the rating is valid (greater than 0)
     if (rating === 0) return;
@@ -65,6 +66,7 @@ export default function RatingModal({
       setIsSubmitting(false);
     }
   };
+
   return (
     // Modal Layout
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

@@ -178,8 +178,8 @@ export default function page() {
       // Refresh the user cart data
       await fetchUserCart();
 
-      // TODO: Redirect to the order details page, NOT SECURE YET
-      router.push(`/orders/${response.orderId}`);
+      // Redirect to the order details page
+      router.push(`/my-orders/${response.orderUUID}`);
     }
   };
 

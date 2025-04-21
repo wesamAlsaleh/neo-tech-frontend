@@ -11,7 +11,11 @@ import { OrderDetails } from "@/types/order";
 import { getOrderById } from "@/services/order-services";
 
 // import helpers
-import { formatDateTime, convertPriceToBHD } from "@/lib/helpers";
+import {
+  formatDateTime,
+  convertPriceToBHD,
+  getStatusColor,
+} from "@/lib/helpers";
 
 // import icons
 import { icons } from "../../../../../../public/icons";
@@ -41,28 +45,6 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
     status: false,
     message: "",
   });
-
-  /**
-   * @function getStatusColor - Get the status color based on the order status
-   * @param status - The order
-   * @returns {string} - The status color class
-   */
-  const getStatusColor = (status: string): string => {
-    switch (status.toLowerCase()) {
-      case "pending":
-        return "bg-yellow-100 border border-yellow-400 text-yellow-700";
-      // case "processing":
-      // return "bg-blue-100 border border-blue-400 text-blue-700";
-      case "completed":
-        return "bg-green-100 border border-green-400 text-green-700";
-      // case "delivered":
-      // return "bg-green-100 border border-green-400 text-green-700";
-      case "canceled":
-        return "bg-red-100 border border-red-400 text-red-700";
-      default:
-        return "bg-gray-100 border border-gray-400 text-gray-700";
-    }
-  };
 
   // Fetch data from server
   const fetchData = async () => {

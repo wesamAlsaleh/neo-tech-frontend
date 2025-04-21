@@ -23,8 +23,8 @@ import { icons } from "@/../public/icons";
 // import custom components
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Card from "@/components/Card";
-import Button from "@/components/Button";
 import Breadcrumb from "@/components/PageBreadcrumb";
+import RatingModal from "@/components/RatingModal";
 
 export default function page({ params }: { params: Promise<{ id: string }> }) {
   // Router instance
@@ -45,6 +45,10 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
     status: false,
     message: "",
   });
+
+  // State to manage the rating modal
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+  const [productId, setProductId] = useState<string>("");
 
   // Fetch data from server
   const fetchData = async () => {
@@ -125,6 +129,11 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
                         <th className="h-12 px-4 text-right align-middle font-medium text-muted-foreground">
                           Total Price
                         </th>
+                        {order?.status === "completed" && (
+                          <th className="h-12 px-4 text-center align-middle font-medium text-muted-foreground">
+                            Rate Product
+                          </th>
+                        )}
                       </tr>
                     </thead>
 
@@ -146,7 +155,12 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
                           </td>
 
                           {/* Product Name */}
-                          <td className="p-4 align-middle text-left">
+                          <td
+                            className="p-4 align-middle text-left hover:text-orange-500 cursor-pointer"
+                            onClick={() => {
+                              router.push(`/products/${item.product.slug}`);
+                            }}
+                          >
                             {item.product.product_name}
                           </td>
 
@@ -168,6 +182,23 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
                           <td className="p-4 align-middle text-right">
                             {convertPriceToBHD(String(item.price))}
                           </td>
+
+                          {order?.status === "completed" && (
+                            <td className="p-4 align-middle text-center">
+                              <button
+                                className="hover:text-orange-500 cursor-pointer"
+                                onClick={() => {
+                                  // Set the product ID for rating
+                                  setProductId(String(item.product.id));
+
+                                  // Open the rating modal
+                                  setIsRatingModalOpen(true);
+                                }}
+                              >
+                                Rate Product
+                              </button>
+                            </td>
+                          )}
                         </tr>
                       ))}
                     </tbody>
@@ -294,6 +325,13 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
           </div>
         </div>
       </div>
+
+      {/* Rating Modal */}
+      <RatingModal
+        isOpen={isRatingModalOpen}
+        onClose={() => setIsRatingModalOpen(false)}
+        productId={productId}
+      />
     </div>
   );
 }

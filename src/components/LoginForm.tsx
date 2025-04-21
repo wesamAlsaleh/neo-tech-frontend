@@ -8,9 +8,20 @@ import { useFormStatus } from "react-dom";
 import { handleLoginSubmit } from "@/services/auth-services";
 
 // import router from the next/navigation module to redirect the user to the home page after successful login
-import { useRouter } from "next/navigation"; // TODO: check if this is the correct import or react-router should be used instead
+import { useRouter } from "next/navigation";
+
+// Import the useAuth hook from the auth context
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function LoginForm() {
+  // Get the user setter from the auth context
+  const {
+    setUser,
+    setUserAddress,
+    setUserCartItemsCount,
+    setUserWishlistCount,
+  } = useAuth();
+
   // Get the router object from the useRouter hook
   const router = useRouter();
 
@@ -18,10 +29,17 @@ export default function LoginForm() {
 
   // Redirect the user to the home page after login is successful
   useEffect(() => {
-    if (state?.success) {
+    if (state?.status) {
+      // Set the user data in the auth context to access them in the app
+      setUser(state.userData);
+      setUserAddress(state.userAddress);
+      setUserCartItemsCount(state.userCartItemsCount);
+      setUserWishlistCount(state.userWishlistItemsCount);
+
+      // Redirect the user to the home page
       router.push("/home");
     }
-  }, [state?.success, router]);
+  }, [state?.status, router]);
 
   return (
     <>
@@ -54,7 +72,7 @@ export default function LoginForm() {
         {state && (
           <div
             className={`mt-4 p-2 text-center ${
-              state.success ? "text-green-500" : "text-red-500"
+              state.status ? "text-green-500" : "text-red-500"
             }`}
           >
             {/* success or fail message without details! */}
@@ -64,7 +82,7 @@ export default function LoginForm() {
       </form>
 
       {/* home page button */}
-      {state?.success === false && (
+      {state?.status === false && (
         <Link href="/">
           <button
             className={`border p-2 font-bold mt-4 shadow-md text-red-500`}

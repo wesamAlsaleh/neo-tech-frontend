@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 
 // import services
 import { displayFlashSale } from "@/services/sale-services";
@@ -8,6 +9,9 @@ import { displayFlashSale } from "@/services/sale-services";
 // import types
 import { FlashSale } from "@/types/sale";
 import { Product } from "@/types/product";
+
+// Import icons
+import { icons } from "../../public/icons";
 
 // import custom components
 import HomeComponentTitle from "./HomeComponentTitle";
@@ -77,26 +81,36 @@ export default function FlashSalesSection() {
         <button
           onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
           disabled={page === 1}
-          className={`px-4 py-2 border rounded-full ${
+          className={`p-3 border rounded-full ${
             page === 1
               ? "bg-gray-200 cursor-not-allowed"
               : "bg-orange-300 text-white"
           }`}
         >
-          {"<"}
+          <Image
+            src={icons.leftArrowIcon48.src}
+            alt="left-arrow"
+            width={20}
+            height={20}
+          />
         </button>
 
         {/* Next Button */}
         <button
           onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
           disabled={page === totalPages}
-          className={`px-4 py-2 border rounded-full ${
+          className={`p-3 border rounded-full ${
             page === totalPages
               ? "bg-gray-200 cursor-not-allowed"
               : "bg-orange-300 text-white"
           }`}
         >
-          {">"}
+          <Image
+            src={icons.rightArrowIcon48.src}
+            alt="left-arrow"
+            width={20}
+            height={20}
+          />
         </button>
       </div>
     );

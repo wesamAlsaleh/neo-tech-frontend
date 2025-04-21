@@ -38,6 +38,9 @@ export default function ProductDetailsSection({ product }: ProductCardProps) {
   // State to store the current image index
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0); // Image index state
 
+  // Stock status based on the product stock quantity
+  const stockStatus = product.product_stock > 5 ? true : false; // Stock status
+
   // Handle thumbnail click event (change the current image index to the clicked thumbnail index)
   const handleThumbnailClick = (index: number) => {
     setCurrentImageIndex(index);
@@ -193,11 +196,11 @@ export default function ProductDetailsSection({ product }: ProductCardProps) {
             {/* Stock Status */}
             <span
               className={`text-lg font-medium ${
-                product.product_stock > 5 ? "text-green-600" : "text-red-600"
+                stockStatus ? "text-green-600" : "text-red-600"
               }`}
             >
               {/*  */}
-              {product.product_stock > 5 ? "In Stock" : "Out of Stock"}
+              {stockStatus ? "In Stock" : "Out of Stock"}
 
               {/* Show stock if its between 5 to 20 only*/}
               {product.product_stock > 5 && product.product_stock <= 20 && (
@@ -264,8 +267,10 @@ export default function ProductDetailsSection({ product }: ProductCardProps) {
 
           {/* Add to Cart Button */}
           <button
-            className="flex-1 flex items-center justify-center px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 min-w-[150px]"
+            className="flex-1 flex items-center justify-center px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 min-w-[150px] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={() => handleAddToCart(product.id, quantity)}
+            disabled={!stockStatus} // Disable button if out of stock
+            aria-disabled={!stockStatus} // Add aria-disabled attribute for accessibility
           >
             <span>Add to Cart</span>
           </button>

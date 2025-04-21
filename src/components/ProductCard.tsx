@@ -28,11 +28,11 @@ import RatingStars from "./RatingStars";
 
 interface ProductCardProps {
   product: Product;
-  isWishlist?: boolean; // Optional prop to show wishlist icon if true
+  isWishlistCard?: boolean; // Optional prop to show wishlist icon if true
 }
 
 export default function ProductCard(props: ProductCardProps) {
-  const { product, isWishlist } = props;
+  const { product, isWishlistCard } = props;
 
   // Import the auth context to get the user data and user setters
   const { setUserWishlistCount } = useAuth();
@@ -71,7 +71,7 @@ export default function ProductCard(props: ProductCardProps) {
 
   return (
     // product container
-    <div className="relative p-4 rounded-lg flex flex-col justify-between bg-white hover:shadow-lg transition-shadow duration-300 ease-in-out h-full">
+    <div className="relative p-4 rounded-lg flex flex-col justify-between bg-white hover:shadow-md transition-shadow duration-300 ease-in-out h-full">
       {/* Discount Badge */}
       {product.onSale ? (
         <div className="absolute top-2 left-2 sm:top-2 sm:left-2 md:top-3 md:left-3 lg:top-3 lg:left-3 bg-red-500 text-white text-xs sm:text-sm font-semibold px-2 py-1 rounded-md">
@@ -81,8 +81,8 @@ export default function ProductCard(props: ProductCardProps) {
 
       {/* Wishlist & View Icons container */}
       <div className="absolute top-2 right-2 sm:top-2 sm:right-2 md:top-3 md:right-3 lg:top-3 lg:right-3 flex flex-col space-y-2">
-        {/* whishlist button */}
-        {isWishlist ? (
+        {/* remove whishlist product button */}
+        {isWishlistCard ? (
           <button
             onClick={() => handleRemoveFromWishlist(product.id)}
             className="p-2 bg-red-50 rounded-full shadow hover:bg-red-200"
@@ -95,9 +95,10 @@ export default function ProductCard(props: ProductCardProps) {
             />
           </button>
         ) : (
+          // add to wishlist button
           <button
             onClick={() => handleAddToWishlist(product.id)}
-            className="p-2 bg-orange-50 rounded-full shadow hover:bg-orange-200"
+            className="p-2 rounded-full shadow hover:bg-orange-50"
           >
             <Image
               src={icons.outlineHeartIcon48}

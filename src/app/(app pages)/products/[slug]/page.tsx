@@ -93,7 +93,7 @@ const ProductPage = ({ params }: { params: Promise<{ slug: string }> }) => {
         firstLink={`/categories/${product.category_id.category_slug}`}
         secondTitle={product.product_name}
         secondLink={`/products/${product.slug}`}
-        secondTitleColor="text-black"
+        secondTitleCN="text-black font-semibold"
       />
 
       {/* Product Card */}

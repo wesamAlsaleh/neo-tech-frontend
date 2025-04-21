@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 
 // Import types
 import { Wishlist } from "@/types/wishlist";
 import { Product } from "@/types/product";
-import { User } from "@/types/user";
+import { User } from "@/types/User";
 
 // Import services
 import { getUserWishlist, moveToCart } from "@/services/wishlist-services";
@@ -16,7 +17,6 @@ import { useAuth } from "@/contexts/AuthContext";
 // Import components
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ProductCard from "@/components/ProductCard";
-import Link from "next/link";
 
 export default function page() {
   // Get the user data from the auth context
@@ -43,42 +43,46 @@ export default function page() {
     message: "",
   });
 
+  // Fetch user wishlist data
+  const fetchUserWishlist = async () => {
+    const response = await getUserWishlist();
+
+    // Update UI with the server response
+    setServerResponse({
+      status: response.status,
+      message: "",
+    });
+
+    // If the response status is false, return early
+    if (!response.status) {
+      // Update UI with the server response
+      setServerResponse({
+        status: response.status,
+        message: response.message,
+      });
+
+      return;
+    }
+
+    // Update the userWishlist state
+    setUserWishlistProducts(response.products);
+    setUserWishlistCount(response.wishlistItemsCount);
+  };
+
   // Fetch data from server
   useEffect(() => {
-    try {
-      // setLoading to true
+    const initFetch = async () => {
+      // Set loading to true while fetching data
       setLoading(true);
 
-      // Fetch user wishlist data
-      const fetchUserWishlist = async () => {
-        const response = await getUserWishlist();
+      // Fetch the user cart data from the server
+      await fetchUserWishlist();
 
-        // Update UI with the server response
-        setServerResponse({
-          status: response.status,
-          message: "",
-        });
-
-        // If the response status is false, return early
-        if (!response.status) {
-          // Update UI with the server response
-          setServerResponse({
-            status: response.status,
-            message: response.message,
-          });
-
-          return;
-        }
-
-        // Update the userWishlist state
-        setUserWishlistProducts(response.products);
-        setUserWishlistCount(response.wishlistItemsCount);
-      };
-
-      fetchUserWishlist();
-    } finally {
+      // Set loading to false after fetching data
       setLoading(false);
-    }
+    };
+
+    initFetch();
   }, []);
 
   // Handle move to cart action
@@ -173,7 +177,7 @@ export default function page() {
               <ProductCard
                 key={product.id}
                 product={product}
-                isWishlist // to remove the wishlist button
+                isWishlistCard // to remove the wishlist button
               />
             );
           })}

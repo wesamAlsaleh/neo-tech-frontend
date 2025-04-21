@@ -3,16 +3,18 @@
 import { createContext, Dispatch, SetStateAction, useContext } from "react";
 
 // import the User type
-import { User } from "@/types/user";
+import { User, UserAddress } from "@/types/User";
 
 // create an interface for the AuthContext
 interface AuthContextType {
   user: User | null;
-  setUser: Dispatch<SetStateAction<User | null>>;
   userCartItemsCount: number;
   userWishlistCount: number;
+  userAddress: UserAddress | null;
+  setUser: Dispatch<SetStateAction<User | null>>;
   setUserCartItemsCount: Dispatch<SetStateAction<number>>;
   setUserWishlistCount: Dispatch<SetStateAction<number>>;
+  setUserAddress: Dispatch<SetStateAction<UserAddress | null>>;
   loading: boolean;
   setLoading: Dispatch<SetStateAction<boolean>>;
 }

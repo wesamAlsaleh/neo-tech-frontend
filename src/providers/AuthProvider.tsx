@@ -9,7 +9,7 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { getUser } from "@/services/auth-services";
 
 // import the User type
-import { User } from "@/types/user";
+import { User, UserAddress } from "@/types/User";
 
 // import the loading spinner component
 import LoadingSpinner from "@/components/LoadingSpinner";
@@ -68,6 +68,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   // Set the loading state to show the loading spinner when fetching the user data
   const [loading, setLoading] = useState(true);
 
+  // Set the user address state to store the user address
+  const [userAddress, setUserAddress] = useState<UserAddress | null>(null);
+
   // Function to fetch the user data from the server
   const fetchUser = async () => {
     try {
@@ -79,17 +82,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setUser(result.userData);
         setUserCartItemsCount(result.userCartItemsCount);
         setUserWishlistCount(result.userWishlistItemsCount);
+        setUserAddress(result.userAddress); // Set the user address if available or null
       }
     } catch (error) {
       setUser(null); // Set the user to null if there is an error
+      setUserAddress(null); // Set the user address to null if there is an error
     } finally {
       setLoading(false); // Set the loading to false after the request is done
     }
   };
 
-  // Fetch the user data when the component mounts
+  // Fetch data from server when the component mounts
   useEffect(() => {
-    fetchUser();
+    const initFetch = async () => {
+      // Set loading to true while fetching data
+      setLoading(true);
+
+      // Fetch the user cart data from the server
+      await fetchUser();
+
+      // Set loading to false after fetching data
+      setLoading(false);
+    };
+
+    initFetch();
   }, []);
 
   return (
@@ -103,6 +119,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         setUserCartItemsCount,
         userWishlistCount,
         setUserWishlistCount,
+        userAddress,
+        setUserAddress,
       }}
     >
       {loading ? <LoadingSpinner /> : children}

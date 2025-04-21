@@ -6,7 +6,7 @@ interface PageLayoutProps {
 
 export default function AdminPageLayout({ children }: PageLayoutProps) {
   return (
-    <div className="p-6 md:p-8 lg:p-10 bg-gray-100 min-h-screen">
+    <div className="flex-1 p-6 overflow-auto bg-white min-h-screen">
       {children}
     </div>
   );

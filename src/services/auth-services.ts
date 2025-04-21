@@ -19,7 +19,11 @@ type LoginUserData = {
   password: string;
 };
 
-// Handle registration form submission to the server
+/**
+ * @function handleRegisterSubmit - Handles the registration form submission to the server.
+ * @param prevState - The previous state of the form (not used in this function)
+ * @param formData - The form data submitted by the user
+ */
 export async function handleRegisterSubmit(prevState: any, formData: FormData) {
   // Get the cookies
   const cookieStore = await cookies();
@@ -57,23 +61,32 @@ export async function handleRegisterSubmit(prevState: any, formData: FormData) {
 
     // Return the response data
     return {
-      success: true,
+      status: true,
       message: response.data.message,
+      userData: response.data.userData.user,
+      userCartItemsCount: response.data.userCartItemsCount,
+      userWishlistItemsCount: response.data.userWishlistCount,
+      userAddress: response.data.userAddress, // User address data or null if not available
     };
   } catch (error: any) {
-    console.error(error);
+    // Log the error to the console
+    console.error(error.response.data);
+
+    // Return the details of the error
+    console.error(error.response.data.devMessage);
 
     return {
-      success: false,
-      message:
-        error.response?.data?.message ||
-        "An error occurred while registering using handleRegisterSubmit",
-      error: error.response?.data?.errorMessage || error.message,
+      status: false,
+      message: error.response.data.message || "An error occurred",
     };
   }
 }
 
-// Handle login form submission to the server
+/**
+ * @function handleLoginSubmit - Handles the login form submission to the server.
+ * @param prevState - The previous state of the form (not used in this function)
+ * @param formData - The form data submitted by the user
+ */
 export async function handleLoginSubmit(prevState: any, formData: FormData) {
   // Get the cookies to save the token
   const cookieStore = await cookies();
@@ -108,20 +121,30 @@ export async function handleLoginSubmit(prevState: any, formData: FormData) {
 
     // Return the response data
     return {
-      success: true,
+      status: true,
       message: response.data.message,
+      userData: response.data.userData.user,
+      userCartItemsCount: response.data.userCartItemsCount,
+      userWishlistItemsCount: response.data.userWishlistCount,
+      userAddress: response.data.userAddress, // User address data or null if not available
     };
   } catch (error: any) {
+    // Log the error to the console
+    console.error(error.response.data);
+
+    // Return the details of the error
+    console.error(error.response.data.devMessage);
+
     return {
-      success: false,
-      message:
-        error.response?.data?.message ||
-        "An error occurred while registering using handleRegisterSubmit",
+      status: false,
+      message: error.response.data.message || "An error occurred",
     };
   }
 }
 
-// Handle get user data to the server
+/**
+ * @function getUser - Retrieves the user data from the server using the auth token stored in cookies.s
+ */
 export async function getUser() {
   try {
     // Access the cookies
@@ -177,42 +200,40 @@ export async function getUser() {
       userData: response.data.userData,
       userCartItemsCount: response.data.userCartItemsCount,
       userWishlistItemsCount: response.data.userWishlistCount,
+      userAddress: response.data.userAddress, // User address data or null if not available
     };
   } catch (error: any) {
+    // Log the error to the console
+    console.error(error.response.data);
+
+    // Return the details of the error
+    console.error(error.response.data.devMessage);
+
     return {
-      success: false,
-      message:
-        error.response?.data?.message ||
-        "An unexpected error occurred. GetUser service failed.",
+      status: false,
+      message: error.response.data.message || "An error occurred",
     };
   }
 }
 
 /**
- * Retrieves the user role by accessing the authentication token from cookies
- * and making a request to the user-role endpoint.
- *
- * @returns {Promise<{ success: boolean; message?: string; userRole?: string }>}
- * An object containing the success status, an optional message, and the user role if successful.
- *
- * @throws {Error} If an unexpected error occurs during the request.
+ * @function getUserRole - Retrieves the user role from the server using the auth token stored in cookies.
  */
 export async function getUserRole(): Promise<{
-  success: boolean;
+  status: boolean;
   message?: string;
   userRole?: string;
 }> {
   try {
-    // Access the cookies
-    const cookieStore = cookies();
+    // get user token from cookies
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
 
-    // Extract the auth token from the cookies
-    const userToken = (await cookieStore).get("userToken")?.value;
-
+    // If the user token is not found
     if (!userToken) {
       return {
-        success: false,
-        message: "Token not found in cookies.",
+        status: false,
+        message: "Please login to update your profile",
       };
     }
 
@@ -231,27 +252,39 @@ export async function getUserRole(): Promise<{
 
     // Return success and user role
     return {
-      success: true,
+      status: true,
       userRole: response.data.userRole,
     };
   } catch (error: any) {
+    // Log the error to the console
+    console.error(error.response.data);
+
+    // Return the details of the error
+    console.error(error.response.data.devMessage);
+
     return {
-      success: false,
-      message:
-        error.response?.data?.message ||
-        "An unexpected error occurred. GetUser service failed.",
+      status: false,
+      message: error.response.data.message || "An error occurred",
     };
   }
 }
 
-// Handle logout
+/**
+ * @function handleLogout - Handles the logout process by removing the user token and role from cookies
+ */
 export async function handleLogout() {
   try {
-    // Get the cookies
+    // get user token from cookies
     const cookieStore = await cookies();
-
-    // Get the user token from the cookies
     const userToken = cookieStore.get("userToken")?.value;
+
+    // If the user token is not found
+    if (!userToken) {
+      return {
+        status: false,
+        message: "Token not found in cookies.",
+      };
+    }
 
     // Remove the user token from the cookies
     cookieStore.delete("userToken");
@@ -259,30 +292,124 @@ export async function handleLogout() {
     // Remove the user role from the cookies
     cookieStore.delete("userRole");
 
-    // Remove the local storage data
-    localStorage.removeItem("user");
-
     // Revoke the user token from the server
     const response = await axios.post(
       `${process.env.NEXT_PUBLIC_APP_URI}/logout`,
+      {}, // empty body
       {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
           Authorization: `Bearer ${userToken}`,
         },
-        timeout: 5000, // 5 seconds timeout
+        timeout: 5000, // 5 seconds timeout (meaning the server will wait for 5 seconds before timing out)
       }
     );
 
     return {
-      success: true,
+      status: true,
       message: response.data.message,
     };
   } catch (error: any) {
+    // Log the error to the console
+    console.error(error.response.data);
+
+    // Return the details of the error
+    console.error(error.response.data.devMessage);
+
     return {
-      success: false,
-      message: "An unexpected error occurred. Logout service failed.",
+      status: false,
+      message: error.response.data.message || "An error occurred",
+    };
+  }
+}
+
+/**
+ * @function updateProfile - Update the user profile data on the server.
+ */
+export async function updateProfile(formData: FormData) {
+  try {
+    // get user token from cookies
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    // If the user token is not found
+    if (!userToken) {
+      return {
+        status: false,
+        message: "Please login to update your profile",
+      };
+    }
+
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_APP_URI}/update-user`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`, // this method requires the user to be authenticated and the token is to pass the sanctum middleware in the backend
+        },
+      }
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+    };
+  } catch (error: any) {
+    // Log the error to the console
+    console.error(error.response.data);
+
+    // Return the details of the error
+    console.error(error.response.data.devMessage);
+
+    return {
+      status: false,
+      message: error.response.data.message || "An error occurred",
+    };
+  }
+}
+
+/**
+ * @function changePassword - Update the user password on the server.
+ */
+export async function changePassword(formData: FormData) {
+  try {
+    // get user token from cookies
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    // If the user token is not found
+    if (!userToken) {
+      return {
+        status: false,
+        message: "Please login to update your profile",
+      };
+    }
+
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_APP_URI}/update-password`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`, // this method requires the user to be authenticated and the token is to pass the sanctum middleware in the backend
+        },
+      }
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+    };
+  } catch (error: any) {
+    // Log the error to the console
+    console.error(error.response.data);
+
+    // Return the details of the error
+    console.error(error.response.data.devMessage);
+
+    return {
+      status: false,
+      message: error.response.data.message || "An error occurred",
     };
   }
 }

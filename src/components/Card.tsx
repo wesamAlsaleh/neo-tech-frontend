@@ -22,7 +22,7 @@ export default function Card({
   return (
     // Card Layout
     <div
-      className={`rounded-xl border bg-white text-gray-800 shadow-sm ${CardHight} `}
+      className={`rounded-xl border bg-white text-gray-800 shadow-sm ${CardHight}`}
     >
       {/* Header Container */}
       {/* {CardHeader && (
@@ -52,7 +52,7 @@ export default function Card({
       {/* Footer + separator Container */}
       {CardFooter && (
         <div className="px-6 pb-6 pt-2 border-t border-gray-100 text-sm text-gray-500">
-          {CardFooter}
+          <div className="w-full">{CardFooter}</div>
         </div>
       )}
     </div>

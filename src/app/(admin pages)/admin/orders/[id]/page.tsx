@@ -298,7 +298,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
                 </div>
               }
               CardFooter={
-                <div className="mt-4">
+                <div className="p-1">
                   <Button text="Request Invoice" buttonClassName="w-full" />
                 </div>
               }

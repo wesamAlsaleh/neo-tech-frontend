@@ -188,6 +188,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
           <div className="w-full md:w-[30%]">
             <Card
               CardTitle="Order Summary"
+              CardHight={"h-[235px]"} // Set the Card height to 235px fixed height
               CardContent={
                 <div className="flex flex-col gap-2">
                   {/* Order Summary Row Container */}
@@ -226,6 +227,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
           <div className="w-full md:w-[50%]">
             <Card
               CardTitle="Shipping Information"
+              CardHight={"h-[235px]"} // Set the Card height to 235px fixed height
               CardContent={
                 <div className="flex flex-col gap-2">
                   {/* Shipping Address Row Container */}
@@ -260,6 +262,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
           <div className="w-full md:w-[50%]">
             <Card
               CardTitle="Payment Information"
+              CardHight={"h-[235px]"} // Set the Card height to 235px fixed height
               CardContent={
                 <div className="flex flex-col gap-2">
                   {/* Payment Method Row Container */}

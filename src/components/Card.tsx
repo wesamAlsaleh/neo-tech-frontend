@@ -8,6 +8,7 @@ interface CardProps {
   CardDescription?: string;
   CardContent?: React.ReactNode;
   CardFooter?: string | React.ReactNode;
+  CardHight?: string | number;
 }
 
 export default function Card({
@@ -16,10 +17,13 @@ export default function Card({
   CardDescription,
   CardContent,
   CardFooter,
+  CardHight,
 }: CardProps) {
   return (
     // Card Layout
-    <div className="rounded-xl border bg-white text-gray-800 shadow-sm">
+    <div
+      className={`rounded-xl border bg-white text-gray-800 shadow-sm ${CardHight} `}
+    >
       {/* Header Container */}
       {/* {CardHeader && (
         <div className="px-6 pt-4 text-sm text-gray-400">{CardHeader}</div>

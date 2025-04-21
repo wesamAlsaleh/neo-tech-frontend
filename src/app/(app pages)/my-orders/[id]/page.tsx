@@ -24,6 +24,7 @@ import { icons } from "@/../public/icons";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import Card from "@/components/Card";
 import Button from "@/components/Button";
+import Breadcrumb from "@/components/PageBreadcrumb";
 
 export default function page({ params }: { params: Promise<{ id: string }> }) {
   // Router instance
@@ -84,8 +85,16 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
 
   return (
     <div>
-      {" "}
-      {/* Content Container */}
+      {/* Breadcrumb  */}
+      <Breadcrumb
+        firstTitle={"Profile"}
+        firstLink={"/profile"}
+        secondTitle={`Order-${order?.uuid}`}
+        secondLink={`/my-orders/${order?.uuid}`}
+        secondTitleCN="text-black font-semibold"
+      />
+
+      {/* Order Content Container */}
       <div className="flex flex-col gap-4 w-full">
         {/* Top half Container */}
         <div className="flex flex-wrap md:flex-nowrap gap-4 w-full">
@@ -94,6 +103,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
             <Card
               CardTitle="Order Items"
               CardDescription={`Order ID: ${order?.uuid}`}
+              CardHight="h-auto" // Set the default Card height to auto
               CardContent={
                 // Table Container
                 <div className="w-full overflow-auto">
@@ -171,6 +181,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
           <div className="w-full md:w-[30%]">
             <Card
               CardTitle="Order Summary"
+              CardHight={"h-[235px]"} // Set the Card height to 235px fixed height
               CardContent={
                 <div className="flex flex-col gap-2">
                   {/* Order Summary Row Container */}
@@ -209,6 +220,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
           <div className="w-full md:w-[50%]">
             <Card
               CardTitle="Shipping Information"
+              CardHight={"h-[235px]"} // Set the Card height to 235px fixed height
               CardContent={
                 <div className="flex flex-col gap-2">
                   {/* Shipping Address Row Container */}
@@ -243,6 +255,7 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
           <div className="w-full md:w-[50%]">
             <Card
               CardTitle="Payment Information"
+              CardHight={"h-[235px]"} // Set the Card height to 235px fixed height
               CardContent={
                 <div className="flex flex-col gap-2">
                   {/* Payment Method Row Container */}

@@ -7,6 +7,7 @@ import React from "react";
 import PageTitle from "@/components/PageTitle";
 import { ActionButton } from "@/components/ActionButton";
 import Card from "@/components/Card";
+
 /**
  * @constant Height for Small cards is 160px (widgets)
  * @constant Height for Medium cards is 300px (graphs)

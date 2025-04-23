@@ -17,14 +17,12 @@ export default function Card({
   CardDescription,
   CardContent,
   CardFooter,
-  CardHight,
+  CardHight = "h-auto",
 }: CardProps) {
   return (
     // Card Layout
     <div
-      className={`rounded-xl border bg-white text-gray-800 shadow-sm ${
-        CardHight ? CardHight : "h-full"
-      }`}
+      className={`rounded-xl border bg-white text-gray-800 shadow-sm ${CardHight}`}
     >
       {/* Header Container */}
       {/* {CardHeader && (

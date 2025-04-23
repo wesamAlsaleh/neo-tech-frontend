@@ -7,8 +7,6 @@ import React from "react";
 import { LineChart, Line, CartesianGrid, XAxis, YAxis } from "recharts";
 
 // import custom components
-import PageTitle from "@/components/PageTitle";
-import { ActionButton } from "@/components/ActionButton";
 import Card from "@/components/Card";
 
 /**

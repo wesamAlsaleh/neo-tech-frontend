@@ -22,7 +22,9 @@ export default function Card({
   return (
     // Card Layout
     <div
-      className={`rounded-xl border bg-white text-gray-800 shadow-sm ${CardHight}`}
+      className={`rounded-xl border bg-white text-gray-800 shadow-sm ${
+        CardHight ? CardHight : "h-full"
+      }`}
     >
       {/* Header Container */}
       {/* {CardHeader && (

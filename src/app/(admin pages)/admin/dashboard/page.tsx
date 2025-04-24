@@ -140,7 +140,7 @@ export default function dashboardPage() {
         <Card
           CardTitle="Orders Manager"
           CardDescription="Manage Latest Orders"
-          CardHight={"h-[500px] md:h-[600px]"}
+          CardHight={"h-[610px] md:h-[710px]"}
           CardContent={<OrdersManager Orders={orders} />}
         />
 

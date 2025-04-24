@@ -1,12 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
+
+// import backend services
+import { getLastOrders } from "@/services/order-services";
+
+// import types
+import { Order } from "@/types/order";
 
 // import custom components
 import Card from "@/components/Card";
 import UsersChart from "@/components/(charts)/UsersChart";
 import SalesChart from "@/components/(charts)/SalesChart";
+import OrdersManager from "@/components/OrdersManager";
 
 /**
  * @constant Height for Small cards is 160px (widgets)
@@ -33,6 +40,35 @@ const growthData = [
 ];
 
 export default function dashboardPage() {
+  // State to manage loading states
+  const [loading, setLoading] = useState(false);
+
+  // States
+  const [orders, setOrders] = useState<Order[]>();
+
+  // Fetch user cart data from the server
+  const fetchData = async () => {
+    // Fetch the data parallel
+    const [ordersResponse] = await Promise.all([getLastOrders()]);
+
+    setOrders(ordersResponse.orders);
+  };
+
+  // Fetch data from server
+  useEffect(() => {
+    const initFetch = async () => {
+      // Set loading to true while fetching data
+      setLoading(true);
+
+      // Fetch the data from the server
+      await fetchData();
+
+      // Set loading to false after fetching data
+      setLoading(false);
+    };
+
+    initFetch();
+  }, []);
   return (
     // Dashboard Page Layout
     <div className="flex flex-col gap-4">
@@ -105,6 +141,7 @@ export default function dashboardPage() {
           CardTitle="Orders Manager"
           CardDescription="Manage Latest Orders"
           CardHight={"h-[500px] md:h-[600px]"}
+          CardContent={<OrdersManager Orders={orders} />}
         />
 
         {/* System Status Card (Uptime, performance logs) */}

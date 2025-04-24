@@ -54,7 +54,11 @@ export default function OrdersManager(props: OrdersManagerProps) {
 
       // If the update was successful, refresh the page to get updated data
       if (result.status) {
-        router.refresh(); // Refresh the page to get updated data
+        setTimeout(() => {
+          setServerResponse({ status: false, message: "" }); // Clear the success message after 1 second
+        }, 1000); // Delay for 1 second to show the success message
+
+        router.refresh(); // Refresh the page to get the updated data
       }
     } finally {
       setUpdatingStatus(null); // Reset the updating status state after the operation is complete
@@ -74,23 +78,25 @@ export default function OrdersManager(props: OrdersManagerProps) {
     // Container for the orders manager
     <>
       {/* Display error message */}
-      {serverResponse.message && (
-        <div
-          className={`px-4 py-3 rounded relative mb-4 ${
-            serverResponse.status
-              ? "bg-green-100 border border-green-400 text-green-700"
-              : "bg-red-100 border border-red-400 text-red-700 "
-          }`}
-          role="alert"
-        >
-          {serverResponse.status ? (
-            <strong className="font-bold">Success! </strong>
-          ) : (
-            <strong className="font-bold">Error! </strong>
-          )}
-          <span className="block sm:inline">{serverResponse.message}</span>
-        </div>
-      )}
+      <div>
+        {serverResponse.message && (
+          <div
+            className={`px-4 py-3 rounded relative mb-4 ${
+              serverResponse.status
+                ? "bg-green-100 border border-green-400 text-green-700"
+                : "bg-red-100 border border-red-400 text-red-700 "
+            }`}
+            role="alert"
+          >
+            {serverResponse.status ? (
+              <strong className="font-bold">Success! </strong>
+            ) : (
+              <strong className="font-bold">Error! </strong>
+            )}
+            <span className="block sm:inline">{serverResponse.message}</span>
+          </div>
+        )}
+      </div>
       {/* Orders Manager Table Container */}
       <div className="rounded-lg shadow-md">
         {/* Table */}
@@ -169,7 +175,9 @@ export default function OrdersManager(props: OrdersManagerProps) {
                   {/* Toggle Dropdown Button */}
                   <button
                     onClick={(event) => toggleDropdown(String(order.id), event)}
-                    className="bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium py-1 px-3 rounded"
+                    className={`bg-orange-500 hover:bg-orange-600 text-white text-xs font-medium py-1 px-3 rounded ${
+                      updatingStatus && "cursor-not-allowed"
+                    }`}
                     disabled={updatingStatus === String(order.id)}
                   >
                     {updatingStatus === String(order.id)

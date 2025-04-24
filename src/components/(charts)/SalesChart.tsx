@@ -1,3 +1,4 @@
+import { convertPriceToBHD } from "@/lib/helpers";
 import React from "react";
 
 // import recharts stuff
@@ -21,54 +22,59 @@ type SalesChartProps = {
 
 // Sample data for the chart
 const data = [
-  { name: "Week 1", weeklySales: 1200, lastWeekSales: 1000 },
-  { name: "Week 2", weeklySales: 1500, lastWeekSales: 1200 },
-  { name: "Week 3", weeklySales: 1700, lastWeekSales: 1500 },
-  { name: "Week 4", weeklySales: 1600, lastWeekSales: 1700 },
-  { name: "Week 5", weeklySales: 1800, lastWeekSales: 1600 },
-  { name: "Week 6", weeklySales: 2000, lastWeekSales: 1800 },
-  { name: "Week 7", weeklySales: 2200, lastWeekSales: 2000 },
-  { name: "Week 8", weeklySales: 2500, lastWeekSales: 2200 },
+  { date: "24-1-2025", revenue: 1200 },
+  { date: "1-2-2025", revenue: 1500 },
+  { date: "12-2-2025", revenue: 1700 },
+  { date: "24-3-2025", revenue: 1600 },
+  { date: "1-3-2025", revenue: 1800 },
+  { date: "12-3-2025", revenue: 2000 },
+  { date: "20-3-2025", revenue: 2200 },
+  { date: "Today", revenue: 2500 },
 ];
 
 export default function SalesChart(props: SalesChartProps) {
   return (
-    <AreaChart
-      width={730}
-      height={250}
-      data={data}
-      margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-    >
-      <defs>
-        <linearGradient id="colorWeeklySales" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="5%" stopColor="#FFA500" stopOpacity={0.8} />
-          <stop offset="95%" stopColor="#FFA500" stopOpacity={0} />
-        </linearGradient>
+    <ResponsiveContainer width="100%" minHeight={250}>
+      <AreaChart
+        data={data}
+        margin={{ top: 10, right: 30, left: 10, bottom: 0 }}
+      >
+        <defs>
+          <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#FFA500" stopOpacity={0.8} />
+            <stop offset="95%" stopColor="#FFA500" stopOpacity={0} />
+          </linearGradient>
 
-        <linearGradient id="colorLastWeekSales" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="5%" stopColor="#D3D3D3" stopOpacity={0.7} />
-          <stop offset="95%" stopColor="#D3D3D3" stopOpacity={0} />
-        </linearGradient>
-      </defs>
+          {/* <linearGradient id="colorLastWeekSales" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#D3D3D3" stopOpacity={0.7} />
+            <stop offset="95%" stopColor="#D3D3D3" stopOpacity={0} />
+          </linearGradient> */}
+        </defs>
 
-      <XAxis dataKey="name" />
-      <YAxis />
-      <CartesianGrid strokeDasharray="3 3" />
-      <Tooltip />
-      <Area
-        type="monotone"
-        dataKey="weeklySales"
-        stroke="#FFA500"
-        fillOpacity={1}
-        fill="url(#colorWeeklySales)"
-      />
-      <Area
-        type="monotone"
-        dataKey="lastWeekSales"
-        stroke="#C0C0C0"
-        fillOpacity={1}
-        fill="url(#colorLastWeekSales)"
-      />
-    </AreaChart>
+        <XAxis dataKey="date" />
+        <YAxis tickFormatter={(value) => `${value}`} />
+        <CartesianGrid strokeDasharray="3 3" />
+        <Tooltip
+          formatter={(value: number) => [
+            `${convertPriceToBHD(String(value))}`,
+            "Revenue",
+          ]}
+        />
+        <Area
+          type="monotone"
+          dataKey="revenue"
+          stroke="#FFA500"
+          fillOpacity={1}
+          fill="url(#colorRevenue)"
+        />
+        {/* <Area
+          type="monotone"
+          dataKey="lastWeekSales"
+          stroke="#C0C0C0"
+          fillOpacity={1}
+          fill="url(#colorLastWeekSales)"
+        /> */}
+      </AreaChart>
+    </ResponsiveContainer>
   );
 }

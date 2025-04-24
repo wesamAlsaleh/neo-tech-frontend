@@ -37,7 +37,7 @@ export default function dashboardPage() {
     // Dashboard Page Layout
     <div className="flex flex-col gap-4">
       {/* Widgets Section 1 Container */}
-      <div className="grid grid-cols-5 gap-4 h-[160px]">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <Card
           CardTitle="Today's Sales Summary"
           CardDescription={"4 Orders"}
@@ -51,7 +51,7 @@ export default function dashboardPage() {
         />
 
         <Card
-          CardTitle="Product Inventory Status"
+          CardTitle="Products Inventory"
           CardDescription={"14 Inactive Products"}
           CardContent={"2 Products"}
         />
@@ -89,8 +89,8 @@ export default function dashboardPage() {
           {/* Sales Graph Widget Section */}
           <>
             <Card
-              CardTitle="Weekly Sales"
-              CardDescription="↑ 34% from last week"
+              CardTitle="Monthly Sales"
+              CardDescription="↑ 34% from last month"
               CardHight={"h-[400px]"}
               CardContent={<SalesChart />}
             />

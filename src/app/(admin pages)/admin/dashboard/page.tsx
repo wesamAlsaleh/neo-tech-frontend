@@ -48,27 +48,30 @@ export default function dashboardPage() {
 
   // Fetch user cart data from the server
   const fetchData = async () => {
+    // Set loading to true while fetching data
+    setLoading(true);
+
     // Fetch the data parallel
     const [ordersResponse] = await Promise.all([getLastOrders()]);
 
     setOrders(ordersResponse.orders);
+
+    // Set loading to false after fetching data
+    setLoading(false);
   };
 
   // Fetch data from server
   useEffect(() => {
     const initFetch = async () => {
-      // Set loading to true while fetching data
-      setLoading(true);
-
       // Fetch the data from the server
       await fetchData();
-
-      // Set loading to false after fetching data
-      setLoading(false);
     };
 
     initFetch();
   }, []);
+
+  //
+
   return (
     // Dashboard Page Layout
     <div className="flex flex-col gap-4">

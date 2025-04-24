@@ -3,11 +3,10 @@
 import Link from "next/link";
 import React from "react";
 
-// import recharts stuff
-import { LineChart, Line, CartesianGrid, XAxis, YAxis } from "recharts";
-
 // import custom components
 import Card from "@/components/Card";
+import UsersChart from "@/components/(charts)/UsersChart";
+import SalesChart from "@/components/(charts)/SalesChart";
 
 /**
  * @constant Height for Small cards is 160px (widgets)
@@ -15,19 +14,25 @@ import Card from "@/components/Card";
  * @constant Height for Large cards is 600px (orders manager, system status)
  */
 
+// sample data
+const growthData = [
+  { growth: 12, week: "01-02-2025" },
+  { growth: 18, week: "08-02-2025" },
+  { growth: 22, week: "15-02-2025" },
+  { growth: 30, week: "22-02-2025" },
+
+  { growth: 35, week: "01-03-2025" },
+  { growth: 40, week: "08-03-2025" },
+  { growth: 45, week: "15-03-2025" },
+  { growth: 52, week: "22-03-2025" },
+
+  { growth: 60, week: "29-03-2025" },
+  { growth: 68, week: "05-04-2025" },
+  { growth: 75, week: "12-04-2025" },
+  { growth: 180, week: "19-04-2025" },
+];
+
 export default function dashboardPage() {
-  // Sample data for the graph
-  const data = [{ name: "Page A", uv: 400, pv: 2400, amt: 2400 }];
-
-  const renderLineChart = (
-    <LineChart width={600} height={300} data={data}>
-      <Line type="monotone" dataKey="uv" stroke="#8884d8" />
-      <CartesianGrid stroke="#ccc" />
-      <XAxis dataKey="name" />
-      <YAxis />
-    </LineChart>
-  );
-
   return (
     // Dashboard Page Layout
     <div className="flex flex-col gap-4">
@@ -69,26 +74,27 @@ export default function dashboardPage() {
         {/* Left Container */}
         <div className="flex flex-col gap-4">
           {/* Total Users Graph Widget Section */}
-          <div>
+          <>
             <Card
-              CardTitle="Total Users"
-              CardDescription="↑ 12% from last week"
+              CardTitle="User Signups"
+              CardDescription="Growth over the last 3 months"
               CardHight={"h-[400px]"}
-              CardContent={renderLineChart}
+              CardContent={<UsersChart data={growthData} />}
             />
-          </div>
+          </>
         </div>
 
         {/* Right Container */}
         <div className="flex flex-col gap-4">
           {/* Sales Graph Widget Section */}
-          <div>
+          <>
             <Card
               CardTitle="Weekly Sales"
               CardDescription="↑ 34% from last week"
               CardHight={"h-[400px]"}
+              CardContent={<SalesChart />}
             />
-          </div>
+          </>
         </div>
       </div>
 

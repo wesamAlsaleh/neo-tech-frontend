@@ -14,6 +14,7 @@ import Card from "@/components/Card";
 import UsersChart from "@/components/(charts)/UsersChart";
 import SalesChart from "@/components/(charts)/SalesChart";
 import OrdersManager from "@/components/OrdersManager";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 /**
  * @constant Height for Small cards is 160px (widgets)
@@ -70,7 +71,19 @@ export default function dashboardPage() {
     initFetch();
   }, []);
 
-  //
+  // UseEffect to automatically refresh the page every 5 minutes
+  useEffect(() => {
+    const interval = setInterval(() => {
+      fetchData(); // Fetch data every 15 seconds
+    }, 15000); // 15 seconds
+
+    return () => clearInterval(interval); // Cleanup the interval on component unmount
+  }, []);
+
+  // Loading state
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     // Dashboard Page Layout

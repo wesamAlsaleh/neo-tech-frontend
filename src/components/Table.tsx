@@ -123,8 +123,7 @@ export default function Table({
                           col.align || "left"
                         } break-words`}
                       >
-                        {/* {renderCell ? renderCell(row, col.key) : row[col.key]} */}
-                        {row[col.key]}
+                        {renderCell ? renderCell(row, col.key) : row[col.key]}
                       </td>
                     );
                   })}

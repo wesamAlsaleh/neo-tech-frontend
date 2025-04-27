@@ -16,7 +16,7 @@ type OrdersManagerProps = {
   Orders?: Order[] | null; // Orders data
 };
 
-export default function OrdersManager(props: OrdersManagerProps) {
+export default function getSystemLogsOrdersManager(props: OrdersManagerProps) {
   // Destructure props
   const { Orders } = props;
 
@@ -113,9 +113,6 @@ export default function OrdersManager(props: OrdersManagerProps) {
           </thead>
 
           <tbody className="text-gray-600 ">
-            {/* TODO: Handle Loading */}
-            {}
-
             {/* Handle Without length */}
             {!Orders?.length && (
               <tr className="border-b border-gray-200 hover:bg-gray-50">
@@ -221,7 +218,7 @@ export default function OrdersManager(props: OrdersManagerProps) {
             ))}
           </tbody>
         </table>
-      </div>{" "}
+      </div>
     </>
   );
 }

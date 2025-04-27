@@ -15,6 +15,7 @@ import UsersChart from "@/components/(charts)/UsersChart";
 import SalesChart from "@/components/(charts)/SalesChart";
 import OrdersManager from "@/components/OrdersManager";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import SystemPerformanceLogs from "@/components/SystemPerformanceLogs";
 
 /**
  * @constant Height for Small cards is 160px (widgets)
@@ -44,28 +45,28 @@ export default function dashboardPage() {
   // State to manage loading states
   const [loading, setLoading] = useState(false);
 
-  // States
+  // State to manage orders data
   const [orders, setOrders] = useState<Order[]>();
 
   // Fetch user cart data from the server
   const fetchData = async () => {
-    // Set loading to true while fetching data
-    setLoading(true);
-
     // Fetch the data parallel
     const [ordersResponse] = await Promise.all([getLastOrders()]);
 
     setOrders(ordersResponse.orders);
-
-    // Set loading to false after fetching data
-    setLoading(false);
   };
 
   // Fetch data from server
   useEffect(() => {
     const initFetch = async () => {
+      // Set loading to true while fetching data
+      setLoading(true);
+
       // Fetch the data from the server
       await fetchData();
+
+      // Set loading to false after fetching data
+      setLoading(false);
     };
 
     initFetch();
@@ -88,70 +89,65 @@ export default function dashboardPage() {
   return (
     // Dashboard Page Layout
     <div className="flex flex-col gap-4">
-      {/* Widgets Section 1 Container */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-        <Card
-          CardTitle="Today's Sales Summary"
-          CardDescription={"4 Orders"}
-          CardContent={"BD 100"}
+      {/* Small Widgets Container */}
+      <FiveColumnLayout>
+        <SmallWidgetCard
+          title="Today's Sales Summary"
+          description="4 Orders"
+          content="BD 100"
         />
 
-        <Card
-          CardTitle="Pending Orders"
-          CardDescription={"2 Orders"}
-          CardContent={"BD 50"}
+        <SmallWidgetCard
+          title={"Pending Orders"}
+          description={"2 Orders"}
+          content={"BD 50"}
         />
 
-        <Card
-          CardTitle="Products Inventory"
-          CardDescription={"14 Inactive Products"}
-          CardContent={"2 Products"}
+        <SmallWidgetCard
+          title={"Products Inventory"}
+          description={"14 Inactive Products"}
+          content={"2 Products"}
         />
 
-        <Card
-          CardTitle="Customer Overview"
-          CardDescription={"Total Customers"}
-          CardContent={"100 Users"}
+        <SmallWidgetCard
+          title={"Customer Overview"}
+          description={"Total Customers"}
+          content={"100 Users"}
         />
 
-        <Card
-          CardTitle="Total Revenue"
-          CardDescription={"Total Revenue"}
-          CardContent={"BD 5000"}
+        <SmallWidgetCard
+          title={"Total Revenue"}
+          description={"Total Revenue"}
+          content={"BD 5000"}
         />
-      </div>
+      </FiveColumnLayout>
 
-      {/* Widgets Section 2 Container */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* Chart Widgets Container */}
+      <TwoColumnLayout>
         {/* Left Container */}
-        <div className="flex flex-col gap-4">
+        <ColumnLayout>
           {/* Total Users Graph Widget Section */}
-          <>
-            <Card
-              CardTitle="User Signups"
-              CardDescription="Growth over the last 3 months"
-              CardHight={"h-[400px]"}
-              CardContent={<UsersChart data={growthData} />}
-            />
-          </>
-        </div>
+          <MediumWidgetCard
+            title={"User Signups"}
+            description={"Growth over the last 3 months"}
+            content={<UsersChart data={growthData} />}
+          />
+        </ColumnLayout>
 
         {/* Right Container */}
-        <div className="flex flex-col gap-4">
+        <ColumnLayout>
           {/* Sales Graph Widget Section */}
-          <>
-            <Card
-              CardTitle="Monthly Sales"
-              CardDescription="↑ 34% from last month"
-              CardHight={"h-[400px]"}
-              CardContent={<SalesChart />}
-            />
-          </>
-        </div>
-      </div>
 
-      {/* Manager Widgets Container */}
-      <div className="grid grid-cols-1 gap-4">
+          <MediumWidgetCard
+            title={"Monthly Sales"}
+            description={"↑ 34% from last month"}
+            content={<SalesChart />}
+          />
+        </ColumnLayout>
+      </TwoColumnLayout>
+
+      {/* Orders Manager Widget Container */}
+      <ColumnLayout>
         {/* Orders Manager Card */}
         <Card
           CardTitle="Orders Manager"
@@ -159,14 +155,79 @@ export default function dashboardPage() {
           CardHight={"h-[610px] md:h-[710px]"}
           CardContent={<OrdersManager Orders={orders} />}
         />
+      </ColumnLayout>
 
-        {/* System Status Card (Uptime, performance logs) */}
-        <Card
-          CardTitle="System Status"
-          CardDescription="Uptime, performance logs"
-          CardHight={"h-[200px] md:h-[300px]"}
-        />
-      </div>
+      <TwoColumnLayout>
+        {/* Left Container */}
+        <ColumnLayout>
+          {/* System Status Card (Uptime, performance logs) */}
+          <MediumWidgetCard
+            title={"System Status"}
+            description={"Uptime, performance logs"}
+            content={<SystemPerformanceLogs />}
+          />
+        </ColumnLayout>
+
+        {/* Right Container */}
+        <ColumnLayout>
+          {/* Best Selling Products Chart */}
+          <MediumWidgetCard
+            title={"Best Selling Products"}
+            description={"Top 5 Products"}
+            content={null}
+          />
+        </ColumnLayout>
+      </TwoColumnLayout>
     </div>
   );
 }
+
+// Widget Card Layout for 5 columns
+const FiveColumnLayout = ({ children }: { children: React.ReactNode }) => (
+  <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">{children}</div>
+);
+
+// Widget Card Layout for 2 columns
+const TwoColumnLayout = ({ children }: { children: React.ReactNode }) => (
+  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">{children}</div>
+);
+
+const ColumnLayout = ({ children }: { children: React.ReactNode }) => (
+  <div className="grid grid-cols-1 gap-4">{children}</div>
+);
+
+// Widget Card Component
+const SmallWidgetCard = ({
+  title,
+  description,
+  content,
+}: {
+  title: string;
+  description: string;
+  content: React.ReactNode;
+}) => (
+  <Card
+    CardTitle={title}
+    CardDescription={description}
+    CardContent={content}
+    CardHight={"h-[160px]"}
+  />
+);
+
+// Widget Card for Graphs
+const MediumWidgetCard = ({
+  title,
+  description,
+  content,
+}: {
+  title: string;
+  description: string;
+  content: React.ReactNode;
+}) => (
+  <Card
+    CardTitle={title}
+    CardDescription={description}
+    CardContent={content}
+    CardHight={"h-[400px]"}
+  />
+);

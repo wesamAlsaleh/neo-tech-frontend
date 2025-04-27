@@ -22,7 +22,7 @@ export default function Card({
   return (
     // Card Layout
     <div
-      className={`rounded-xl border bg-white text-gray-800 shadow-sm ${CardHight}`}
+      className={`rounded-xl border bg-white text-gray-800 shadow-sm ${CardHight} flex flex-col`}
     >
       {/* Header Container */}
       {/* {CardHeader && (
@@ -46,8 +46,10 @@ export default function Card({
         </div>
       )}
 
-      {/* Content Container */}
-      {CardContent && <div className="px-6 py-4">{CardContent}</div>}
+      {/* Content Container - Now flex-grow and with overflow handling */}
+      {CardContent && (
+        <div className="px-6 py-4 flex-grow overflow-hidden">{CardContent}</div>
+      )}
 
       {/* Footer + separator Container */}
       {CardFooter && (

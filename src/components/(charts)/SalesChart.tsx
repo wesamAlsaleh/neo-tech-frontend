@@ -13,26 +13,16 @@ import {
 } from "recharts";
 
 type SalesChartProps = {
-  data?: {
-    name: string;
-    weeklySales: number;
-    lastWeekSales: number;
+  data: {
+    date: string; // date in YYYY-MM-DD format
+    revenue: number; // revenue in BHD
   }[]; // array of objects
 };
 
-// Sample data for the chart
-const data = [
-  { date: "24-1-2025", revenue: 1200 },
-  { date: "1-2-2025", revenue: 1500 },
-  { date: "12-2-2025", revenue: 1700 },
-  { date: "24-3-2025", revenue: 1600 },
-  { date: "1-3-2025", revenue: 1800 },
-  { date: "12-3-2025", revenue: 2000 },
-  { date: "20-3-2025", revenue: 2200 },
-  { date: "Today", revenue: 2500 },
-];
-
 export default function SalesChart(props: SalesChartProps) {
+  // Destructure props
+  const { data } = props;
+
   return (
     <ResponsiveContainer width="100%" minHeight={250}>
       <AreaChart

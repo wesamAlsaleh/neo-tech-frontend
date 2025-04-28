@@ -16,6 +16,7 @@ import SalesChart from "@/components/(charts)/SalesChart";
 import OrdersManager from "@/components/OrdersManager";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import SystemPerformanceLogs from "@/components/SystemPerformanceLogs";
+import MostSelledProductsChart from "@/components/(charts)/MostSelledProductsChart";
 
 /**
  * @constant Height for Small cards is 160px (widgets)
@@ -141,7 +142,20 @@ export default function dashboardPage() {
           <MediumWidgetCard
             title={"Monthly Sales"}
             description={"↑ 34% from last month"}
-            content={<SalesChart />}
+            content={
+              <SalesChart
+                data={[
+                  { date: "24-1-2025", revenue: 1200 },
+                  { date: "1-2-2025", revenue: 1500 },
+                  { date: "12-2-2025", revenue: 1700 },
+                  { date: "24-3-2025", revenue: 1600 },
+                  { date: "1-3-2025", revenue: 1800 },
+                  { date: "12-3-2025", revenue: 2000 },
+                  { date: "20-3-2025", revenue: 2200 },
+                  { date: "Today", revenue: 2500 },
+                ]}
+              />
+            }
           />
         </ColumnLayout>
       </TwoColumnLayout>
@@ -173,8 +187,41 @@ export default function dashboardPage() {
           {/* Best Selling Products Chart */}
           <MediumWidgetCard
             title={"Best Selling Products"}
-            description={"Top 5 Products"}
-            content={null}
+            content={
+              <MostSelledProductsChart
+                data={[
+                  {
+                    soldCount: 341,
+                    viewCount: 1200,
+                    name: "Product Asadasdasdasd",
+                  },
+                  {
+                    soldCount: 141,
+                    viewCount: 1500,
+                    name: "Product BafasfAsadasdasdasd",
+                  },
+                  {
+                    soldCount: 251,
+                    viewCount: 1500,
+                    name: "Product CBafasfAsadasdasdasd",
+                  },
+                  {
+                    soldCount: 361,
+                    viewCount: 1700,
+                    name: "Product DCBafasfAsadasdasdasd",
+                  },
+                  {
+                    soldCount: 141,
+                    viewCount: 1700,
+                    name: "Product EDCBafasfAsadasdasdasd",
+                  },
+                  { soldCount: 471, viewCount: 1600, name: "Product F" },
+                  { soldCount: 451, viewCount: 1800, name: "Product G" },
+                  { soldCount: 114, viewCount: 2000, name: "Product H" },
+                  { soldCount: 145, viewCount: 2200, name: "Product I" },
+                ]}
+              />
+            }
           />
         </ColumnLayout>
       </TwoColumnLayout>
@@ -203,7 +250,7 @@ const SmallWidgetCard = ({
   content,
 }: {
   title: string;
-  description: string;
+  description?: string;
   content: React.ReactNode;
 }) => (
   <Card
@@ -221,7 +268,7 @@ const MediumWidgetCard = ({
   content,
 }: {
   title: string;
-  description: string;
+  description?: string;
   content: React.ReactNode;
 }) => (
   <Card

@@ -24,35 +24,33 @@ import MostSelledProductsChart from "@/components/(charts)/MostSelledProductsCha
  * @constant Height for Large cards is 600px (orders manager, system status)
  */
 
-// sample data
-const growthData = [
-  { growth: 12, week: "01-02-2025" },
-  { growth: 18, week: "08-02-2025" },
-  { growth: 22, week: "15-02-2025" },
-  { growth: 30, week: "22-02-2025" },
-
-  { growth: 35, week: "01-03-2025" },
-  { growth: 40, week: "08-03-2025" },
-  { growth: 45, week: "15-03-2025" },
-  { growth: 52, week: "22-03-2025" },
-
-  { growth: 60, week: "29-03-2025" },
-  { growth: 68, week: "05-04-2025" },
-  { growth: 75, week: "12-04-2025" },
-  { growth: 180, week: "19-04-2025" },
-];
-
 export default function dashboardPage() {
   // State to manage loading states
   const [loading, setLoading] = useState(false);
 
-  // State to manage orders data
+  /**
+   * State's to manage the data
+   */
   const [orders, setOrders] = useState<Order[]>();
+
+  // State to store the server response
+  const [serverResponse, setServerResponse] = useState({
+    status: false,
+    message: "",
+  });
 
   // Fetch user cart data from the server
   const fetchData = async () => {
     // Fetch the data parallel
     const [ordersResponse] = await Promise.all([getLastOrders()]);
+
+    if (!ordersResponse.status) {
+      setServerResponse({
+        status: ordersResponse.status,
+        message: ordersResponse.message,
+      });
+      return;
+    }
 
     setOrders(ordersResponse.orders);
   };
@@ -131,7 +129,26 @@ export default function dashboardPage() {
           <MediumWidgetCard
             title={"User Signups"}
             description={"Growth over the last 3 months"}
-            content={<UsersChart data={growthData} />}
+            content={
+              <UsersChart
+                data={[
+                  { growth: 12, week: "01-02-2025" },
+                  { growth: 18, week: "08-02-2025" },
+                  { growth: 22, week: "15-02-2025" },
+                  { growth: 30, week: "22-02-2025" },
+
+                  { growth: 35, week: "01-03-2025" },
+                  { growth: 40, week: "08-03-2025" },
+                  { growth: 45, week: "15-03-2025" },
+                  { growth: 52, week: "22-03-2025" },
+
+                  { growth: 60, week: "29-03-2025" },
+                  { growth: 68, week: "05-04-2025" },
+                  { growth: 75, week: "12-04-2025" },
+                  { growth: 180, week: "19-04-2025" },
+                ]}
+              />
+            }
           />
         </ColumnLayout>
 

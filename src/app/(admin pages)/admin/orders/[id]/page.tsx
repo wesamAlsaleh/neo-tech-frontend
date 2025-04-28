@@ -188,7 +188,8 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
           <div className="w-full md:w-[30%]">
             <Card
               CardTitle="Order Summary"
-              CardHeight={"h-[235px]"} // Set the Card height to 235px fixed height
+              CardHeight={"h-[260px]"} // Set the Card height to 235px fixed height
+              CardMaxContentHeight={"max-h-[260px]"} // Set max height for content area
               CardContent={
                 <div className="flex flex-col gap-2">
                   {/* Order Summary Row Container */}
@@ -204,17 +205,14 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
                     <h1 className="text-gray-800 font-semibold">Shipping:</h1>
                     <p className="font-medium text-gray-800">Free Shipping</p>
                   </div>
-
-                  {/* Separator */}
-                  <div className="h-[1px] bg-gray-200 w-full" />
-
-                  {/* Order Summary Row Container */}
-                  <div className="flex justify-between items-center">
-                    <h1 className="text-gray-800 font-semibold">Total:</h1>
-                    <p className="font-medium text-gray-800">
-                      {convertPriceToBHD(String(order?.total_price))}
-                    </p>
-                  </div>
+                </div>
+              }
+              CardFooter={
+                <div className="flex justify-between items-center">
+                  <h1 className="text-gray-800 font-semibold">Total:</h1>
+                  <p className="font-medium text-gray-800">
+                    {convertPriceToBHD(String(order?.total_price))}
+                  </p>
                 </div>
               }
             />
@@ -227,7 +225,8 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
           <div className="w-full md:w-[50%]">
             <Card
               CardTitle="Shipping Information"
-              CardHeight={"h-[235px]"} // Set the Card height to 235px fixed height
+              CardHeight={"h-[260px]"} // Set the Card height to 235px fixed height
+              CardMaxContentHeight={"max-h-[260px]"} // Set max height for content area
               CardContent={
                 <div className="flex flex-col gap-2">
                   {/* Shipping Address Row Container */}
@@ -262,7 +261,8 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
           <div className="w-full md:w-[50%]">
             <Card
               CardTitle="Payment Information"
-              CardHeight={"h-[235px]"} // Set the Card height to 235px fixed height
+              CardHeight={"h-[260px]"} // Set the Card height to 235px fixed height
+              CardMaxContentHeight={"max-h-[260px]"} // Set max height for content area
               CardContent={
                 <div className="flex flex-col gap-2">
                   {/* Payment Method Row Container */}

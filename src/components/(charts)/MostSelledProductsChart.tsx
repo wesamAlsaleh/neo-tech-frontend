@@ -45,11 +45,11 @@ export default function MostSelledProductsChart(
         />
         <Tooltip
           cursor={{
-            fill: "#F9FFD7",
-            stroke: "#B9DD21",
+            fill: "#FA9215",
+            stroke: "#FA9215",
             strokeWidth: 2,
             strokeDasharray: "3 3",
-            opacity: 0.8,
+            opacity: 0.1,
           }}
         />
         <Legend

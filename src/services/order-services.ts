@@ -459,51 +459,6 @@ export async function updateOrderItemQuantity(
 }
 
 /**
- * @function getLastOrders - Get latest 8 orders for admin dashboard
- * @returns {Promise<{ status: boolean; orders?: Order[] }>} - The latest 8 orders
- */
-export async function getLastOrders() {
-  try {
-    // get user token from cookies
-    const cookieStore = await cookies();
-    const userToken = cookieStore.get("userToken")?.value;
-
-    // If the user token is not found
-    if (!userToken) {
-      return {
-        status: false,
-        message: "No authentication token found.",
-      };
-    }
-
-    const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_APP_URI}/admin/last-orders`,
-      {
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      }
-    );
-
-    return {
-      status: true,
-      orders: response.data.orders,
-    };
-  } catch (error: any) {
-    // Log the error to the console
-    console.error(error.response.data);
-
-    // Return the details of the error
-    console.error(error.response.data.devMessage);
-
-    return {
-      status: false,
-      message: error.response.data.message || "An error occurred",
-    };
-  }
-}
-
-/**
  * @function updateOrderStatus - Update order status for admin
  * @param {string} orderId - The order id to update the order status
  * @param {string} status - The status to update the order status

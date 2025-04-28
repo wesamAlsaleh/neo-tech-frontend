@@ -214,6 +214,7 @@ export async function getTotalRevenueOfMonth() {
 
     return {
       status: true,
+      dateDetails: response.data.date_details,
       totalRevenue: response.data.total_revenue,
     };
   } catch (error: any) {
@@ -303,6 +304,50 @@ export async function getMonthlyRevenueStatistics() {
     return {
       status: true,
       revenueData: response.data.revenue,
+    };
+  } catch (error: any) {
+    // Log the error to the console
+    console.error(error.response.data);
+
+    // Return the details of the error
+    console.error(error.response.data.devMessage);
+
+    return {
+      status: false,
+      message: error.response.data.message || "An error occurred",
+    };
+  }
+}
+
+/**
+ * @function getLastOrders - Get latest 8 orders for admin dashboard
+ */
+export async function getLastOrders() {
+  try {
+    // get user token from cookies
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    // If the user token is not found
+    if (!userToken) {
+      return {
+        status: false,
+        message: "No authentication token found.",
+      };
+    }
+
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/last-orders`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return {
+      status: true,
+      orders: response.data.orders,
     };
   } catch (error: any) {
     // Log the error to the console

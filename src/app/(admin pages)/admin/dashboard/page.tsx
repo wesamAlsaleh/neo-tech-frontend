@@ -4,7 +4,17 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
 // import backend services
-import { getLastOrders } from "@/services/order-services";
+import {
+  getLastOrders,
+  getMonthlyRevenueStatistics,
+  getMostViewedProducts,
+  getProductsInventoryStatus,
+  getTodaysOrders,
+  getTotalPendingOrders,
+  getTotalRevenueOfMonth,
+  getTotalUsers,
+  getUserSignupStatistics,
+} from "@/services/dashboard-services";
 
 // import types
 import { Order } from "@/types/order";
@@ -17,6 +27,7 @@ import OrdersManager from "@/components/OrdersManager";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import SystemPerformanceLogs from "@/components/SystemPerformanceLogs";
 import MostSelledProductsChart from "@/components/(charts)/MostSelledProductsChart";
+import { convertPriceToBHD } from "@/lib/helpers";
 
 /**
  * @constant Height for Small cards is 160px (widgets)
@@ -31,7 +42,35 @@ export default function dashboardPage() {
   /**
    * State's to manage the data
    */
+  const [todaysSalesSummary, setTodaysSalesSummary] = useState({
+    totalOrders: 0,
+    totalRevenue: 0,
+  });
+  const [pendingOrders, setPendingOrders] = useState({
+    totalPendingOrders: 0,
+    totalPendingOrdersRevenue: 0,
+  });
+  const [productsInventory, setProductsInventory] = useState({
+    totalProducts: 0,
+    totalActiveProducts: 0,
+    totalInactiveProducts: 0,
+  });
+  const [customerOverview, setCustomerOverview] = useState({
+    totalCustomers: 0,
+  });
+  const [totalRevenue, setTotalRevenue] = useState({
+    dateDetails: "",
+    totalRevenue: 0,
+  });
   const [orders, setOrders] = useState<Order[]>();
+  // Charts data
+  const [signupStatisticsChartData, setSignupStatisticsChartData] = useState();
+  const [
+    monthlyRevenueStatisticsChartData,
+    setMonthlyRevenueStatisticsChartData,
+  ] = useState();
+  const [mostViewedProductsChartData, setMostViewedProductsChartData] =
+    useState();
 
   // State to store the server response
   const [serverResponse, setServerResponse] = useState({
@@ -42,17 +81,74 @@ export default function dashboardPage() {
   // Fetch user cart data from the server
   const fetchData = async () => {
     // Fetch the data parallel
-    const [ordersResponse] = await Promise.all([getLastOrders()]);
+    const [
+      todaysSalesSummaryResponse,
+      pendingOrdersResponse,
+      productsInventoryResponse,
+      customerOverviewResponse,
+      totalRevenueResponse,
+      userSignupStatisticsResponse,
+      monthlyRevenueStatisticsResponse,
+      ordersResponse,
+      mostViewedProductsResponse,
+    ] = await Promise.all([
+      getTodaysOrders(),
+      getTotalPendingOrders(),
+      getProductsInventoryStatus(),
+      getTotalUsers(),
+      getTotalRevenueOfMonth(),
+      getUserSignupStatistics(),
+      getMonthlyRevenueStatistics(),
+      getLastOrders(),
+      getMostViewedProducts(),
+    ]);
 
-    if (!ordersResponse.status) {
-      setServerResponse({
-        status: ordersResponse.status,
-        message: ordersResponse.message,
+    // Check if the response is successful
+    if (
+      todaysSalesSummaryResponse.status &&
+      pendingOrdersResponse.status &&
+      productsInventoryResponse.status &&
+      customerOverviewResponse.status &&
+      totalRevenueResponse.status &&
+      userSignupStatisticsResponse.status &&
+      monthlyRevenueStatisticsResponse.status &&
+      ordersResponse.status &&
+      mostViewedProductsResponse.status
+    ) {
+      // Set the data to the state
+      setTodaysSalesSummary({
+        totalOrders: todaysSalesSummaryResponse.totalOrders,
+        totalRevenue: todaysSalesSummaryResponse.totalRevenue,
       });
-      return;
+      setPendingOrders({
+        totalPendingOrders: pendingOrdersResponse.totalPendingOrders,
+        totalPendingOrdersRevenue: pendingOrdersResponse.totalPendingRevenue,
+      });
+      setProductsInventory({
+        totalProducts: productsInventoryResponse.totalProducts,
+        totalActiveProducts: productsInventoryResponse.totalActiveProducts,
+        totalInactiveProducts: productsInventoryResponse.totalInactiveProducts,
+      });
+      setCustomerOverview({
+        totalCustomers: customerOverviewResponse.totalUsers,
+      });
+      setTotalRevenue({
+        dateDetails: totalRevenueResponse.dateDetails,
+        totalRevenue: totalRevenueResponse.totalRevenue,
+      });
+      setOrders(ordersResponse.orders);
+      setSignupStatisticsChartData(userSignupStatisticsResponse.growthData);
+      setMonthlyRevenueStatisticsChartData(
+        monthlyRevenueStatisticsResponse.revenueData
+      );
+      setMostViewedProductsChartData(mostViewedProductsResponse.productsData);
+    } else {
+      // Set the error message to the state
+      setServerResponse({
+        status: false,
+        message: "Error fetching data from server",
+      });
     }
-
-    setOrders(ordersResponse.orders);
   };
 
   // Fetch data from server
@@ -92,32 +188,42 @@ export default function dashboardPage() {
       <FiveColumnLayout>
         <SmallWidgetCard
           title="Today's Sales Summary"
-          description="4 Orders"
-          content="BD 100"
+          description={`${todaysSalesSummary.totalOrders} ${
+            todaysSalesSummary.totalOrders > 1 ? "Orders" : "Order"
+          }`}
+          content={convertPriceToBHD(String(todaysSalesSummary.totalRevenue))}
         />
 
         <SmallWidgetCard
           title={"Pending Orders"}
-          description={"2 Orders"}
-          content={"BD 50"}
+          description={`${pendingOrders.totalPendingOrders} ${
+            pendingOrders.totalPendingOrders > 1
+              ? "Pending Orders"
+              : "Pending Order"
+          }`}
+          content={`${convertPriceToBHD(
+            String(pendingOrders.totalPendingOrdersRevenue)
+          )} revenue`}
         />
 
         <SmallWidgetCard
           title={"Products Inventory"}
-          description={"14 Inactive Products"}
-          content={"2 Products"}
+          description={`${productsInventory.totalProducts} Products`}
+          content={`${productsInventory.totalActiveProducts} Active Products and ${productsInventory.totalInactiveProducts} Inactive Products`}
         />
 
         <SmallWidgetCard
           title={"Customer Overview"}
           description={"Total Customers"}
-          content={"100 Users"}
+          content={customerOverview.totalCustomers}
         />
 
         <SmallWidgetCard
           title={"Total Revenue"}
-          description={"Total Revenue"}
-          content={"BD 5000"}
+          description={`${totalRevenue.dateDetails}`}
+          content={`${convertPriceToBHD(
+            String(totalRevenue.totalRevenue)
+          )} revenue`}
         />
       </FiveColumnLayout>
 
@@ -129,26 +235,7 @@ export default function dashboardPage() {
           <MediumWidgetCard
             title={"User Signups"}
             description={"Growth over the last 3 months"}
-            content={
-              <UsersChart
-                data={[
-                  { growth: 12, week: "01-02-2025" },
-                  { growth: 18, week: "08-02-2025" },
-                  { growth: 22, week: "15-02-2025" },
-                  { growth: 30, week: "22-02-2025" },
-
-                  { growth: 35, week: "01-03-2025" },
-                  { growth: 40, week: "08-03-2025" },
-                  { growth: 45, week: "15-03-2025" },
-                  { growth: 52, week: "22-03-2025" },
-
-                  { growth: 60, week: "29-03-2025" },
-                  { growth: 68, week: "05-04-2025" },
-                  { growth: 75, week: "12-04-2025" },
-                  { growth: 180, week: "19-04-2025" },
-                ]}
-              />
-            }
+            content={<UsersChart data={signupStatisticsChartData || []} />}
           />
         </ColumnLayout>
 
@@ -160,18 +247,7 @@ export default function dashboardPage() {
             title={"Monthly Sales"}
             description={"↑ 34% from last month"}
             content={
-              <SalesChart
-                data={[
-                  { date: "24-1-2025", revenue: 1200 },
-                  { date: "1-2-2025", revenue: 1500 },
-                  { date: "12-2-2025", revenue: 1700 },
-                  { date: "24-3-2025", revenue: 1600 },
-                  { date: "1-3-2025", revenue: 1800 },
-                  { date: "12-3-2025", revenue: 2000 },
-                  { date: "20-3-2025", revenue: 2200 },
-                  { date: "Today", revenue: 2500 },
-                ]}
-              />
+              <SalesChart data={monthlyRevenueStatisticsChartData || []} />
             }
           />
         </ColumnLayout>
@@ -184,7 +260,7 @@ export default function dashboardPage() {
           CardTitle="Orders Manager"
           CardDescription="Manage Latest Orders"
           CardHeight={"h-[610px] md:h-[710px]"}
-          CardMaxContentHeight={"max-h-[600px]"} // Set max height for content area
+          CardMaxContentHeight={"max-h-[650px]"} // Set max height for content area
           CardContent={<OrdersManager Orders={orders} />}
         />
       </ColumnLayout>
@@ -207,37 +283,7 @@ export default function dashboardPage() {
             title={"Best Selling Products"}
             content={
               <MostSelledProductsChart
-                data={[
-                  {
-                    soldCount: 341,
-                    viewCount: 1200,
-                    name: "Product Asadasdasdasd",
-                  },
-                  {
-                    soldCount: 141,
-                    viewCount: 1500,
-                    name: "Product BafasfAsadasdasdasd",
-                  },
-                  {
-                    soldCount: 251,
-                    viewCount: 1500,
-                    name: "Product CBafasfAsadasdasdasd",
-                  },
-                  {
-                    soldCount: 361,
-                    viewCount: 1700,
-                    name: "Product DCBafasfAsadasdasdasd",
-                  },
-                  {
-                    soldCount: 141,
-                    viewCount: 1700,
-                    name: "Product EDCBafasfAsadasdasdasd",
-                  },
-                  { soldCount: 471, viewCount: 1600, name: "Product F" },
-                  { soldCount: 451, viewCount: 1800, name: "Product G" },
-                  { soldCount: 114, viewCount: 2000, name: "Product H" },
-                  { soldCount: 145, viewCount: 2200, name: "Product I" },
-                ]}
+                data={mostViewedProductsChartData || []}
               />
             }
           />

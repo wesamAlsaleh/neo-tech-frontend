@@ -166,7 +166,8 @@ export default function dashboardPage() {
         <Card
           CardTitle="Orders Manager"
           CardDescription="Manage Latest Orders"
-          CardHight={"h-[610px] md:h-[710px]"}
+          CardHeight={"h-[610px] md:h-[710px]"}
+          CardMaxContentHeight={"max-h-[600px]"} // Set max height for content area
           CardContent={<OrdersManager Orders={orders} />}
         />
       </ColumnLayout>
@@ -257,7 +258,7 @@ const SmallWidgetCard = ({
     CardTitle={title}
     CardDescription={description}
     CardContent={content}
-    CardHight={"h-[160px]"}
+    CardHeight={"h-[160px]"}
   />
 );
 
@@ -275,6 +276,7 @@ const MediumWidgetCard = ({
     CardTitle={title}
     CardDescription={description}
     CardContent={content}
-    CardHight={"h-[400px]"}
+    CardHeight={"h-[400px]"}
+    CardMaxContentHeight={"max-h-[300px]"} // Set max height for content area
   />
 );

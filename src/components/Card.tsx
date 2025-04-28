@@ -3,12 +3,12 @@
 import React from "react";
 
 interface CardProps {
-  // CardHeader?: string;
   CardTitle?: string;
   CardDescription?: string;
   CardContent?: React.ReactNode;
   CardFooter?: string | React.ReactNode;
-  CardHight?: string | number;
+  CardHeight?: string | number; // Height of the card (e.g., "h-64", "h-auto")
+  CardMaxContentHeight?: string | number; // Max height for content area (e.g., "max-h-64")
 }
 
 export default function Card({
@@ -17,21 +17,17 @@ export default function Card({
   CardDescription,
   CardContent,
   CardFooter,
-  CardHight = "h-auto",
+  CardHeight = "h-auto",
+  CardMaxContentHeight = "max-h-64", // Default max height for content area
 }: CardProps) {
   return (
-    // Card Layout
+    // Card Layout with fixed height if specified
     <div
-      className={`rounded-xl border bg-white text-gray-800 shadow-sm ${CardHight} flex flex-col`}
+      className={`rounded-xl border bg-white text-gray-800 shadow-sm ${CardHeight} flex flex-col`}
     >
-      {/* Header Container */}
-      {/* {CardHeader && (
-        <div className="px-6 pt-4 text-sm text-gray-400">{CardHeader}</div>
-      )} */}
-
-      {/* Title & Description Container */}
+      {/* Title & Description Container - Fixed height */}
       {(CardTitle || CardDescription) && (
-        <div className="px-6 pt-4 pb-2">
+        <div className="px-6 pt-4 pb-2 flex-none truncate">
           {/* Title */}
           {CardTitle && (
             <h2 className="text-2xl font-semibold leading-tight tracking-tight">
@@ -46,14 +42,18 @@ export default function Card({
         </div>
       )}
 
-      {/* Content Container - Now flex-grow and with overflow handling */}
+      {/* Content Container - Scrollable with fixed height */}
       {CardContent && (
-        <div className="px-6 py-4 flex-grow overflow-hidden">{CardContent}</div>
+        <div
+          className={`px-6 py-4 flex-grow overflow-y-auto ${CardMaxContentHeight}`}
+        >
+          {CardContent}
+        </div>
       )}
 
-      {/* Footer + separator Container */}
+      {/* Footer + separator Container - Fixed at bottom */}
       {CardFooter && (
-        <div className="px-6 pb-6 pt-2 border-t border-gray-100 text-sm text-gray-500">
+        <div className="px-6 pb-6 pt-2 border-t border-gray-100 text-sm text-gray-500 flex-none">
           <div className="w-full">{CardFooter}</div>
         </div>
       )}

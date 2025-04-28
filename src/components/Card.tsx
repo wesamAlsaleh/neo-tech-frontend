@@ -53,7 +53,7 @@ export default function Card({
 
       {/* Footer + separator Container - Fixed at bottom */}
       {CardFooter && (
-        <div className="px-6 pb-6 pt-2 border-t border-gray-100 text-sm text-gray-500 flex-none">
+        <div className="px-6 py-4 border-t border-gray-100 text-sm text-gray-500 flex-none">
           <div className="w-full">{CardFooter}</div>
         </div>
       )}

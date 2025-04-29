@@ -12,7 +12,7 @@ import { Order } from "@/types/order";
 import { globalSearch } from "@/services/dashboard-services";
 
 // import helpers
-import { convertPriceToBHD } from "@/lib/helpers";
+import { convertPriceToBHD, formatDateTime } from "@/lib/helpers";
 
 // import icons
 import { icons } from "../../public/icons";
@@ -173,7 +173,7 @@ export default function AdminHeader() {
                   {/* Server Message */}
                   {serverResponse.message && !serverResponse.status && (
                     <div
-                      className={`px-4 py-3 rounded relative mb-4 ${
+                      className={`px-4 py-3 rounded relative m-4 ${
                         serverResponse.status
                           ? "bg-green-100 border border-green-400 text-green-700"
                           : "bg-red-100 border border-red-400 text-red-700 "
@@ -395,11 +395,13 @@ const renderOrders = (ordersArray: Order[]) => {
             {/* Order Details Container */}
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-800 truncate">
-                {order.uuid}
+                Order ID: {order.id} | Order UUID:{order.uuid}
               </p>
 
               <p className="text-xs text-gray-500 truncate">
-                {order.total_price}
+                Ordered By: {order.user?.first_name} on{" "}
+                {formatDateTime(String(order.created_at))} with total of{" "}
+                {convertPriceToBHD(String(order.total_price))}
               </p>
             </div>
           </div>

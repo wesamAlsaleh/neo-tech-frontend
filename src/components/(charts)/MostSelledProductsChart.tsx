@@ -31,7 +31,7 @@ export default function MostSelledProductsChart(
         margin={{ top: 10, right: 30, left: 10, bottom: 0 }}
         barSize={30}
       >
-        <CartesianGrid strokeDasharray="5 5" />
+        <CartesianGrid strokeDasharray="3 3" />
         <XAxis
           dataKey="name"
           tickFormatter={(name) =>

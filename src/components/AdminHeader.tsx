@@ -1,6 +1,79 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
+
+// import types
+import { Product } from "@/types/product"; // Importing the Product type from types folder
+import { User } from "@/types/User"; // Importing the User type from types folder
+import { Order } from "@/types/order";
+
+// import backend services
+import { globalSearch } from "@/services/dashboard-services";
+
+// import debounce hook to avoid too many API calls via search input
+import { useDebounce } from "@/lib/hooks";
 
 export default function AdminHeader() {
+  const [searchValue, setSearchValue] = useState<string>(""); // State to store the search value
+  const [searchResults, setSearchResults] = useState<{
+    counts: {
+      users: number;
+      orders: number;
+      products: number;
+    };
+    users: User[]; // array of user objects
+    orders: Order[]; // array of order objects
+    products: Product[]; // array of product objects
+  }>({
+    counts: {
+      users: 0,
+      orders: 0,
+      products: 0,
+    },
+    users: [],
+    orders: [],
+    products: [],
+  }); // State to store the search results
+  const [isSearching, setIsSearching] = useState<boolean>(false); // State to track if a search is in progress
+  const [serverResponse, setServerResponse] = useState({
+    status: false,
+    message: "",
+  }); // State to store the server response
+  const [openSearchResults, setOpenSearchResults] = useState(false); // State to track if the search results are open
+
+  // Set debounced search term to avoid too many API calls
+  const debouncedSearchTerm = useDebounce(searchValue, 300);
+
+  // Use effect to fetch data when the component mounts
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!debouncedSearchTerm || searchValue === "") return;
+
+      // Set loading to true while fetching data
+      setIsSearching(true);
+
+      // Call the API to get the products based on the search term
+      const response = await globalSearch(debouncedSearchTerm);
+
+      // Set loading to false after fetching data
+      setIsSearching(false);
+
+      // Update the UI state with the response
+      setServerResponse({
+        status: response.status,
+        message: !response.status && response.message, // show error message only if the response is not successful
+      });
+
+      if (response.status) {
+        setSearchResults(response.searchResults!); // Update the search results with the response data
+        setOpenSearchResults(true); // Open the search results
+        // console.log(searchResults); // Debugging line to check the search results
+      }
+    };
+
+    fetchData();
+  }, [debouncedSearchTerm]);
+
   return (
     <header className="h-16 bg-white border-b border-gray-200 px-6 flex items-center justify-between shadow-sm">
       {/* Left section Container */}
@@ -10,10 +83,15 @@ export default function AdminHeader() {
           {/* Text Field */}
           <input
             type="text"
+            name="search"
+            id="search"
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
             placeholder="Search by name or ID"
             className="pl-9 pr-4 py-2 w-64 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
           />
 
+          {/* Search Icon */}
           {/* TODO: Search Icon in SVG */}
           <span className="absolute left-3 top-2.5 text-gray-400">
             {/* Search icon would go here */}
@@ -32,12 +110,36 @@ export default function AdminHeader() {
               />
             </svg>
           </span>
+
+          {/* Search Dropdown Menu Container */}
+          {openSearchResults && (
+            <div className="absolute left-0 mt-1 w-[500px] max-w-[600px] h-40 max-h-96 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+              {/* Users Section Container */}
+              <RenderSection
+                title="Users"
+                count={searchResults.counts.users}
+                children={renderUsers(searchResults.users)}
+              />
+
+              {/* Orders Section */}
+              <h1>Orders {`${searchResults.counts.orders}`}</h1>
+              {searchResults.counts.orders === 0 ? (
+                <h3>No Orders Found</h3>
+              ) : null}
+
+              {/* Products Section */}
+              <h1>Products {`${searchResults.counts.products}`}</h1>
+              {searchResults.counts.products === 0 ? (
+                <h3>No Products Found</h3>
+              ) : null}
+            </div>
+          )}
         </div>
       </div>
 
       {/* Right section Container */}
       <div className="flex items-center space-x-4">
-        {/* Dropdown menu 1 */}{" "}
+        {/* Dropdown menu 1 */}
         <div className="relative">
           {/* Dropdown Button */}
           <select className="appearance-none bg-gray-50 border border-gray-200 text-gray-700 pl-4 pr-10 py-2 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all">
@@ -46,7 +148,7 @@ export default function AdminHeader() {
             <option>Admins</option>
           </select>
 
-          {/* TODO:Down Arrow */}
+          {/* Down Arrow Icon */}
           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
             <svg
               className="w-4 h-4"
@@ -113,3 +215,60 @@ export default function AdminHeader() {
     </header>
   );
 }
+
+type SectionProps = {
+  title: string;
+  count: number;
+  children: React.ReactNode;
+};
+
+// Function to render the section with title and count and the rendered component
+const RenderSection: React.FC<SectionProps> = ({ title, count, children }) => {
+  return (
+    <div className="p-3">
+      <h3 className="text-sm font-medium text-gray-700 flex items-center justify-between mb-1">
+        {title}
+        <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-xs">
+          {count}
+        </span>
+      </h3>
+
+      {children}
+    </div>
+  );
+};
+
+// Function to render users in the dropdown menu
+const renderUsers = (usersArray: User[]) => {
+  if (!usersArray.length) {
+    return <p className="text-sm text-gray-500 italic py-1">No users found</p>;
+  }
+
+  return (
+    <ul className="divide-y divide-gray-50">
+      {usersArray.map((user) => (
+        <li
+          key={user.id}
+          className="py-2 px-1 hover:bg-gray-50 rounded-md transition-colors cursor-pointer"
+        >
+          {/* Content Container */}
+          <div className="flex items-center space-x-3">
+            {/* User Avatar (Circle contain first name latter) */}
+            <div className="flex-shrink-0 h-8 w-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-500">
+              {user.first_name.charAt(0).toUpperCase()}
+            </div>
+
+            {/* User Details Container */}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-800 truncate">
+                {user.first_name} {user.last_name}
+              </p>
+
+              <p className="text-xs text-gray-500 truncate">{user.email}</p>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+};

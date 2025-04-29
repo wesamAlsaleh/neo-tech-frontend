@@ -63,7 +63,8 @@ export default function AdminHeader() {
       searchContainerRef.current &&
       !searchContainerRef.current.contains(event.target as Node)
     ) {
-      setOpenSearchResults(false);
+      setSearchValue(""); // Clear the search value
+      setOpenSearchResults(false); // Close the search results
     }
   };
 

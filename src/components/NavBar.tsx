@@ -21,7 +21,7 @@ export default function NavBar() {
   return (
     <div>
       {/* Navbar container */}
-      <div className="flex p-4 items-center justify-between bg-gray-100/10 border-b-2 border-gray-300 sticky top-0 z-50">
+      <div className="flex p-4 items-center justify-between bg-white border-b-2 border-gray-100 sticky top-0 z-50">
         {/* Shop name */}
         <div className="flex items-center ml-10">
           <Link href="/home">

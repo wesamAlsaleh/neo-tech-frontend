@@ -122,16 +122,18 @@ export default function AdminHeader() {
               />
 
               {/* Orders Section */}
-              <h1>Orders {`${searchResults.counts.orders}`}</h1>
-              {searchResults.counts.orders === 0 ? (
-                <h3>No Orders Found</h3>
-              ) : null}
+              <RenderSection
+                title="Orders"
+                count={searchResults.counts.orders}
+                children={renderOrders(searchResults.orders)}
+              />
 
               {/* Products Section */}
-              <h1>Products {`${searchResults.counts.products}`}</h1>
-              {searchResults.counts.products === 0 ? (
-                <h3>No Products Found</h3>
-              ) : null}
+              <RenderSection
+                title="Products"
+                count={searchResults.counts.products}
+                children={renderProducts(searchResults.products)}
+              />
             </div>
           )}
         </div>
@@ -266,6 +268,72 @@ const renderUsers = (usersArray: User[]) => {
               </p>
 
               <p className="text-xs text-gray-500 truncate">{user.email}</p>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+// Function to render orders in the dropdown menu
+const renderOrders = (ordersArray: Order[]) => {
+  if (!ordersArray.length) {
+    return <p className="text-sm text-gray-500 italic py-1">No Orders Found</p>;
+  }
+
+  return (
+    <ul className="divide-y divide-gray-50">
+      {ordersArray.map((order) => (
+        <li
+          key={order.id}
+          className="py-2 px-1 hover:bg-gray-50 rounded-md transition-colors cursor-pointer"
+        >
+          {/* Content Container */}
+          <div className="flex items-center space-x-3">
+            {/* Order Details Container */}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-800 truncate">
+                {order.uuid}
+              </p>
+
+              <p className="text-xs text-gray-500 truncate">
+                {order.total_price}
+              </p>
+            </div>
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+// Function to render products in the dropdown menu
+const renderProducts = (productsArray: Product[]) => {
+  if (!productsArray.length) {
+    return (
+      <p className="text-sm text-gray-500 italic py-1">No Products Found</p>
+    );
+  }
+
+  return (
+    <ul className="divide-y divide-gray-50">
+      {productsArray.map((product) => (
+        <li
+          key={product.id}
+          className="py-2 px-1 hover:bg-gray-50 rounded-md transition-colors cursor-pointer"
+        >
+          {/* Content Container */}
+          <div className="flex items-center space-x-3">
+            {/* Order Details Container */}
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-gray-800 truncate">
+                {product.product_name}
+              </p>
+
+              <p className="text-xs text-gray-500 truncate">
+                {product.product_price}
+              </p>
             </div>
           </div>
         </li>

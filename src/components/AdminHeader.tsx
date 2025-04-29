@@ -113,7 +113,7 @@ export default function AdminHeader() {
 
           {/* Search Dropdown Menu Container */}
           {openSearchResults && (
-            <div className="absolute left-0 mt-1 w-[500px] max-w-[600px] h-40 max-h-96 bg-white rounded-md shadow-lg z-10 border border-gray-200">
+            <div className="absolute left-0 mt-1 w-[500px] max-w-[600px] h-40 max-h-96 bg-white rounded-md shadow-lg z-10 border border-gray-200 overflow-y-auto divide-y divide-gray-100">
               {/* Users Section Container */}
               <RenderSection
                 title="Users"
@@ -166,6 +166,7 @@ export default function AdminHeader() {
             </svg>
           </div>
         </div>
+
         {/* Dropdown menu 2 */}
         <div className="relative">
           <select className="appearance-none bg-gray-50 border border-gray-200 text-gray-700 pl-4 pr-10 py-2 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all">
@@ -190,9 +191,9 @@ export default function AdminHeader() {
             </svg>
           </div>
         </div>
-        {/* Notification bell */}
+        {/* Notification bell button */}
         <button className="relative p-2 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-600 transition-colors">
-          {/* TODO: Notification bell icon */}
+          {/* Notification bell icon */}
           <svg
             className="w-5 h-5"
             fill="none"

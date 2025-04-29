@@ -152,6 +152,9 @@ import customerInsightsIcon96 from "../public/assets/button-icons/icons8-custome
 import bannerIcon48 from "../public/assets/button-icons/icons8-banner-48.png";
 import bannerIcon96 from "../public/assets/button-icons/icons8-banner-96.png";
 
+// No image icons
+import noImageIcon from "../public/assets/no-image.webp";
+
 export const icons = {
   userIcon48,
   userIcon96,
@@ -241,4 +244,5 @@ export const icons = {
   customerInsightsIcon96,
   bannerIcon48,
   bannerIcon96,
+  noImageIcon,
 };

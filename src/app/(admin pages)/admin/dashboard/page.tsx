@@ -40,6 +40,48 @@ export default function dashboardPage() {
   const [loading, setLoading] = useState(false);
 
   /**
+   * UI Components
+   */
+  // Widget Card Component
+  const SmallWidgetCard = ({
+    title,
+    description,
+    content,
+  }: {
+    title: string;
+    description?: string;
+    content: React.ReactNode;
+  }) => (
+    <Card
+      CardTitle={title}
+      CardDescription={description}
+      CardContent={content}
+      CardHeight={"h-[160px]"}
+      loading={loading}
+    />
+  );
+
+  // Widget Card for Graphs
+  const MediumWidgetCard = ({
+    title,
+    description,
+    content,
+  }: {
+    title: string;
+    description?: string;
+    content: React.ReactNode;
+  }) => (
+    <Card
+      CardTitle={title}
+      CardDescription={description}
+      CardContent={content}
+      CardHeight={"h-[400px]"}
+      CardMaxContentHeight={"max-h-[300px]"} // Set max height for content area
+      loading={loading}
+    />
+  );
+
+  /**
    * State's to manage the data
    */
   const [todaysSalesSummary, setTodaysSalesSummary] = useState({
@@ -176,11 +218,6 @@ export default function dashboardPage() {
     return () => clearInterval(interval); // Cleanup the interval on component unmount
   }, []);
 
-  // Loading state
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
   return (
     // Dashboard Page Layout
     <div className="flex flex-col gap-4">
@@ -262,6 +299,7 @@ export default function dashboardPage() {
           CardHeight={"h-[610px] md:h-[710px]"}
           CardMaxContentHeight={"max-h-[650px]"} // Set max height for content area
           CardContent={<OrdersManager Orders={orders} />}
+          loading={loading}
         />
       </ColumnLayout>
 
@@ -305,41 +343,4 @@ const TwoColumnLayout = ({ children }: { children: React.ReactNode }) => (
 
 const ColumnLayout = ({ children }: { children: React.ReactNode }) => (
   <div className="grid grid-cols-1 gap-4">{children}</div>
-);
-
-// Widget Card Component
-const SmallWidgetCard = ({
-  title,
-  description,
-  content,
-}: {
-  title: string;
-  description?: string;
-  content: React.ReactNode;
-}) => (
-  <Card
-    CardTitle={title}
-    CardDescription={description}
-    CardContent={content}
-    CardHeight={"h-[160px]"}
-  />
-);
-
-// Widget Card for Graphs
-const MediumWidgetCard = ({
-  title,
-  description,
-  content,
-}: {
-  title: string;
-  description?: string;
-  content: React.ReactNode;
-}) => (
-  <Card
-    CardTitle={title}
-    CardDescription={description}
-    CardContent={content}
-    CardHeight={"h-[400px]"}
-    CardMaxContentHeight={"max-h-[300px]"} // Set max height for content area
-  />
 );

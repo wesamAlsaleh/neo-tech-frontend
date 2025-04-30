@@ -72,7 +72,7 @@ export default function Table({
   isLoading = false,
 }: TableProps) {
   // Handle Loading State
-  if (!isLoading) {
+  if (isLoading) {
     return (
       <div className="w-full h-full">
         {/* Table container with controlled dimensions */}

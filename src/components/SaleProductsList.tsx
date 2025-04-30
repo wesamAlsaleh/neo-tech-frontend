@@ -16,6 +16,8 @@ import {
 
 // import custom components
 import TableStatusColumn from "./TableStatusColumn";
+import Table from "./Table";
+import Image from "next/image";
 
 export default function SaleProductsList() {
   const [products, setProducts] = useState<Product[]>();
@@ -72,124 +74,82 @@ export default function SaleProductsList() {
     return <LoadingSpinner />;
   }
 
+  const columns: {
+    key: string;
+    label: string;
+    align?: "left" | "center" | "right";
+  }[] = [
+    { key: "product_name", label: " Product Name", align: "left" },
+    { key: "images", label: "Product Image", align: "center" },
+    {
+      key: "product_price_after_discount",
+      label: "Product Price",
+      align: "center",
+    },
+    { key: "onSale", label: "Sale Status", align: "center" },
+    { key: "discount", label: " Sale Percentage", align: "center" },
+    { key: "sale_start", label: " Sale Started on", align: "center" },
+    { key: "sale_end", label: " Sale Ends on", align: "center" },
+  ]; // Define the columns for the table
+
   return (
-    <div className="overflow-x-auto">
-      {/* product list */}
-      <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
-        <thead>
-          <tr>
-            <th className="px-4 py-2 border border-gray-300">Product Name</th>
-            <th className="px-4 py-2 border border-gray-300">Product Image</th>
-            <th className="px-4 py-2 border border-gray-300">Product Price</th>
-            <th className="px-4 py-2 border border-gray-300">Sale Status</th>
-            <th className="px-4 py-2 border border-gray-300">
-              Sale Percentage
-            </th>
-            <th className="px-4 py-2 border border-gray-300">
-              Sale Started on
-            </th>
-            <th className="px-4 py-2 border border-gray-300">Sale Ends on</th>
-          </tr>
-        </thead>
+    <Table
+      columns={columns}
+      rows={products || []}
+      noDataMessage="No products on sale yet."
+      renderCell={(row, key) => {
+        // Render the product image
+        if (key === "images") {
+          return (
+            <div className="flex justify-center items-center">
+              <Image
+                src={row.images[0]}
+                alt={row.product_name}
+                width={90}
+                height={90}
+              />
+            </div>
+          );
+        }
 
-        {products?.length === 0 && (
-          <tbody>
-            <tr>
-              <td colSpan={7} className="text-center py-4">
-                No products on sale yet.
-              </td>
-            </tr>
-          </tbody>
-        )}
+        // Render the product price after sale
+        if (key === "product_price_after_discount") {
+          return (
+            <span>{convertPriceToBHD(row.product_price_after_discount)}</span>
+          );
+        }
 
-        <tbody>
-          {products?.map((product) => (
-            <tr key={product.id} className="hover:bg-gray-100 even:bg-gray-50">
-              {/* Name Container */}
-              <td className="px-4 py-2 border border-gray-300 text-center">
-                {product.product_name}
-              </td>
+        // Render the sale badge
+        if (key === "onSale") {
+          // Check if the product is on sale
+          const onSale = row.onSale;
 
-              {/* Icon Container */}
-              <td className="px-4 py-2 border border-gray-300 flex justify-center items-center">
-                <img
-                  className="object-scale-down rounded w-12 h-12"
-                  src={product.images[0]} // first image
-                  alt={product.product_name}
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src =
-                      "https://placehold.co/100x100?text=No+Image";
-                  }}
-                />
-              </td>
+          // Badge
+          const baseClass = "px-3 py-1 rounded-md text-sm border capitalize"; // Define the base class for the role badge
+          let badgeClass = "bg-gray-100 text-gray-700 border border-gray-400"; // Define the badge class based on the role
 
-              {/* Product Price after the sale */}
-              <td className="px-4 py-2 border border-gray-300 text-center">
-                {convertPriceToBHD(product.product_price_after_discount)}
-              </td>
+          // Define the badge class based on the role
+          if (onSale) {
+            badgeClass = "bg-green-100 text-green-700 border-green-400";
+          } else {
+            badgeClass = "bg-red-100 text-red-700 border-red-400";
+          }
 
-              {/* Sale Status Container */}
-              <td className="px-4 py-2 border border-gray-300 text-center">
-                <TableStatusColumn
-                  condition={product.onSale}
-                  onYes="Yes"
-                  onNo="No"
-                />
-              </td>
+          return (
+            <span className={`${baseClass} ${badgeClass}`}>
+              {onSale ? "On Sale" : "Not On Sale"}
+            </span>
+          );
+        }
 
-              {/* Discount percentage Container */}
-              <td className="px-4 py-2 border border-gray-300 text-center">
-                {convertSalePercentage(product.discount)}
-              </td>
+        // Render the sale percentage
+        if (key === "discount") {
+          return <span>{convertSalePercentage(row.discount)}</span>;
+        }
 
-              {/* sale start date Container */}
-              <td className="px-4 py-2 border border-gray-300 text-center">
-                {formatDateTime(product.sale_start!)}
-              </td>
-
-              {/* sale end date Container */}
-              <td className="px-4 py-2 border border-gray-300 text-center">
-                {formatDateTime(product.sale_end!)}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {/* Pagination Control */}
-      {totalPages > 1 && (
-        <div className="flex items-center mt-4 gap-x-4">
-          {/* Previous Button */}
-          <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className={`px-4 py-2 border rounded ${
-              currentPage === 1
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-orange-500 text-white"
-            }`}
-          >
-            Previous
-          </button>
-
-          <span className="font-semibold">{`${currentPage} of ${totalPages}`}</span>
-
-          {/* Next Button */}
-          <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-            className={`px-4 py-2 border rounded ${
-              currentPage === totalPages
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-orange-500 text-white"
-            }`}
-          >
-            Next
-          </button>
-        </div>
-      )}
-    </div>
+        // Render the value of the cell without any special formatting
+        return <span>{row[key]}</span>;
+      }}
+    />
   );
 }

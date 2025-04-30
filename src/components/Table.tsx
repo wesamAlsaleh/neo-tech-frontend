@@ -1,5 +1,8 @@
 import React from "react";
 
+// import custom components
+import PaginationControl from "./PaginationControl";
+
 interface TableProps {
   columns: {
     key: string;
@@ -10,6 +13,9 @@ interface TableProps {
   noDataMessage: string; // Message to display when there are no rows to show
   onRowClick?: (row: any) => void; // Function to handle row click events
   renderCell?: (row: any, columnKey: string) => React.ReactNode; // Function to render custom cell content
+  currentPage?: number; // Current page number for pagination
+  totalPages?: number; // Total number of pages for pagination
+  setCurrentPage?: (page: number) => void; // Function to set the current page for pagination
 }
 
 /**
@@ -59,6 +65,9 @@ export default function Table({
   noDataMessage,
   onRowClick,
   renderCell,
+  currentPage = 1,
+  totalPages = 1,
+  setCurrentPage = () => {},
 }: TableProps) {
   return (
     // Complete wrapper to ensure table fits within containing element
@@ -133,6 +142,15 @@ export default function Table({
           </table>
         </div>
       </div>
+
+      {/* Pagination Control */}
+      {currentPage && totalPages && setCurrentPage && (
+        <PaginationControl
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      )}
     </div>
   );
 }

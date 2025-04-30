@@ -433,6 +433,7 @@ export default function ProductsList() {
           // Render without any special formatting
           return <span>{row[key]}</span>;
         }}
+        isLoading={loading} // Loading state
       />
 
       {/* Edit Modal */}

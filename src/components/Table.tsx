@@ -40,7 +40,11 @@ interface TableProps {
  *
  * @example
  * ```tsx
- * const columns = [
+ * const columns: {
+ *   key: string;
+ *   label: string;
+ *   align?: 'left' | 'center' | 'right';
+ * }[] = [
  *   { key: 'name', label: 'Name', align: 'left' },
  *   { key: 'age', label: 'Age', align: 'center' },
  *   { key: 'email', label: 'Email', align: 'right' },
@@ -56,7 +60,7 @@ interface TableProps {
  *   rows={rows}
  *   noDataMessage="No data available"
  *   onRowClick={(row) => console.log('Row clicked:', row)}
- *   renderCell={(row, key) => <span>{row[key]}</span>}
+ *   renderCell={(row, key) => {return <span>{row[key]}</span>}}
  * />
  * ```
  */

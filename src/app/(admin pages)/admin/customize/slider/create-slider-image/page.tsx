@@ -4,7 +4,6 @@ import React from "react";
 
 // import components
 import PageTitle from "@/components/PageTitle";
-import { ActionButton } from "@/components/ActionButton";
 import AddImageSliderForm from "@/components/AddImageSliderForm";
 import Button from "@/components/Button";
 

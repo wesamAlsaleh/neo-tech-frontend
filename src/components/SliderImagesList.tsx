@@ -22,6 +22,8 @@ import { formatDateTime } from "@/lib/helpers";
 // Import custom components
 import LoadingSpinner from "./LoadingSpinner";
 import DeleteModal from "./DeleteModal";
+import Table from "./Table";
+import Image from "next/image";
 
 export default function SliderImagesList() {
   // State to store the slider images
@@ -178,10 +180,19 @@ export default function SliderImagesList() {
     }
   };
 
-  // If the slider images are still loading from the server display a loading spinner
-  if (loading) {
-    return <LoadingSpinner />;
-  }
+  // Prepare the table columns
+  const columns: {
+    key: string;
+    label: string;
+    align?: "left" | "center" | "right";
+  }[] = [
+    { key: "name", label: "Title", align: "center" },
+    { key: "url", label: "Image", align: "center" },
+    { key: "is_active", label: "Status", align: "center" },
+    { key: "visibility", label: "Visibility", align: "center" },
+    { key: "created_at", label: "Created Date", align: "center" },
+    { key: "actions", label: "Action", align: "center" },
+  ];
 
   return (
     <>
@@ -205,218 +216,174 @@ export default function SliderImagesList() {
       )}
 
       {/* Content Table */}
-      <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
-        <thead>
-          <tr>
-            <th className="px-4 py-2 border border-gray-300 w-48">Title</th>
-            <th className="px-4 py-2 border border-gray-300 w-48">Image</th>
-            <th className="px-4 py-2 border border-gray-300 w-32 ">Status</th>
-            <th className="px-4 py-2 border border-gray-300 w-32">
-              Visibility
-            </th>
-            <th className="px-4 py-2 border border-gray-300 w-48">
-              Created Date
-            </th>
-            <th className="px-4 py-2 border border-gray-300 w-32">Actions</th>
-          </tr>
-        </thead>
-
-        {sliderImages?.length === 0 && (
-          <tbody>
-            <tr>
-              <td colSpan={5} className="text-center py-4">
-                No slider images found.
-              </td>
-            </tr>
-          </tbody>
-        )}
-
-        <tbody>
-          {sliderImages?.map((sliderImage) => (
-            <tr
-              key={sliderImage.id}
-              className="hover:bg-gray-100 even:bg-gray-50"
-            >
-              {/* Name Column */}
-              <td className="px-4 py-2 border border-gray-300 text-center">
-                {sliderImage.name}
-              </td>
-
-              {/* Image Column */}
-              <td className="px-4 py-2 border border-gray-300 w-48">
+      <Table
+        columns={columns}
+        rows={sliderImages || []}
+        noDataMessage="No slider images found."
+        renderCell={(row, key) => {
+          // Render Image
+          if (key === "url") {
+            return (
+              <div className="flex justify-center items-center h-40 overflow-hidden">
                 {/* Image container */}
-                <div className="flex justify-center items-center h-32 overflow-hidden">
-                  <img
-                    className="object-contain w-full h-full"
-                    src={sliderImage.url}
-                    alt={sliderImage.name}
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src =
-                        "https://placehold.co/100x100?text=No+Image";
-                    }}
-                  />
-                </div>
-              </td>
+                <Image
+                  className="object-contain"
+                  width={200}
+                  height={100}
+                  src={row.url}
+                  alt={row.name}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src =
+                      "https://placehold.co/100x100?text=No+Image";
+                  }}
+                />
+              </div>
+            );
+          }
 
-              {/* Status Column */}
-              <td className="px-4 py-2 border border-gray-300 text-center">
-                {/* bg color condition */}
-                <span
-                  className={`inline-block px-3 py-1 rounded-full font-semibold ${
-                    sliderImage.is_active
-                      ? "bg-green-100 text-green-800"
-                      : "bg-red-100 text-red-800"
-                  }`}
-                >
-                  {/* text color condition */}
-                  {sliderImage.is_active ? "Active" : "Inactive"}
-                </span>
-              </td>
+          // Render Status Badge
+          if (key === "is_active") {
+            // Get the image status
+            const isActive = row.is_active ? true : false;
 
-              {/* Visibility Column */}
-              <td className="px-4 py-2 border border-gray-300 text-center">
-                {/* bg color condition */}
-                <span
-                  className={`inline-block px-3 py-1 rounded-full font-semibold ${
-                    sliderImage.visibility === "public"
-                      ? "bg-orange-100 text-orange-800"
-                      : "bg-purple-100 text-purple-800"
-                  }`}
-                >
-                  {/* text color condition */}
-                  {sliderImage.visibility}
-                </span>
-              </td>
+            const statusText = isActive ? "Active" : "Inactive";
 
-              {/* Date Column */}
-              <td className="px-4 py-2 border border-gray-300 text-center">
-                {formatDateTime(sliderImage.created_at)}
-              </td>
+            // Badge
+            const baseClass =
+              "px-3 py-1 rounded-md text-base border capitalize"; // Define the base class for the role badge
+            let badgeClass = "bg-gray-100 text-gray-700 border border-gray-400"; // Define the badge class based on the role
 
-              {/* Action Buttons Column */}
-              <td className="px-4 py-2 border border-gray-300">
-                <div className="flex items-center justify-center gap-2">
-                  {/* Edit button */}
-
-                  {/* Toggle activity button */}
-                  <button
-                    className={`${
-                      sliderImage.is_active
-                        ? "bg-rose-400 hover:bg-rose-500"
-                        : "bg-green-500 hover:bg-green-600"
-                    } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
-                    onClick={() => handleToggleActivity(String(sliderImage.id))}
-                    title={
-                      sliderImage.is_active
-                        ? `Deactivate ${sliderImage.name}`
-                        : `Activate sliderImage ${sliderImage.name}`
-                    }
-                    disabled={isSubmitting}
-                  >
-                    <img
-                      src={
-                        sliderImage.is_active
-                          ? icons.removeBasket50.src
-                          : icons.addBasket50.src
-                      }
-                      alt={sliderImage.is_active ? "Deactivate" : "Activate"}
-                      width={24}
-                      height={24}
-                    />
-                  </button>
-
-                  {/* Toggle visibility button */}
-                  <button
-                    className={`${
-                      sliderImage.visibility === "public"
-                        ? "bg-purple-400 hover:bg-purple-500"
-                        : "bg-amber-500 hover:bg-amber-600"
-                    } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
-                    onClick={() =>
-                      handleToggleVisibility(String(sliderImage.id))
-                    }
-                    title={
-                      sliderImage.visibility === "public"
-                        ? `Make ${sliderImage.name} exclusive to members`
-                        : `Make ${sliderImage.name} public to all`
-                    }
-                    disabled={isSubmitting}
-                  >
-                    <img
-                      src={
-                        sliderImage.visibility === "public"
-                          ? icons.exclusive48.src
-                          : icons.globe48.src
-                      }
-                      alt={
-                        sliderImage.visibility
-                          ? "Make Exclusive to Members"
-                          : "Make Public to All"
-                      }
-                      width={24}
-                      height={24}
-                    />
-                  </button>
-
-                  {/* Delete button */}
-                  <button
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
-                    onClick={() => {
-                      setSelectedImage(sliderImage); // set selected image
-                      setDeleteModalVisible(true); // show delete modal
-                    }}
-                    title={`Delete Image ${sliderImage.name}`}
-                    disabled={isSubmitting}
-                  >
-                    <img
-                      src={icons.delete50.src}
-                      alt="Delete"
-                      width={24}
-                      height={24}
-                    />
-                  </button>
-                </div>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      {/* Pagination Control*/}
-      {totalPages > 1 && (
-        <div className="flex items-center mt-4 gap-x-4">
-          {/* Previous Button */}
-          <button
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-            className={`px-4 py-2 border rounded ${
-              currentPage === 1
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-orange-500 text-white"
-            }`}
-          >
-            Previous
-          </button>
-
-          {/* Counter of current page */}
-          <span className="font-semibold">{`${currentPage} of ${totalPages}`}</span>
-
-          {/* Next Button */}
-          <button
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            // Define the badge class based on the status
+            if (isActive) {
+              badgeClass = "bg-green-100 text-green-700 border-green-400";
+            } else {
+              badgeClass = "bg-red-100 text-red-700 border-red-400";
             }
-            disabled={currentPage === totalPages}
-            className={`px-4 py-2 border rounded ${
-              currentPage === totalPages
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-orange-500 text-white"
-            }`}
-          >
-            Next
-          </button>
-        </div>
-      )}
+
+            return (
+              <span className={`${baseClass} ${badgeClass}`}>{statusText}</span>
+            );
+          }
+
+          // Render Visibility Badge
+          if (key === "visibility") {
+            // Get the image visibility status
+            const visibility = row.visibility;
+
+            // Badge
+            const baseClass =
+              "px-3 py-1 rounded-md text-base border capitalize"; // Define the base class for the role badge
+            let badgeClass = "bg-gray-100 text-gray-700 border border-gray-400"; // Define the badge class based on the role
+
+            // Define the badge class based on the status
+            if (visibility === "members") {
+              badgeClass = "bg-amber-100 text-amber-700 border-amber-400";
+            } else {
+              badgeClass = "bg-gray-100 text-gray-700 border-gray-400";
+            }
+
+            return (
+              <span className={`${baseClass} ${badgeClass}`}>
+                {visibility} Only
+              </span>
+            );
+          }
+
+          // Render Created Date
+          if (key === "created_at") {
+            return <span>{formatDateTime(row.created_at)}</span>;
+          }
+
+          // Render Actions
+          if (key === "actions") {
+            return (
+              <div className="flex items-center justify-center gap-2">
+                {/* Edit button */}
+
+                {/* Toggle activity button */}
+                <button
+                  className={`${
+                    row.is_active
+                      ? "bg-rose-400 hover:bg-rose-500"
+                      : "bg-green-500 hover:bg-green-600"
+                  } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
+                  onClick={() => handleToggleActivity(String(row.id))}
+                  title={
+                    row.is_active
+                      ? `Deactivate ${row.name}`
+                      : `Activate sliderImage ${row.name}`
+                  }
+                  disabled={isSubmitting}
+                >
+                  <img
+                    src={
+                      row.is_active
+                        ? icons.removeBasket50.src
+                        : icons.addBasket50.src
+                    }
+                    alt={row.is_active ? "Deactivate" : "Activate"}
+                    width={24}
+                    height={24}
+                  />
+                </button>
+
+                {/* Toggle visibility button */}
+                <button
+                  className={`${
+                    row.visibility === "public"
+                      ? "bg-amber-400 hover:bg-amber-500"
+                      : "bg-gray-400 hover:bg-gray-500"
+                  } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
+                  onClick={() => handleToggleVisibility(String(row.id))}
+                  title={
+                    row.visibility === "public"
+                      ? `Make ${row.name} exclusive to members`
+                      : `Make ${row.name} public to all`
+                  }
+                  disabled={isSubmitting}
+                >
+                  <img
+                    src={
+                      row.visibility === "public"
+                        ? icons.exclusive48.src
+                        : icons.globe48.src
+                    }
+                    alt={
+                      row.visibility
+                        ? "Make Exclusive to Members"
+                        : "Make Public to All"
+                    }
+                    width={24}
+                    height={24}
+                  />
+                </button>
+
+                {/* Delete button */}
+                <button
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
+                  onClick={() => {
+                    setSelectedImage(row); // set selected image
+                    setDeleteModalVisible(true); // show delete modal
+                  }}
+                  title={`Delete Image ${row.name}`}
+                  disabled={isSubmitting}
+                >
+                  <img
+                    src={icons.delete50.src}
+                    alt="Delete"
+                    width={24}
+                    height={24}
+                  />
+                </button>
+              </div>
+            );
+          }
+
+          // Return value based on the key without formatting
+          return <span>{row[key]}</span>;
+        }}
+        isLoading={loading}
+      />
 
       {/* Delete Modal */}
       <DeleteModal

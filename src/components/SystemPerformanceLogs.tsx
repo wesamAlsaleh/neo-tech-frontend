@@ -120,6 +120,7 @@ export default function SystemPerformanceLogs() {
 
         return <span>{row[key]}</span>;
       }}
+      isLoading={loading} // Pass the loading state to the table
     />
   );
 }

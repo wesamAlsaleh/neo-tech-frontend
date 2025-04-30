@@ -241,7 +241,7 @@ export default function ProductsList() {
             }
           }
 
-          // Render Category Status Badge
+          // Render Product Status Badge
           if (key === "is_active") {
             // Get the image status
             const isActive = row.is_active ? true : false;

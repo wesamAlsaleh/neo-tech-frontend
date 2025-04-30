@@ -1,9 +1,12 @@
+"use client";
+
 import React from "react";
 
 // import components
 import PageTitle from "@/components/PageTitle";
 import { ActionButton } from "@/components/ActionButton";
 import AddImageSliderForm from "@/components/AddImageSliderForm";
+import Button from "@/components/Button";
 
 export default function page() {
   return (
@@ -13,13 +16,7 @@ export default function page() {
         subtitle="Add a new image to the slider"
         highlightText="The recommended image size is  1280x576 pixels"
         actionButton={
-          <ActionButton
-            href="/admin/customize/slider"
-            text="Back"
-            buttonTitle="Go back to Customize NeoTech Shop"
-            color="white"
-            textColor="black"
-          />
+          <Button text="Back" onClick={() => window.history.back()} />
         }
       />
 

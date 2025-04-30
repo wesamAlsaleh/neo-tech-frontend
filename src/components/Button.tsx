@@ -5,7 +5,6 @@ import React from "react";
 interface ButtonProps {
   onClick?: () => void;
   disabled?: boolean;
-  darkMode?: boolean;
   buttonClassName?: string;
   iconSize?: number;
   iconClassName?: string;
@@ -17,7 +16,6 @@ interface ButtonProps {
 export default function Button({
   onClick,
   disabled = false,
-  darkMode = false,
   buttonClassName = "",
   iconClassName = "",
   iconSize = 20,
@@ -50,13 +48,7 @@ export default function Button({
       )}
 
       {/* Button Text */}
-      {text && (
-        <span
-          className={`${darkMode ? "text-gray-500" : "text-black"} font-medium`}
-        >
-          {text}
-        </span>
-      )}
+      {text && <span className={`text-black font-medium`}>{text}</span>}
     </button>
   );
 }

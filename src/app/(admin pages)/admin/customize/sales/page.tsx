@@ -6,6 +6,7 @@ import { ActionButton } from "@/components/ActionButton";
 import SaleProductsList from "@/components/SaleProductsList";
 import Separator from "@/components/Separator";
 import FlashSalesList from "@/components/FlashSalesList";
+import Button from "@/components/Button";
 
 export default function page() {
   return (
@@ -18,6 +19,7 @@ export default function page() {
             text="Add Flash Sale"
             href="/admin/customize/sales/create-flash-sale"
           />
+          <Button />
         }
         actionButton2={
           <ActionButton

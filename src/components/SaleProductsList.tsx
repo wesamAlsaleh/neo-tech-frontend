@@ -68,12 +68,6 @@ export default function SaleProductsList() {
     fetchProductsOnSale();
   }, [currentPage]); // fetch features when currentPage changes or on initial render only
 
-  // Display loading spinner
-
-  if (loading) {
-    return <LoadingSpinner />;
-  }
-
   const columns: {
     key: string;
     label: string;
@@ -150,6 +144,7 @@ export default function SaleProductsList() {
         // Render the value of the cell without any special formatting
         return <span>{row[key]}</span>;
       }}
+      isLoading={loading}
     />
   );
 }

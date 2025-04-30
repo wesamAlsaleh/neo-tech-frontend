@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 
 // import icons
@@ -7,37 +9,45 @@ import { icons } from "../../../../../public/icons";
 import ProductsList from "@/components/ProductsList";
 import PageTitle from "@/components/PageTitle";
 import { ActionButton } from "@/components/ActionButton";
+import { useRouter } from "next/navigation";
+import Button from "@/components/Button";
 
 export default function ManageProductsPage() {
+  // Router instance
+  const router = useRouter();
+
   return (
     <>
       <PageTitle
         title="Products"
-        subtitle="Manage products here"
+        subtitle="Manage NeoTech products"
         actionButton={
-          <ActionButton
-            href="/admin/products/create-product"
+          <Button
             text="Add Product"
-            buttonTitle="Add a new product"
+            onClick={() => {
+              router.push("/admin/products/create-product");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
           />
         }
         actionButton2={
-          <ActionButton
-            href="/admin/customize/sales"
+          <Button
             text="Manage Flash Sales"
-            buttonTitle="Manage flash sales"
-            color="steelblue"
+            onClick={() => {
+              router.push("/admin/customize/sales");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
           />
         }
-        actionButton3={
-          <ActionButton
-            href="/admin/products/recycle-bin"
-            text="Recycle Button"
-            isIconButton
-            iconSrc={icons.recycleIcon48.src}
-            color="yellowgreen"
-          />
-        }
+        // actionButton3={
+        //   <ActionButton
+        //     href="/admin/products/recycle-bin"
+        //     text="Recycle Button"
+        //     isIconButton
+        //     iconSrc={icons.recycleIcon48.src}
+        //     color="yellowgreen"
+        //   />
+        // }
       />
 
       {/* products table */}

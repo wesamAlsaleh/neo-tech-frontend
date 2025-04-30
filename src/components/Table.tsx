@@ -161,7 +161,7 @@ export default function Table({
                   // If align is not provided, default to left alignment
                   const alignClass = col.align
                     ? `text-${col.align}`
-                    : "text-left";
+                    : "text-center";
 
                   return (
                     <th
@@ -206,7 +206,7 @@ export default function Table({
                       <td
                         key={col.key}
                         className={`py-3 px-6 text-${
-                          col.align || "left"
+                          col.align || "center"
                         } break-words`}
                       >
                         {renderCell ? renderCell(row, col.key) : row[col.key]}

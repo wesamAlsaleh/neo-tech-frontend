@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
+import { useRouter } from "next/navigation";
 
 // import custom components
 import CategoryList from "@/components/CategoriesList";
 import PageTitle from "@/components/PageTitle";
 import { ActionButton } from "@/components/ActionButton";
 import Button from "@/components/Button";
-import { useRouter } from "next/navigation";
 
 export default function ManageCategoriesPage() {
   // Router Instance

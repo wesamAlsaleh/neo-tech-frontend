@@ -108,9 +108,10 @@ export default function FlashSalesList() {
   }[] = [
     { key: "name", label: " Flash Sale Name", align: "left" },
     { key: "description", label: "Flash Sale Description", align: "center" },
-    { key: "is_active", label: "Is Active", align: "center" },
+    { key: "is_active", label: "Activity", align: "center" },
     { key: "start_date", label: "Flash Sale Start Date", align: "center" },
     { key: "end_date", label: "Flash Sale End Date", align: "center" },
+    { key: "actions", label: "Actions", align: "center" },
   ]; // Define the columns for the table
 
   return (
@@ -153,6 +154,43 @@ export default function FlashSalesList() {
           // Format Date cells
           if (key === "start_date" || key === "end_date") {
             return <span>{formatDateTime(row[key])}</span>; // Format the date and return it
+          }
+
+          // Format Actions cell
+          if (key === "actions") {
+            return (
+              <div className="flex items-center justify-center space-x-2">
+                {/* Edit sale button */}
+                <button
+                  className={` bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
+                  title={`View ${row.name}`}
+                  onClick={() =>
+                    router.push(`/admin/customize/sales/${row.id}`)
+                  }
+                >
+                  <img
+                    src={icons.edit50.src}
+                    alt={`View ${row.name}`}
+                    width={24}
+                    height={24}
+                  />
+                </button>
+
+                {/* Delete button */}
+                <button
+                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
+                  onClick={() => handleDeleteClick(row)}
+                  title={`Delete ${row.name}`}
+                >
+                  <img
+                    src={icons.delete50.src}
+                    alt="Delete"
+                    width={24}
+                    height={24}
+                  />
+                </button>
+              </div>
+            );
           }
 
           // Default cell rendering

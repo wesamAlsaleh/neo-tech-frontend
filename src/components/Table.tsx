@@ -16,6 +16,7 @@ interface TableProps {
   currentPage?: number; // Current page number for pagination
   totalPages?: number; // Total number of pages for pagination
   setCurrentPage?: (page: number) => void; // Function to set the current page for pagination
+  isLoading?: boolean; // Flag to indicate if the table is loading data
 }
 
 /**
@@ -68,7 +69,79 @@ export default function Table({
   currentPage = 1,
   totalPages = 1,
   setCurrentPage = () => {},
+  isLoading = false,
 }: TableProps) {
+  // Handle Loading State
+  if (!isLoading) {
+    return (
+      <div className="w-full h-full">
+        {/* Table container with controlled dimensions */}
+        <div className="w-full h-full relative overflow-hidden rounded-lg shadow-md">
+          {/* Scrollable viewport */}
+          <div className="w-full h-full overflow-auto">
+            {/* Table */}
+            <table className="w-full table-auto">
+              <thead className="sticky top-0 z-10">
+                <tr className="bg-orange-500 text-white uppercase text-sm leading-normal">
+                  {columns.map((col, index) => {
+                    // If align is not provided, default to left alignment
+                    const alignClass = col.align
+                      ? `text-${col.align}`
+                      : "text-left";
+
+                    return (
+                      <th
+                        key={col.key}
+                        className={`py-3 px-6 ${alignClass} ${
+                          index === 0 ? "rounded-tl-lg" : ""
+                        } ${
+                          index === columns.length - 1 ? "rounded-tr-lg" : ""
+                        }`}
+                      >
+                        {col.label}
+                      </th>
+                    );
+                  })}
+                </tr>
+              </thead>
+
+              <tbody className="text-gray-600">
+                {/* Skeleton rows - repeat for the number of items you expect */}
+                {[...Array(5)].map((_, rowIndex) => (
+                  <tr
+                    key={`skeleton-row-${rowIndex}`}
+                    className="border-b border-gray-200"
+                  >
+                    {columns.map((col) => (
+                      <td
+                        key={`skeleton-${col.key}`}
+                        className={`py-4 px-6 ${
+                          col.align ? `text-${col.align}` : "text-left"
+                        }`}
+                      >
+                        {/* Skeleton Layout */}
+                        <div className="flex flex-col space-y-2">
+                          {/* Animated placeholder bars with different widths */}
+                          <div
+                            className="h-4 bg-gray-200 rounded animate-pulse"
+                            style={{
+                              width: `${Math.random() * 30 + 70}%`,
+                              animationDelay: `${rowIndex * 0.1}s`,
+                            }}
+                          />
+                        </div>
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     // Complete wrapper to ensure table fits within containing element
     <div className="w-full h-full">

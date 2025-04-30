@@ -298,8 +298,6 @@ export default function SliderImagesList() {
           if (key === "actions") {
             return (
               <div className="flex items-center justify-center gap-2">
-                {/* Edit button */}
-
                 {/* Toggle activity button */}
                 <button
                   className={`${

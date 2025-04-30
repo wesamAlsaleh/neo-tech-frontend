@@ -47,7 +47,7 @@ interface TableProps {
  * }[] = [
  *   { key: 'name', label: 'Name', align: 'left' },
  *   { key: 'age', label: 'Age', align: 'center' },
- *   { key: 'email', label: 'Email', align: 'right' },
+ *   { key: '', label: '', align: 'center' },
  * ];
  *
  * const rows = [

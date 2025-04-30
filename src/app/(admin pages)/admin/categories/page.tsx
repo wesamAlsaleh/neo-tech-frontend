@@ -1,30 +1,34 @@
+"use client";
 import React from "react";
 
 // import custom components
 import CategoryList from "@/components/CategoriesList";
 import PageTitle from "@/components/PageTitle";
 import { ActionButton } from "@/components/ActionButton";
+import Button from "@/components/Button";
+import { useRouter } from "next/navigation";
 
 export default function ManageCategoriesPage() {
+  // Router Instance
+  const router = useRouter();
+
   return (
     <>
       <PageTitle
         title="Categories"
-        subtitle="Here you can manage categories"
+        subtitle="Manage NeoTech categories"
         actionButton={
-          <ActionButton
-            href="/admin/categories/create-category"
+          <Button
             text="Add Category"
+            onClick={() => {
+              router.push("/admin/categories/create-category");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
           />
         }
       />
 
-      {/* Categories List Container */}
-      <div className="mb-12">
-        {/* Categories table */}
-        {/* TODO: add pagination */}
-        <CategoryList />
-      </div>
+      <CategoryList />
     </>
   );
 }

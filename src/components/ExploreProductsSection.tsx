@@ -38,7 +38,7 @@ export default function ExploreProductsSection() {
       />
 
       {/* Product Cards Grid */}
-      <div className="grid lg:grid-cols-8 md:grid-cols-4 sm:grid-cols-2 gap-2 w-[100%]">
+      <div className="grid lg:grid-cols-8 md:grid-cols-4 sm:grid-cols-2 gap-3 w-[100%]">
         {products.map((product) => {
           return <ProductCard key={product.id} product={product} />;
         })}

@@ -20,6 +20,7 @@ import ServerResponse from "./ServerResponse";
 import LoadingSpinner from "./LoadingSpinner";
 import TableStatusColumn from "./TableStatusColumn";
 import DeleteModal from "./DeleteModal";
+import Table from "./Table";
 
 export default function FlashSalesList() {
   // Router instance
@@ -100,10 +101,17 @@ export default function FlashSalesList() {
     }
   };
 
-  // If loading display loading spinner
-  if (loading) {
-    return <LoadingSpinner />;
-  }
+  const columns: {
+    key: string;
+    label: string;
+    align?: "left" | "center" | "right";
+  }[] = [
+    { key: "name", label: " Flash Sale Name", align: "left" },
+    { key: "description", label: "Flash Sale Description", align: "center" },
+    { key: "is_active", label: "Is Active", align: "center" },
+    { key: "start_date", label: "Flash Sale Start Date", align: "center" },
+    { key: "end_date", label: "Flash Sale End Date", align: "center" },
+  ]; // Define the columns for the table
 
   return (
     <>
@@ -116,108 +124,41 @@ export default function FlashSalesList() {
       )}
 
       {/* Flash Sales Table */}
-      <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
-        <thead>
-          <tr className="bg-gray-100 border-b border-gray-300">
-            <th className="px-4 py-2 border border-gray-300">
-              Flash Sale Name
-            </th>
-            <th className="px-4 py-2 border border-gray-300">
-              Flash Sale Description
-            </th>
-            <th className="px-4 py-2 border border-gray-300">Is Active</th>
-            <th className="px-4 py-2 border border-gray-300">
-              Flash Sale Start Date
-            </th>
-            <th className="px-4 py-2 border border-gray-300">
-              Flash Sale End Date
-            </th>
-            <th className="px-4 py-2 border border-gray-300">Actions</th>
-          </tr>
-        </thead>
+      <Table
+        columns={columns}
+        rows={flashSales || []}
+        isLoading={loading}
+        noDataMessage="No flash sales in the system."
+        onRowClick={(row) => console.log("Row clicked:", row)}
+        renderCell={(row, key) => {
+          // Format Activity cell
+          if (key === "is_active") {
+            const baseClass = "px-3 py-1 rounded-md text-sm border capitalize"; // Define the base class for the role badge
+            let badgeClass = "bg-red-100 text-red-700 border border-red-400"; // Define the badge class based on the role
 
-        <tbody className="text-center h-12">
-          {(flashSales || []).length === 0 ? (
-            <tr>
-              <td colSpan={6} className="px-4 py-6 text-center">
-                No flash sales in the system.
-              </td>
-            </tr>
-          ) : (
-            flashSales?.map((flashSale) => (
-              <tr
-                key={flashSale.id}
-                className="hover:bg-gray-100 even:bg-gray-50"
-              >
-                {/* Flash Sale Name */}
-                <td className="px-4 py-2 border border-gray-300">
-                  {flashSale.name}
-                </td>
+            const isActive = row[key] === 1 ? true : false; // Check if the value is "true" or "false"
 
-                {/* Flash Sale Description */}
-                <td className="px-4 py-2 border border-gray-300">
-                  {flashSale.description}
-                </td>
+            // Define the badge class based on the role
+            if (isActive) {
+              badgeClass = "bg-green-100 text-green-700 border-green-400";
+            }
 
-                {/* Flash Sale Activity */}
-                <td className="px-4 py-2 border border-gray-300">
-                  <TableStatusColumn
-                    condition={flashSale.is_active}
-                    onYes="Active"
-                    onNo="Inactive"
-                  />
-                </td>
+            return (
+              <span className={`${baseClass} ${badgeClass}`}>
+                {isActive ? "Active" : "Not Active"}
+              </span>
+            );
+          }
 
-                {/* Flash Sale Start Date */}
-                <td className="px-4 py-2 border border-gray-300">
-                  {formatDateTime(flashSale.start_date)}
-                </td>
+          // Format Date cells
+          if (key === "start_date" || key === "end_date") {
+            return <span>{formatDateTime(row[key])}</span>; // Format the date and return it
+          }
 
-                {/* Flash Sale End Date */}
-                <td className="px-4 py-2 border border-gray-300">
-                  {formatDateTime(flashSale.end_date)}
-                </td>
-
-                {/* Actions */}
-                <td className="px-4 py-2 border border-gray-300">
-                  {/* Buttons container */}
-                  <div className="flex items-center justify-center space-x-2">
-                    {/* Edit sale button */}
-                    <button
-                      className={` bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
-                      title={`View ${flashSale.name}`}
-                      onClick={() =>
-                        router.push(`/admin/customize/sales/${flashSale.id}`)
-                      }
-                    >
-                      <img
-                        src={icons.edit50.src}
-                        alt={`View ${flashSale.name}`}
-                        width={24}
-                        height={24}
-                      />
-                    </button>
-
-                    {/* Delete button */}
-                    <button
-                      className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
-                      onClick={() => handleDeleteClick(flashSale)}
-                      title={`Delete ${flashSale.name}`}
-                    >
-                      <img
-                        src={icons.delete50.src}
-                        alt="Delete"
-                        width={24}
-                        height={24}
-                      />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+          // Default cell rendering
+          return <span>{row[key]}</span>;
+        }}
+      />
 
       {/* Delete Modal */}
       <DeleteModal

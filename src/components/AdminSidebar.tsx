@@ -103,6 +103,11 @@ export default function AdminSidebar() {
             name="Flash Sales"
             iconSrc={icons.flashSaleIcon96.src}
           />
+          <LI
+            href="/admin/customers"
+            name="Customers"
+            iconSrc={icons.customerInsightsIcon96.src}
+          />
         </ul>
 
         {/* Group 2 */}
@@ -128,11 +133,6 @@ export default function AdminSidebar() {
             href="/admin/analytics"
             name="Sales Reports"
             iconSrc={icons.analyticsIcon96.src}
-          />
-          <LI
-            href="/admin/insights"
-            name="Customer Insights"
-            iconSrc={icons.customerInsightsIcon96.src}
           />
         </ul>
 

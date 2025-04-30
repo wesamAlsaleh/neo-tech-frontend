@@ -133,8 +133,8 @@ export default function AdminHeader() {
             id="search"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            placeholder="Search by name or ID"
-            className="pl-9 pr-4 py-2 w-64 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+            placeholder="Search by name or ID..."
+            className="pl-9 pr-4 py-2 w-96 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
           />
 
           {/* Search Icon in SVG */}
@@ -158,7 +158,7 @@ export default function AdminHeader() {
 
           {/* Search Dropdown Menu Container */}
           {openSearchResults && (
-            <div className="absolute left-0 mt-1 w-[500px] max-w-[600px] h-60 max-h-96 bg-white rounded-md shadow-lg z-10 border border-gray-200 overflow-y-auto divide-y divide-gray-100">
+            <div className="absolute left-0 mt-1 w-[600px] max-w-[700px] h-60 max-h-96 bg-white rounded-md shadow-lg z-10 border border-gray-200 overflow-y-auto divide-y divide-gray-100">
               {/* Handle Loading */}
               {isSearching && (
                 <>
@@ -226,58 +226,6 @@ export default function AdminHeader() {
 
       {/* Right section Container */}
       <div className="flex items-center space-x-4">
-        {/* Dropdown menu 1 */}
-        <div className="relative">
-          {/* Dropdown Button */}
-          <select className="appearance-none bg-gray-50 border border-gray-200 text-gray-700 pl-4 pr-10 py-2 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all">
-            <option>All Users</option>
-            <option>Active Users</option>
-            <option>Admins</option>
-          </select>
-
-          {/* Down Arrow Icon */}
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </div>
-        </div>
-
-        {/* Dropdown menu 2 */}
-        <div className="relative">
-          <select className="appearance-none bg-gray-50 border border-gray-200 text-gray-700 pl-4 pr-10 py-2 rounded-lg text-sm font-medium focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all">
-            <option>All Servers</option>
-            <option>Production</option>
-            <option>Development</option>
-          </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </div>
-        </div>
         {/* Notification bell button */}
         <button className="relative p-2 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-600 transition-colors">
           {/* Notification bell icon */}

@@ -83,11 +83,11 @@ export default function AdminSidebar() {
             name="Categories"
             iconSrc={icons.categoryIcon96.src}
           />
-          <LI
+          {/* <LI
             href="#/admin/brands"
             name="Brands"
             iconSrc={icons.brandIcon96.src}
-          />
+          /> */}
           <LI
             href="/admin/products"
             name="Products"
@@ -104,8 +104,8 @@ export default function AdminSidebar() {
             iconSrc={icons.flashSaleIcon96.src}
           />
           <LI
-            href="/admin/customers"
-            name="Customers"
+            href="/admin/users"
+            name="Users"
             iconSrc={icons.customerInsightsIcon96.src}
           />
         </ul>
@@ -113,7 +113,7 @@ export default function AdminSidebar() {
         {/* Group 2 */}
         <GroupTitle title="Customize Shop" mt />
         <ul className="space-y-1.5">
-          <LI href="#" name="Banner" iconSrc={icons.bannerIcon96.src} />
+          {/* <LI href="#" name="Banner" iconSrc={icons.bannerIcon96.src} /> */}
           <LI
             href="/admin/customize/slider"
             name="Image Carousel"

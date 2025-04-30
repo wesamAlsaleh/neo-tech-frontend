@@ -218,7 +218,7 @@ export default function ProductsList() {
         columns={columns}
         rows={products || []}
         noDataMessage="No products found."
-        onRowClick={(row) => console.log("Row clicked:", row)}
+        onRowClick={(row) => router.push(`/products/${row.slug}`)}
         renderCell={(row, key) => {
           // Render Product Image
           if (key === "product_image") {

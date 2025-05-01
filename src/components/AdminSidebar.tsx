@@ -83,11 +83,6 @@ export default function AdminSidebar() {
             name="Categories"
             iconSrc={icons.categoryIcon96.src}
           />
-          {/* <LI
-            href="#/admin/brands"
-            name="Brands"
-            iconSrc={icons.brandIcon96.src}
-          /> */}
           <LI
             href="/admin/products"
             name="Products"
@@ -133,6 +128,11 @@ export default function AdminSidebar() {
             href="/admin/analytics"
             name="Sales Reports"
             iconSrc={icons.analyticsIcon96.src}
+          />
+          <LI
+            href="/admin/products-statistics"
+            name="Products Statistics"
+            iconSrc={icons.statisticsIcon96.src}
           />
         </ul>
 

@@ -28,6 +28,9 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import SystemPerformanceLogs from "@/components/SystemPerformanceLogs";
 import MostSelledProductsChart from "@/components/(charts)/MostSelledProductsChart";
 import { convertPriceToBHD } from "@/lib/helpers";
+import { ColumnLayout } from "@/components/(layouts)/ColumnLayout";
+import { TwoColumnLayout } from "@/components/(layouts)/TwoColumnLayout";
+import { FiveColumnLayout } from "@/components/(layouts)/FiveColumnLayout";
 
 /**
  * @constant Height for Small cards is 160px (widgets)
@@ -330,17 +333,3 @@ export default function dashboardPage() {
     </div>
   );
 }
-
-// Widget Card Layout for 5 columns
-const FiveColumnLayout = ({ children }: { children: React.ReactNode }) => (
-  <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">{children}</div>
-);
-
-// Widget Card Layout for 2 columns
-const TwoColumnLayout = ({ children }: { children: React.ReactNode }) => (
-  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">{children}</div>
-);
-
-const ColumnLayout = ({ children }: { children: React.ReactNode }) => (
-  <div className="grid grid-cols-1 gap-4">{children}</div>
-);

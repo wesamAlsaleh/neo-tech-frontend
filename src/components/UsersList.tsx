@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 // import types
 import { User } from "@/types/User";
@@ -13,6 +14,9 @@ import { formatDateTime } from "@/lib/helpers";
 import { getAllUsers } from "@/services/user-services";
 
 export default function UsersList() {
+  // Router Instance
+  const router = useRouter();
+
   // State to store the loading state
   const [loading, setLoading] = useState(false);
 
@@ -87,7 +91,9 @@ export default function UsersList() {
       columns={columns}
       rows={users}
       noDataMessage="No Users Found"
-      onRowClick={(row) => console.log("Row clicked:", row)}
+      onRowClick={(row) => {
+        router.push(`/admin/users/${row.id}`); // Navigate to the user details page on row click
+      }}
       renderCell={(row, key) => {
         // Format the role column
         if (key === "role") {

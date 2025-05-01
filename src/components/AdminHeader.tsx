@@ -19,6 +19,7 @@ import { icons } from "../../public/icons";
 
 // import debounce hook to avoid too many API calls via search input
 import { useDebounce } from "@/lib/hooks";
+import { useRouter } from "next/navigation";
 
 type SectionProps = {
   title: string;
@@ -27,6 +28,9 @@ type SectionProps = {
 };
 
 export default function AdminHeader() {
+  // Router Instance
+  const router = useRouter();
+
   const [searchValue, setSearchValue] = useState<string>(""); // State to store the search value
   const [searchResults, setSearchResults] = useState<{
     counts: {
@@ -119,6 +123,199 @@ export default function AdminHeader() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [openSearchResults]); // Re-run effect when dropdown state changes
+
+  // Function to render the section with title and count and the rendered component
+  const RenderSection: React.FC<SectionProps> = ({
+    title,
+    count,
+    children,
+  }) => {
+    return (
+      <div className="p-3">
+        <h3 className="text-sm font-medium text-gray-700 flex items-center justify-between mb-1">
+          {title}
+          <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-xs">
+            {count}
+          </span>
+        </h3>
+
+        {children}
+      </div>
+    );
+  };
+
+  // Function to render the section with loading state
+  const RenderSectionSkeleton: React.FC = () => {
+    return (
+      <div className="p-3 animate-pulse">
+        {/* Title and Counter Skeleton */}
+        <div className="flex items-center justify-between mb-1">
+          {/* Title Skeleton */}
+          <div className="h-4 w-1/3 bg-gray-200 rounded" />
+
+          {/* Counter Skeleton */}
+          <span className="px-2 py-0.5 rounded-full">
+            <div className="h-4 w-8 bg-gray-200 rounded-full" />
+          </span>
+        </div>
+
+        {/* Skeleton for children */}
+        <div className="space-y-2">
+          <div className="h-4 bg-gray-200 rounded" />
+        </div>
+      </div>
+    );
+  };
+
+  // Function to render users in the dropdown menu
+  const renderUsers = (usersArray: User[]) => {
+    if (!usersArray.length) {
+      return (
+        <p className="text-sm text-gray-500 italic py-1">No users found</p>
+      );
+    }
+
+    return (
+      <ul className="divide-y divide-gray-50">
+        {usersArray.map((user) => (
+          <li
+            key={user.id}
+            className="py-2 px-1 hover:bg-gray-50 rounded-md transition-colors cursor-pointer"
+            onClick={() => {
+              router.push(`/admin/users/${user.id}`);
+              window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to the top of the page after submission
+              setSearchValue(""); // Clear the search value
+              setOpenSearchResults(false); // Close the search results
+            }}
+          >
+            {/* Content Container */}
+            <div className="flex items-center space-x-3">
+              {/* User Avatar (Circle contain first name latter) */}
+              <div className="flex-shrink-0 h-8 w-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-500">
+                {user.first_name.charAt(0).toUpperCase()}
+              </div>
+
+              {/* User Details Container */}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-800 truncate">
+                  {user.first_name} {user.last_name}
+                </p>
+
+                <p className="text-xs text-gray-500 truncate">{user.email}</p>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
+  // Function to render orders in the dropdown menu
+  const renderOrders = (ordersArray: Order[]) => {
+    if (!ordersArray.length) {
+      return (
+        <p className="text-sm text-gray-500 italic py-1">No Orders Found</p>
+      );
+    }
+
+    return (
+      <ul className="divide-y divide-gray-50">
+        {ordersArray.map((order) => (
+          <li
+            key={order.id}
+            className="py-2 px-1 hover:bg-gray-50 rounded-md transition-colors cursor-pointer"
+            onClick={() => {
+              router.push(`/admin/orders/${order.id}`);
+              window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to the top of the page after submission
+              setSearchValue(""); // Clear the search value
+              setOpenSearchResults(false); // Close the search results
+            }}
+          >
+            {/* Content Container */}
+            <div className="flex items-center space-x-3">
+              {/* Order Details Container */}
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-800 truncate">
+                  Order ID: {order.id} | Order UUID:{order.uuid}
+                </p>
+
+                <p className="text-xs text-gray-500 truncate">
+                  Ordered By: {order.user?.first_name} on{" "}
+                  {formatDateTime(String(order.created_at))} with total of{" "}
+                  {convertPriceToBHD(String(order.total_price))}
+                </p>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
+  // Function to render products in the dropdown menu
+  const renderProducts = (productsArray: Product[]) => {
+    if (!productsArray.length) {
+      return (
+        <p className="text-sm text-gray-500 italic py-1">No Products Found</p>
+      );
+    }
+
+    return (
+      <ul className="divide-y divide-gray-50">
+        {productsArray.map((product) => {
+          // Get product price based on whether it's on sale or not
+          const productPrice = product.onSale
+            ? product.product_price_after_discount
+            : product.product_price;
+
+          // Get first image of the product
+          const productImage = product.images[0] || icons.noImageIcon;
+
+          return (
+            <li
+              key={product.id}
+              className="py-2 px-1 hover:bg-gray-50 rounded-md transition-colors cursor-pointer"
+              onClick={() => {
+                router.push(`/products/${product.slug}`);
+                window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to the top of the page after submission
+                setSearchValue(""); // Clear the search value
+                setOpenSearchResults(false); // Close the search results
+              }}
+            >
+              {/* Content Container */}
+              <div className="flex items-center space-x-3">
+                {/* Product Image Container */}
+                <div className="flex-shrink-0 h-8 w-8 bg-none rounded-full flex items-center justify-center">
+                  <Image
+                    src={productImage}
+                    alt={product.product_name}
+                    width={43}
+                    height={43}
+                    className="rounded-full"
+                  />
+                </div>
+
+                {/* Order Details Container */}
+                <div className="flex-1 min-w-0">
+                  {/* Product Name */}
+                  <p className="text-sm font-medium text-gray-800 truncate">
+                    {product.product_name}
+                  </p>
+
+                  {/* Product Details (price + activity + stock) */}
+                  <p className="text-xs text-gray-500 truncate">
+                    {convertPriceToBHD(String(productPrice))} |{" "}
+                    {product.product_stock} in stock |{" "}
+                    {product.is_active ? "Active" : "Inactive"}
+                  </p>
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  };
 
   return (
     <header className="h-16 bg-white border-b border-gray-200 px-6 flex items-center justify-between shadow-sm">
@@ -251,170 +448,3 @@ export default function AdminHeader() {
     </header>
   );
 }
-
-// Function to render the section with title and count and the rendered component
-const RenderSection: React.FC<SectionProps> = ({ title, count, children }) => {
-  return (
-    <div className="p-3">
-      <h3 className="text-sm font-medium text-gray-700 flex items-center justify-between mb-1">
-        {title}
-        <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-xs">
-          {count}
-        </span>
-      </h3>
-
-      {children}
-    </div>
-  );
-};
-
-// Function to render the section with loading state
-const RenderSectionSkeleton: React.FC = () => {
-  return (
-    <div className="p-3 animate-pulse">
-      {/* Title and Counter Skeleton */}
-      <div className="flex items-center justify-between mb-1">
-        {/* Title Skeleton */}
-        <div className="h-4 w-1/3 bg-gray-200 rounded" />
-
-        {/* Counter Skeleton */}
-        <span className="px-2 py-0.5 rounded-full">
-          <div className="h-4 w-8 bg-gray-200 rounded-full" />
-        </span>
-      </div>
-
-      {/* Skeleton for children */}
-      <div className="space-y-2">
-        <div className="h-4 bg-gray-200 rounded" />
-      </div>
-    </div>
-  );
-};
-
-// Function to render users in the dropdown menu
-const renderUsers = (usersArray: User[]) => {
-  if (!usersArray.length) {
-    return <p className="text-sm text-gray-500 italic py-1">No users found</p>;
-  }
-
-  return (
-    <ul className="divide-y divide-gray-50">
-      {usersArray.map((user) => (
-        <li
-          key={user.id}
-          className="py-2 px-1 hover:bg-gray-50 rounded-md transition-colors cursor-pointer"
-        >
-          {/* Content Container */}
-          <div className="flex items-center space-x-3">
-            {/* User Avatar (Circle contain first name latter) */}
-            <div className="flex-shrink-0 h-8 w-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-500">
-              {user.first_name.charAt(0).toUpperCase()}
-            </div>
-
-            {/* User Details Container */}
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-800 truncate">
-                {user.first_name} {user.last_name}
-              </p>
-
-              <p className="text-xs text-gray-500 truncate">{user.email}</p>
-            </div>
-          </div>
-        </li>
-      ))}
-    </ul>
-  );
-};
-
-// Function to render orders in the dropdown menu
-const renderOrders = (ordersArray: Order[]) => {
-  if (!ordersArray.length) {
-    return <p className="text-sm text-gray-500 italic py-1">No Orders Found</p>;
-  }
-
-  return (
-    <ul className="divide-y divide-gray-50">
-      {ordersArray.map((order) => (
-        <li
-          key={order.id}
-          className="py-2 px-1 hover:bg-gray-50 rounded-md transition-colors cursor-pointer"
-        >
-          {/* Content Container */}
-          <div className="flex items-center space-x-3">
-            {/* Order Details Container */}
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-800 truncate">
-                Order ID: {order.id} | Order UUID:{order.uuid}
-              </p>
-
-              <p className="text-xs text-gray-500 truncate">
-                Ordered By: {order.user?.first_name} on{" "}
-                {formatDateTime(String(order.created_at))} with total of{" "}
-                {convertPriceToBHD(String(order.total_price))}
-              </p>
-            </div>
-          </div>
-        </li>
-      ))}
-    </ul>
-  );
-};
-
-// Function to render products in the dropdown menu
-const renderProducts = (productsArray: Product[]) => {
-  if (!productsArray.length) {
-    return (
-      <p className="text-sm text-gray-500 italic py-1">No Products Found</p>
-    );
-  }
-
-  return (
-    <ul className="divide-y divide-gray-50">
-      {productsArray.map((product) => {
-        // Get product price based on whether it's on sale or not
-        const productPrice = product.onSale
-          ? product.product_price_after_discount
-          : product.product_price;
-
-        // Get first image of the product
-        const productImage = product.images[0] || icons.noImageIcon;
-
-        return (
-          <li
-            key={product.id}
-            className="py-2 px-1 hover:bg-gray-50 rounded-md transition-colors cursor-pointer"
-          >
-            {/* Content Container */}
-            <div className="flex items-center space-x-3">
-              {/* Product Image Container */}
-              <div className="flex-shrink-0 h-8 w-8 bg-none rounded-full flex items-center justify-center">
-                <Image
-                  src={productImage}
-                  alt={product.product_name}
-                  width={43}
-                  height={43}
-                  className="rounded-full"
-                />
-              </div>
-
-              {/* Order Details Container */}
-              <div className="flex-1 min-w-0">
-                {/* Product Name */}
-                <p className="text-sm font-medium text-gray-800 truncate">
-                  {product.product_name}
-                </p>
-
-                {/* Product Details (price + activity + stock) */}
-                <p className="text-xs text-gray-500 truncate">
-                  {convertPriceToBHD(String(productPrice))} |{" "}
-                  {product.product_stock} in stock |{" "}
-                  {product.is_active ? "Active" : "Inactive"}
-                </p>
-              </div>
-            </div>
-          </li>
-        );
-      })}
-    </ul>
-  );
-};

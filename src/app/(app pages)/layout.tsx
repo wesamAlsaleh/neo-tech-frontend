@@ -1,6 +1,7 @@
 // Import custom components
 import NavBar from "@/components/NavBar";
 import ClientPageLayout from "@/components/ClientPageLayout";
+import Footer from "@/components/Footer";
 
 export default function ClientLayout({
   children,
@@ -9,13 +10,16 @@ export default function ClientLayout({
 }) {
   return (
     <div className="flex flex-col h-screen bg-gray-200">
-      {/* Navigation Bar */}
+      {/* Navigation Bar - fixed height */}
       <NavBar />
 
-      {/* Content section below the navbar */}
-      <div className="flex-1 overflow-y-auto">
+      {/* Main content area - flex-grow to push footer down */}
+      <main className="flex-grow">
         <ClientPageLayout>{children}</ClientPageLayout>
-      </div>
+      </main>
+
+      {/* Footer - will stay at bottom */}
+      <Footer />
     </div>
   );
 }

@@ -355,7 +355,7 @@ export default function AdminHeader() {
 
           {/* Search Dropdown Menu Container */}
           {openSearchResults && (
-            <div className="absolute left-0 mt-1 w-[600px] max-w-[700px] h-60 max-h-96 bg-white rounded-md shadow-lg z-10 border border-gray-200 overflow-y-auto divide-y divide-gray-100">
+            <div className="absolute left-0 mt-1 w-[600px] max-w-[700px] h-60 max-h-96 bg-white rounded-md shadow-lg z-20 border border-gray-200 overflow-y-auto divide-y divide-gray-100">
               {/* Handle Loading */}
               {isSearching && (
                 <>

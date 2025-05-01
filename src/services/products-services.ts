@@ -748,3 +748,29 @@ export const putRating = async (productId: string, rating: number) => {
     };
   }
 };
+
+/**
+ * @function searchProducts - to search for products using a search term
+ * @param {string} searchTerm - The search term to filter products by name or barcode
+ */
+export const searchProducts = async (searchTerm: string) => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/search-products?query=${searchTerm}`
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+      productsCount: response.data.products_count,
+      products: response.data.products,
+    };
+  } catch (error) {
+    console.error(error);
+
+    return {
+      status: false,
+      message: "An error occurred while searching for the products.",
+    };
+  }
+};

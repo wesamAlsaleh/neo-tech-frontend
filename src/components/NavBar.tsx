@@ -3,6 +3,7 @@
 import Link from "next/link";
 import React, { useEffect } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 // import the auth context to get the user data
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,6 +18,16 @@ import { icons } from "../../public/icons";
 export default function NavBar() {
   // get user data
   const { user, loading, userCartItemsCount, userWishlistCount } = useAuth();
+
+  // Get the url of the current page and highlight the corresponding link
+  const pathname = usePathname();
+
+  // Prepare NavBar links
+  const navItems = [
+    { href: "/home", label: "Home" },
+    { href: "/contact", label: "Contact" },
+    { href: "/about", label: "About" },
+  ];
 
   return (
     <div>
@@ -40,28 +51,25 @@ export default function NavBar() {
 
         {/* pages links */}
         <div className="flex space-x-4">
-          <button>
-            <Link href="/home" className="font-bold">
-              <h1>Home</h1>
+          {navItems.map(({ href, label }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`font-bold hover:text-orange-500 transition ${
+                pathname === href ? "text-orange-600" : "text-gray-800"
+              }`}
+            >
+              {label}
             </Link>
-          </button>
-
-          <button>
-            <Link href="/contact" className="font-bold">
-              <h1>Contact</h1>
-            </Link>
-          </button>
-
-          <button>
-            <Link href="/about" className="font-bold">
-              <h1>About</h1>
-            </Link>
-          </button>
+          ))}
 
           {/* if not authenticated show signup button */}
           {!user ? (
             loading ? null : (
-              <Link href="/register" className="font-bold">
+              <Link
+                href="/register"
+                className="font-bold text-gray-800 hover:text-orange-500 transition"
+              >
                 <h1>Sign up</h1>
               </Link>
             )
@@ -70,7 +78,10 @@ export default function NavBar() {
           {user?.role === "admin" ? (
             loading ? null : (
               <button>
-                <Link href="/admin/dashboard" className="font-bold">
+                <Link
+                  href="/admin/dashboard"
+                  className="font-bold text-gray-800 hover:text-orange-500 transition"
+                >
                   <h1>Dashboard</h1>
                 </Link>
               </button>

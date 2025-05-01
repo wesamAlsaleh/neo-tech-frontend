@@ -434,6 +434,9 @@ export default function ProductsList() {
           return <span>{row[key]}</span>;
         }}
         isLoading={loading} // Loading state
+        currentPage={currentPage} // Current page number
+        totalPages={totalPages} // Total number of pages
+        setCurrentPage={setCurrentPage} // Function to set the current page
       />
 
       {/* Edit Modal */}

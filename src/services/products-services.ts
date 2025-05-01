@@ -774,3 +774,53 @@ export const searchProducts = async (searchTerm: string) => {
     };
   }
 };
+
+/**
+ * @function getProductStatistics - to get product statistics
+ */
+export const getProductStatistics = async (
+  currentPage: number,
+  perPage: number
+) => {
+  try {
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    if (!userToken) {
+      return {
+        status: false,
+        message: "Authentication token not found.",
+      };
+    }
+
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/products-statistics?per_page=${perPage}&page=${currentPage}`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+      products: response.data.products.data,
+      currentPage: response.data.products.current_page,
+      totalPages: response.data.products.last_page,
+      totalProducts: response.data.products.total,
+      perPage: response.data.products.per_page,
+    };
+  } catch (error: any) {
+    // Debugging error
+    console.error(error);
+
+    // Log the Developer message
+    console.log(error);
+
+    return {
+      status: false,
+      message: error.response.data.message,
+    };
+  }
+};

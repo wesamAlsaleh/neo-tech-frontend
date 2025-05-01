@@ -90,7 +90,7 @@ export default function page() {
         </h1>
       </div>
 
-      <div className="flex flex-wrap md:flex-nowrap gap-4 w-full">
+      <div className="flex flex-wrap md:flex-nowrap gap-4 w-full pb-10">
         {/* Left Section: Orders History */}
         <div className="w-full md:w-[70%]">
           <UserOrdersHistory />

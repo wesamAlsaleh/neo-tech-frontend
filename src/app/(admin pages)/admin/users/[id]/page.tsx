@@ -426,7 +426,10 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
                 columns={columns}
                 rows={UserDetails?.orders || []}
                 noDataMessage="No Orders For This User."
-                onRowClick={(row) => console.log("Row clicked:", row)}
+                onRowClick={(row) => {
+                  router.push(`/admin/orders/${row.id}`); // navigate to order details page without refreshing the page
+                  window.scrollTo({ top: 0, behavior: "smooth" }); // 'smooth' or 'auto'
+                }}
                 renderCell={(row, key) => {
                   // Format the order status
                   // Render Order Status

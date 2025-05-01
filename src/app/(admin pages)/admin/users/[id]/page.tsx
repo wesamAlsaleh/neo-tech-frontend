@@ -10,7 +10,7 @@ import { User } from "@/types/User";
 import { getUserDetails, updateUser } from "@/services/user-services";
 
 // import helpers
-import { formatDateTime } from "@/lib/helpers";
+import { convertPriceToBHD, formatDateTime } from "@/lib/helpers";
 
 // import constants
 import { cities } from "@/types/cities";
@@ -20,6 +20,7 @@ import PageTitle from "@/components/PageTitle";
 import Button from "@/components/Button";
 import Card from "@/components/Card";
 import { TwoColumnLayout } from "@/components/(layouts)/TwoColumnLayout";
+import Table from "@/components/Table";
 
 export default function page({ params }: { params: Promise<{ id: string }> }) {
   // Router instance
@@ -129,6 +130,18 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
     // Scroll to the top of the page after submission
     window.scrollTo({ top: 0, behavior: "smooth" }); // 'smooth' or 'auto'
   };
+
+  // Prepare the columns for the table
+  const columns: {
+    key: string;
+    label: string;
+    align?: "left" | "center" | "right";
+  }[] = [
+    { key: "id", label: "Order Id", align: "center" },
+    { key: "status", label: "Order Status", align: "center" },
+    { key: "created_at", label: "Order Date", align: "center" },
+    { key: "total_price", label: "Order Total", align: "center" },
+  ];
 
   return (
     <>
@@ -408,10 +421,63 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
           <Card
             CardTitle="User Orders History"
             CardDescription={`${UserDetails?.first_name} has ${UserDetails?.orders?.length} orders`}
-            CardContent={"orders"}
+            CardContent={
+              <Table
+                columns={columns}
+                rows={UserDetails?.orders || []}
+                noDataMessage="No Orders For This User."
+                onRowClick={(row) => console.log("Row clicked:", row)}
+                renderCell={(row, key) => {
+                  // Format the order status
+                  // Render Order Status
+                  if (key === "status") {
+                    // Get the order status
+                    const status = row.status;
+
+                    // Badge
+                    const baseClass =
+                      "px-3 py-1 rounded-md text-sm border capitalize"; // Define the base class for the role badge
+                    let badgeClass =
+                      "bg-gray-100 text-gray-700 border border-gray-400"; // Define the badge class based on the role
+
+                    // Define the badge class based on the status
+                    if (status === "pending") {
+                      badgeClass =
+                        "bg-yellow-100 text-yellow-700 border-yellow-400";
+                    }
+                    if (status === "canceled") {
+                      badgeClass = "bg-red-100 text-red-700 border-red-400";
+                    }
+                    if (status === "completed") {
+                      badgeClass =
+                        "bg-green-100 text-green-700 border-green-400";
+                    }
+
+                    return (
+                      <span className={`${baseClass} ${badgeClass}`}>
+                        {status}
+                      </span>
+                    );
+                  }
+
+                  // Format the order date
+                  if (key === "created_at") {
+                    return <span>{formatDateTime(row.created_at)}</span>;
+                  }
+
+                  // Format the order total price
+                  if (key === "total_price") {
+                    return <span>{convertPriceToBHD(row.total_price)}</span>;
+                  }
+
+                  // No Formatting for the cell
+                  return <span>{row[key]}</span>;
+                }}
+              />
+            }
             loading={loading}
-            CardHeight={"h-[600px]"}
-            CardMaxContentHeight={"h-[600px]"}
+            CardHeight={"h-[800px]"}
+            CardMaxContentHeight={"h-[800px]"}
           />
         </TwoColumnLayout>
       </div>

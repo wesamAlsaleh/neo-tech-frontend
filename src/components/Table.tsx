@@ -17,6 +17,8 @@ interface TableProps {
   totalPages?: number; // Total number of pages for pagination
   setCurrentPage?: (page: number) => void; // Function to set the current page for pagination
   isLoading?: boolean; // Flag to indicate if the table is loading data
+  preventRowClick?: boolean; // Flag to prevent row click events
+  preventRowClickColumn?: string; // Specify the column key where row click should be disabled
 }
 
 /**
@@ -74,6 +76,8 @@ export default function Table({
   totalPages = 1,
   setCurrentPage = () => {},
   isLoading = false,
+  preventRowClick = false,
+  preventRowClickColumn = "",
 }: TableProps) {
   // Handle Loading State
   if (isLoading) {
@@ -208,6 +212,15 @@ export default function Table({
                         className={`py-3 px-6 text-${
                           col.align || "center"
                         } break-words`}
+                        onClick={(e) => {
+                          // Prevent row click if specified column is clicked
+                          if (
+                            preventRowClick &&
+                            col.key === preventRowClickColumn
+                          ) {
+                            e.stopPropagation();
+                          }
+                        }}
                       >
                         {renderCell ? renderCell(row, col.key) : row[col.key]}
                       </td>

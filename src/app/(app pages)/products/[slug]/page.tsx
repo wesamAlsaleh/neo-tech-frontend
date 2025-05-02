@@ -9,13 +9,15 @@ import { Product, SingleProduct } from "@/types/product";
 // import services
 import { searchProductBySlug } from "@/services/products-services";
 
+// import icons
+import { icons } from "../../../../../public/icons";
+
 // import custom components
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ProductDetailsSection from "@/components/ProductDetailsSection";
 import Breadcrumb from "@/components/PageBreadcrumb";
 import Button from "@/components/Button";
 import EditProductModal from "@/components/EditProductModal";
-import { icons } from "../../../../../public/icons";
 
 const ProductPage = ({ params }: { params: Promise<{ slug: string }> }) => {
   // Router instance

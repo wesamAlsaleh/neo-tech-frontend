@@ -16,7 +16,7 @@ type OrdersManagerProps = {
   Orders?: Order[] | null; // Orders data
 };
 
-export default function getSystemLogsOrdersManager(props: OrdersManagerProps) {
+export default function OrdersManager(props: OrdersManagerProps) {
   // Destructure props
   const { Orders } = props;
 

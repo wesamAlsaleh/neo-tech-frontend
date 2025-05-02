@@ -213,6 +213,11 @@ export default function Table({
                           col.align || "center"
                         } break-words`}
                         onClick={(e) => {
+                          // Prevent row click if actions column is clicked
+                          if (col.key === "actions") {
+                            e.stopPropagation();
+                          }
+
                           // Prevent row click if specified column is clicked
                           if (
                             preventRowClick &&

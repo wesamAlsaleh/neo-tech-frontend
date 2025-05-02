@@ -22,6 +22,7 @@ import { getFlashSale, updateFlashSale } from "@/services/sale-services";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import PageTitle from "@/components/PageTitle";
 import { ActionButton } from "@/components/ActionButton";
+import Button from "@/components/Button";
 
 export default function EditFlashSalePage({
   params,
@@ -242,7 +243,13 @@ export default function EditFlashSalePage({
         title={`Edit Flash Sale: ${flashSale?.name}`}
         subtitle="Modify the flash sale details and product discounts"
         actionButton={
-          <ActionButton text="Back" href="/admin/customize/sales" />
+          <Button
+            text="Back"
+            onClick={() => {
+              router.push("/admin/customize/sales");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+          />
         }
       />
 

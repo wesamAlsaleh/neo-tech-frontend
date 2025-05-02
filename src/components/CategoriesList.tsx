@@ -220,8 +220,8 @@ export default function CategoryList() {
                   <img
                     src={icons.edit50.src}
                     alt="Edit"
-                    width={35}
-                    height={35}
+                    width={24}
+                    height={24}
                   />
                 </button>
 
@@ -252,15 +252,15 @@ export default function CategoryList() {
                     <img
                       src={icons.removeBasket50.src}
                       alt="Add to Basket"
-                      width={35}
-                      height={35}
+                      width={24}
+                      height={24}
                     />
                   ) : (
                     <img
                       src={icons.addBasket50.src}
                       alt="Add to Basket"
-                      width={35}
-                      height={35}
+                      width={24}
+                      height={24}
                     />
                   )}
                 </button>

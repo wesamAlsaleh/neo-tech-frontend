@@ -14,7 +14,7 @@ import {
 
 type SalesChartProps = {
   data: {
-    date: string; // date in YYYY-MM-DD format
+    month: string; // date in Month Year format (e.g. "Jan 2023")
     revenue: number; // revenue in BHD
   }[]; // array of objects
 };
@@ -41,9 +41,9 @@ export default function SalesChart(props: SalesChartProps) {
           </linearGradient> */}
         </defs>
 
-        <XAxis dataKey="date" />
+        <XAxis dataKey="month" />
         <YAxis tickFormatter={(value) => `${value}`} />
-        <CartesianGrid strokeDasharray="3 3" />
+        <CartesianGrid strokeDasharray="2 2" strokeWidth={0.5} />
         <Tooltip
           formatter={(value: number) => [
             `${convertPriceToBHD(String(value))}`,

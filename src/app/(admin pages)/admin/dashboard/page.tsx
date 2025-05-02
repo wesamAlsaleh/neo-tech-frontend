@@ -6,14 +6,14 @@ import React, { useEffect, useState } from "react";
 // import backend services
 import {
   getLastOrders,
-  getMonthlyRevenueStatistics,
   getMostViewedProducts,
   getProductsInventoryStatus,
   getTodaysOrders,
   getTotalPendingOrders,
   getTotalRevenueOfMonth,
   getTotalUsers,
-  getUserSignupStatistics,
+  getMonthlyRevenueStatistics,
+  getMonthlyUserSignupStatistics,
 } from "@/services/dashboard-services";
 
 // import types
@@ -114,6 +114,8 @@ export default function dashboardPage() {
     monthlyRevenueStatisticsChartData,
     setMonthlyRevenueStatisticsChartData,
   ] = useState();
+  const [revenueChangePercentage, setRevenueChangePercentage] =
+    useState<string>("");
   const [mostViewedProductsChartData, setMostViewedProductsChartData] =
     useState();
 
@@ -142,7 +144,7 @@ export default function dashboardPage() {
       getProductsInventoryStatus(),
       getTotalUsers(),
       getTotalRevenueOfMonth(),
-      getUserSignupStatistics(),
+      getMonthlyUserSignupStatistics(),
       getMonthlyRevenueStatistics(),
       getLastOrders(),
       getMostViewedProducts(),
@@ -186,12 +188,16 @@ export default function dashboardPage() {
       setMonthlyRevenueStatisticsChartData(
         monthlyRevenueStatisticsResponse.revenueData
       );
+      setRevenueChangePercentage(
+        monthlyRevenueStatisticsResponse.revenueChange
+      );
       setMostViewedProductsChartData(mostViewedProductsResponse.productsData);
     } else {
       // Set the error message to the state
       setServerResponse({
         status: false,
-        message: "Error fetching data from server",
+        message:
+          "Something went wrong while fetching dashboard data, ask the developer to check the server logs.",
       });
     }
   };
@@ -285,7 +291,7 @@ export default function dashboardPage() {
 
           <MediumWidgetCard
             title={"Monthly Sales"}
-            description={"↑ 34% from last month"}
+            description={revenueChangePercentage}
             content={
               <SalesChart data={monthlyRevenueStatisticsChartData || []} />
             }

@@ -234,7 +234,7 @@ export async function getTotalRevenueOfMonth() {
 /**
  * @function getUserSignupStatistics -get user signup statistics for the past 3 months
  */
-export async function getUserSignupStatistics() {
+export async function getMonthlyUserSignupStatistics() {
   try {
     // get user token from cookies
     const cookieStore = await cookies();
@@ -304,6 +304,7 @@ export async function getMonthlyRevenueStatistics() {
     return {
       status: true,
       revenueData: response.data.revenue,
+      revenueChange: response.data.revenue_change,
     };
   } catch (error: any) {
     // Log the error to the console

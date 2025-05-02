@@ -17,7 +17,6 @@ interface TableProps {
   totalPages?: number; // Total number of pages for pagination
   setCurrentPage?: (page: number) => void; // Function to set the current page for pagination
   isLoading?: boolean; // Flag to indicate if the table is loading data
-  preventRowClick?: boolean; // Flag to prevent row click events
   preventRowClickColumn?: string; // Specify the column key where row click should be disabled
 }
 
@@ -76,7 +75,7 @@ export default function Table({
   totalPages = 1,
   setCurrentPage = () => {},
   isLoading = false,
-  preventRowClick = false,
+
   preventRowClickColumn = "",
 }: TableProps) {
   // Handle Loading State
@@ -219,10 +218,7 @@ export default function Table({
                           }
 
                           // Prevent row click if specified column is clicked
-                          if (
-                            preventRowClick &&
-                            col.key === preventRowClickColumn
-                          ) {
+                          if (col.key === preventRowClickColumn) {
                             e.stopPropagation();
                           }
                         }}

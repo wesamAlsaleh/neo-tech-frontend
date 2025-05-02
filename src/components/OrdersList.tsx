@@ -169,7 +169,6 @@ export default function OrdersList() {
         currentPage={currentPage}
         totalPages={totalPages}
         setCurrentPage={setCurrentPage}
-        preventRowClick
         preventRowClickColumn="created_at"
       />
     </>

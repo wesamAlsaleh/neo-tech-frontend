@@ -213,7 +213,11 @@ export default function Table({
                         } break-words`}
                         onClick={(e) => {
                           // Prevent row click if actions column is clicked
-                          if (col.key === "actions") {
+                          if (
+                            col.key === "actions" ||
+                            col.key === "created_at" ||
+                            col.key === "updated_at"
+                          ) {
                             e.stopPropagation();
                           }
 

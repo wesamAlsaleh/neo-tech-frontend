@@ -14,18 +14,23 @@ import { icons } from "../../public/icons";
 // Custom LI element
 const LI = ({
   href,
+  activeUrl,
   name,
   iconSrc,
 }: {
   href: string;
+  activeUrl?: string; // This is used to check if the current page is active without query params
   name: string;
   iconSrc?: string;
 }) => {
   // Get the url of the current page and highlight the corresponding link
   const pathname = usePathname();
 
+  // Get base path without query params
+  const basePath = pathname.split("?")[0];
+
   // Check if the current pathname matches the href
-  const isActive = pathname === href;
+  const isActive = pathname === href || (activeUrl && basePath === activeUrl);
 
   return (
     <li>
@@ -133,6 +138,7 @@ export default function AdminSidebar() {
         <ul className="space-y-1.5">
           <LI
             href={`/admin/analytics?start_date=${formattedStart}&end_date=${formattedEnd}`}
+            activeUrl="/admin/analytics"
             name="Sales Reports"
             iconSrc={icons.analyticsIcon96.src}
           />

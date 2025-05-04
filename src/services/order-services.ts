@@ -548,6 +548,7 @@ export async function getSalesReport(
       perPage: response.data.report.per_page,
       totalPages: response.data.report.last_page,
       totalReports: response.data.report.total,
+      totalUnitsSold: response.data.total_units_sold,
     };
   } catch (error: any) {
     // Log the error to the console

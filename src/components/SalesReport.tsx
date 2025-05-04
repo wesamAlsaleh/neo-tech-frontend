@@ -8,7 +8,6 @@ import { getSalesReport } from "@/services/order-services";
 import Table from "./Table";
 import { convertPriceToBHD } from "@/lib/helpers";
 import DataRangePicker from "./DataRangePicker";
-import { set } from "date-fns";
 
 // import components
 
@@ -36,6 +35,7 @@ export default function SalesReport() {
       total_revenue: number;
     }[]
   >();
+  const [unitsSold, setUnitsSold] = useState<number>(0);
 
   // State to store loading state
   const [loading, setLoading] = useState(true);
@@ -52,7 +52,7 @@ export default function SalesReport() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [totalItems, setTotalItems] = useState<number>(0);
-  const [perPage, setPerPage] = useState<number>(2);
+  const [perPage, setPerPage] = useState<number>(10);
 
   // Function to fetch the report data from the server
   async function fetchReport() {
@@ -80,7 +80,9 @@ export default function SalesReport() {
 
     // If the request was successful, set the report data
     if (result.status) {
+      // Set Data
       setReport(result.report);
+      setUnitsSold(result.totalUnitsSold);
 
       // Set pagination data
       setTotalPages(result.totalPages);
@@ -103,9 +105,17 @@ export default function SalesReport() {
     label: string;
     align?: "left" | "center" | "right";
   }[] = [
-    { key: "product_name", label: "Product Name", align: "center" },
+    {
+      key: "product_name",
+      label: `Product Name (${totalItems})`,
+      align: "center",
+    },
     { key: "product_unit_price", label: "Unit Price", align: "center" },
-    { key: "quantity_sold", label: "Units Sold", align: "center" },
+    {
+      key: "quantity_sold",
+      label: `Units Sold (${unitsSold})`,
+      align: "center",
+    },
     { key: "total_revenue", label: "Revenue", align: "center" },
   ];
 

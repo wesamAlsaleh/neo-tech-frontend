@@ -1,35 +1,49 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 // import backend services
-import { getProducts } from "@/services/products-services";
+import { getProducts, getProductsClient } from "@/services/products-services";
 
 // import types
 import { Product } from "@/types/product";
+import { Category } from "@/types/category";
 
 // import icons
 
 // import custom components
-import ProductsGridLayout from "@/components/(layouts)/ProductsGridLayout";
 import { ColumnLayout } from "@/components/(layouts)/ColumnLayout";
+import ProductsGridLayout from "@/components/(layouts)/ProductsGridLayout";
+import { getAllCategories } from "@/services/categories-services";
+import PaginationControl from "@/components/PaginationControl";
+import { convertPriceToBHD } from "@/lib/helpers";
 
 export default function page() {
   // Router Instance
   const router = useRouter();
 
+  // Search Params Instance
+  const searchParams = useSearchParams();
+
   // State to store the loading status
   const [loading, setLoading] = useState<boolean>(true);
 
-  // State to store the products data
+  // State to store the data
+  const [categories, setCategories] = useState<Category[]>();
   const [products, setProducts] = useState<Product[]>();
+
+  // State to sort the products
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000]);
+  const [onSale, setOnSale] = useState(false);
+  const [sortBy, setSortBy] = useState<string>("");
 
   // State to store the pagination details
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [totalItems, setTotalItems] = useState<number>(0);
-  const [perPage, setPerPage] = useState<number>(10);
+  const [perPage, setPerPage] = useState<number>(9);
 
   // State to store the server response
   const [serverResponse, setServerResponse] = useState({
@@ -37,26 +51,101 @@ export default function page() {
     message: "",
   });
 
+  // Initialize from URL params
+  useEffect(() => {
+    // Get the URL params and set the state variables accordingly
+    const params = new URLSearchParams(searchParams);
+
+    // If the URL has currentPage param, set the currentPage state variable eg:page=1
+    if (params.has("page")) {
+      setCurrentPage(Number(params.get("page")) || 1);
+    }
+
+    // If the URL has perPage param, set the perPage state variable eg:perPage=10
+    if (params.has("perPage")) {
+      setPerPage(Number(params.get("perPage")) || 10);
+    }
+
+    // If the URL has categories param, set the selectedCategories state variable which is an array of category slugs eg:categories=cat1,cat2,cat3 => ["cat1", "cat2", "cat3"]
+    if (params.has("categories")) {
+      setSelectedCategories(params.get("categories")?.split(",") || []);
+    }
+
+    // If the URL has priceRange param, set the priceRange state variable which is an array of two numbers eg:priceRange=10,100 => [10, 100]
+    if (params.has("priceMin") && params.has("priceMax")) {
+      setPriceRange([
+        Number(params.get("priceMin")) || 0,
+        Number(params.get("priceMax")) || 0,
+      ]);
+    }
+
+    // If the URL has onSale param, set the onSale state variable eg:onSale=true => true
+    if (params.has("onSale")) {
+      setOnSale(params.get("onSale") === "true" ? true : false);
+    }
+
+    // If the URL has sortBy param, set the sortBy state variable eg:sortBy=priceAsc => "priceAsc"
+    if (params.has("sortBy")) {
+      setSortBy(
+        params.get("sortBy") === "priceAsc"
+          ? "priceAsc"
+          : params.get("sortBy") === "priceDesc"
+          ? "priceDesc"
+          : params.get("sortBy") === "newest"
+          ? "newest"
+          : params.get("sortBy") === "popular"
+          ? "popular"
+          : params.get("sortBy") === "bestSelling"
+          ? "bestSelling"
+          : "newest"
+      );
+    }
+
+    // Initialize other filters from URL...
+  }, [searchParams]);
+
   // Fetch data from server
   const fetchData = async () => {
     // Get Parallel Data
-    const [response] = await Promise.all([getProducts(perPage, currentPage)]);
+    const [categoriesFetching, productsFetching] = await Promise.all([
+      getAllCategories(),
+      getProductsClient(
+        currentPage,
+        perPage,
+        selectedCategories,
+        priceRange[0], // min price
+        priceRange[1], // max price
+        onSale,
+        sortBy
+      ),
+    ]);
 
-    // Set the server response
-    setServerResponse({
-      status: response.status,
-      message: response.status ? "" : response.message, // if fetching is successful, set message to empty string
-    });
+    if (categoriesFetching.status) {
+      // Set the categories data
+      setCategories(categoriesFetching.categories);
+    } else {
+      // Set the server response
+      setServerResponse({
+        status: categoriesFetching.status,
+        message: categoriesFetching.message,
+      });
+    }
 
-    if (response.status) {
-      // Set the data
-      //   setTotalItems(response.totalOrders);
+    if (productsFetching.status) {
+      // Set the products data
+      setProducts(productsFetching.products);
 
-      // Set Navigation state
-      setTotalPages(response.totalPages);
-      setCurrentPage(response.currentPage);
-      setPerPage(response.perPage);
-      setTotalPages(response.totalPages);
+      // Set the pagination details
+      setTotalItems(productsFetching.totalProducts);
+      setTotalPages(productsFetching.totalPages);
+      setCurrentPage(productsFetching.currentPage);
+      setPerPage(productsFetching.perPage);
+    } else {
+      // Set the server response
+      setServerResponse({
+        status: productsFetching.status,
+        message: productsFetching.message,
+      });
     }
   };
 
@@ -74,7 +163,7 @@ export default function page() {
     };
 
     initFetch();
-  }, [currentPage, perPage]);
+  }, [currentPage, perPage, selectedCategories, priceRange, onSale, sortBy]);
 
   return (
     <>
@@ -98,12 +187,148 @@ export default function page() {
       )}
 
       {/* Content Layout */}
-      <div className="flex lg:flex-row md:flex-col sm:flex-col  gap-4">
-        {/* Left Side: Filter */}
-        <div className="w-[15%] bg-gray-200">here</div>
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Left Side: Filters Sidebar */}
+        <nav className="w-[15%] h-[85vh] overflow-y-auto bg-orange-50 p-4 rounded-lg shadow ">
+          {/* Label */}
+          <h2 className="font-bold text-lg text-black mb-4">Filters</h2>
+
+          {/* Categories Filter Container*/}
+          <div className="mb-6">
+            {/* Label */}
+            <h3 className="font-medium mb-2">Categories:</h3>
+
+            {/* Categories List Container*/}
+            <div className="space-y-2">
+              {categories?.map((category) => {
+                return (
+                  // Category Item Container
+                  <div key={category.id} className="flex items-center">
+                    {/* CheckBox Field */}
+                    <input
+                      type="checkbox"
+                      id={`cat-${category.id}`}
+                      checked={selectedCategories.includes(
+                        category.category_slug
+                      )} // Check if the category is selected
+                      onChange={() => {
+                        console.log(category.category_slug);
+                      }}
+                      className="mr-2"
+                    />
+
+                    {/* Checkbox Label */}
+                    <label htmlFor={`cat-${category.id}`}>
+                      {category.category_name}
+                    </label>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Price Range Filter Container */}
+          <div className="mb-6">
+            {/* Label */}
+            <h3 className="font-medium mb-2">Price Range</h3>
+
+            {/* Range Container */}
+            <div className="flex flex-col space-y-2">
+              {/* Min Range Field */}
+              <input
+                type="range"
+                min={0}
+                max={1000}
+                step={10}
+                value={priceRange[0]}
+                onChange={(e) => {
+                  const newMin = Math.min(
+                    Number(e.target.value),
+                    priceRange[1] - 10
+                  );
+                  setPriceRange([newMin, priceRange[1]]);
+                }}
+              />
+
+              {/* Max Range Field */}
+              <input
+                type="range"
+                min={0}
+                max={1000}
+                step={10}
+                value={priceRange[1]}
+                onChange={(e) => {
+                  const newMax = Math.max(
+                    Number(e.target.value),
+                    priceRange[0] + 10
+                  );
+                  setPriceRange([priceRange[0], newMax]);
+                }}
+              />
+
+              {/* Price Range Display */}
+              <div className="text-sm mt-2 text-center">
+                {convertPriceToBHD(String(priceRange[0]))} -{" "}
+                {convertPriceToBHD(String(priceRange[1]))}
+              </div>
+            </div>
+          </div>
+
+          {/* On Sale Filter Container */}
+          <div className="mb-6">
+            {/* Field Container */}
+            <div className="flex items-center">
+              {/* On Sale Checkbox Field */}
+              <input
+                type="checkbox"
+                id="on-sale"
+                checked={onSale}
+                onChange={() => setOnSale(!onSale)}
+                className="mr-2"
+              />
+
+              {/* Checkbox Label */}
+              <label htmlFor="on-sale">On Sale Only</label>
+            </div>
+          </div>
+
+          {/* Sort Options Container */}
+          <div className="mb-6">
+            {/* Label */}
+            <h3 className="font-medium mb-2">Sort By</h3>
+
+            {/* Sort Options Fields */}
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(String(e.target.value))}
+              className="w-full p-2 border rounded"
+            >
+              <option value="">Default</option>
+              <option value="priceAsc">Price: Low to High</option>
+              <option value="priceDesc">Price: High to Low</option>
+              <option value="newest">Newest Arrivals</option>
+              <option value="popular">Most Popular</option>
+              <option value="bestSelling">Best Selling</option>
+            </select>
+          </div>
+        </nav>
 
         {/* Right Side: Products grid */}
-        <div className="w-[85%] bg-gray-400">here</div>
+        <div className="w-[85%] flex flex-col justify-between min-h-[85vh]">
+          <ProductsGridLayout
+            products={products || []}
+            gridConfig={{ sm: 2, md: 4, lg: 5 }}
+          />
+
+          {/* Pagination Control Container */}
+          <div className="self-center">
+            <PaginationControl
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </div>
+        </div>
       </div>
     </>
   );

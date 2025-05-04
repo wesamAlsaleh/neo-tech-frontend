@@ -12,6 +12,7 @@ import { Product } from "@/types/product";
 // import custom components
 import HomeComponentTitle from "./HomeComponentTitle";
 import ProductCard from "./ProductCard";
+import ProductsGridLayout from "./(layouts)/ProductsGridLayout";
 
 export default function ExploreProductsSection() {
   // Router instance
@@ -38,11 +39,7 @@ export default function ExploreProductsSection() {
       />
 
       {/* Product Cards Grid */}
-      <div className="grid lg:grid-cols-8 md:grid-cols-4 sm:grid-cols-2 gap-3 w-[100%]">
-        {products.map((product) => {
-          return <ProductCard key={product.id} product={product} />;
-        })}
-      </div>
+      <ProductsGridLayout products={products} />
 
       {/*  View All Products Button */}
       <div className="flex justify-center mt-4">

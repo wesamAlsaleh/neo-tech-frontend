@@ -8,6 +8,8 @@ import { getSalesReport } from "@/services/order-services";
 import Table from "./Table";
 import { convertPriceToBHD } from "@/lib/helpers";
 import DataRangePicker from "./DataRangePicker";
+import Card from "./Card";
+import Filter from "./Filter";
 
 // import components
 
@@ -121,9 +123,6 @@ export default function SalesReport() {
 
   return (
     <div className="flex flex-col gap-y-4">
-      {/* Date Range Picker */}
-      <DataRangePicker startDate={startDate} endDate={endDate} />
-
       {/* Server Message */}
       {serverResponse?.message && (
         <div
@@ -142,6 +141,15 @@ export default function SalesReport() {
           <span className="block sm:inline">{serverResponse.message}</span>
         </div>
       )}
+
+      <Card
+        CardTitle="Sales Report"
+        CardDescription="Select the date range to filter the sales report."
+        CardContent={
+          <DataRangePicker startDate={startDate} endDate={endDate} />
+        }
+        loading={loading}
+      />
 
       {/* Table */}
       <Table

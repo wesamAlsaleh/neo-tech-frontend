@@ -1,9 +1,8 @@
 import React from "react";
 
-// import backend services
-
 // import components
 import PageTitle from "@/components/PageTitle";
+import SalesReport from "@/components/SalesReport";
 
 export default function page() {
   return (
@@ -11,6 +10,7 @@ export default function page() {
       <PageTitle title="Sales Reports" />
 
       {/* Main Section */}
+      <SalesReport />
     </div>
   );
 }

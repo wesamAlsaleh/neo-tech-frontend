@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import React from "react";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
+
+// import date-fns for date manipulation
+import { subMonths, format } from "date-fns";
 
 // import icons
 import { icons } from "../../public/icons";
-import Image from "next/image";
 
 // Custom LI element
 const LI = ({
@@ -52,6 +55,10 @@ const LI = ({
 };
 
 export default function AdminSidebar() {
+  // Get today's date and one month ago date
+  const formattedEnd = format(new Date(), "yyyy-MM-dd"); // Today
+  const formattedStart = format(subMonths(new Date(), 1), "yyyy-MM-dd"); // Exactly 1 month ago
+
   return (
     <aside className="flex flex-col w-64 min-h-screen bg-gray-900 text-gray-300 p-5 shadow-lg">
       {/* Side Bar LOGO Container */}
@@ -125,7 +132,7 @@ export default function AdminSidebar() {
         <GroupTitle title="Analytics" mt />
         <ul className="space-y-1.5">
           <LI
-            href="/admin/analytics"
+            href={`/admin/analytics?start_date=${formattedStart}&end_date=${formattedEnd}`}
             name="Sales Reports"
             iconSrc={icons.analyticsIcon96.src}
           />

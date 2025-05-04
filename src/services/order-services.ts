@@ -506,3 +506,59 @@ export async function updateOrderStatus(orderId: string, status: string) {
     };
   }
 }
+
+/**
+ * @function getSalesReport - Get sales report for admin based on the date range
+ * * @param {string} startDate - The start date of the report
+ * @param {string} endDate - The end date of the report
+ */
+export async function getSalesReport(
+  startDate: string,
+  endDate: string,
+  perPage: number,
+  currentPage: number
+) {
+  try {
+    // get user token from cookies
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    // If the user token is not found
+    if (!userToken) {
+      return {
+        status: false,
+        message: "No authentication token found.",
+      };
+    }
+
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/sales-report?start_date=${startDate}&end_date=${endDate}&per_page=${perPage}&page=${currentPage}`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+      report: response.data.report.data,
+      currentPage: response.data.report.current_page,
+      perPage: response.data.report.per_page,
+      totalPages: response.data.report.last_page,
+      totalReports: response.data.report.total,
+    };
+  } catch (error: any) {
+    // Log the error to the console
+    console.error(error.response.data);
+
+    // Return the details of the error
+    console.error(error.response.data.devMessage);
+
+    return {
+      status: false,
+      message: error.response.data.message || "An error occurred",
+    };
+  }
+}

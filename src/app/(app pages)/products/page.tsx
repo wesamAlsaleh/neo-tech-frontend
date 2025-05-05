@@ -101,7 +101,13 @@ export default function page() {
   };
 
   // Handle Categories Filter function
-  const categoriesFilterHandler = (slugs: string[]) => {};
+  const categoriesFilterHandler = (slugs: string[]) => {
+    // Set the selected categories state to the new slugs
+    setSelectedCategories(slugs);
+
+    // Update the URL with the new categories param eg: slugs=["cat1", "cat2", "cat3"] => categories=cat1,cat2,cat3
+    updateURL({ categories: slugs.join(",") });
+  };
 
   // Handle Page Change function
   const handlePageChange = (newPage: number) => {
@@ -128,6 +134,18 @@ export default function page() {
 
     // Update the URL with the new onSale param
     updateURL({ onSale: String(newOnSale) });
+  };
+
+  // Handle Sort By Price Range function
+  const handlePriceRange = (newPriceRange: [number, number]) => {
+    // Set the priceRange state to the new priceRange value
+    setPriceRange(newPriceRange);
+
+    // Update the URL with the new priceRange param
+    updateURL({
+      priceMin: String(newPriceRange[0]),
+      priceMax: String(newPriceRange[1]),
+    });
   };
 
   // Fetch data from server
@@ -266,20 +284,10 @@ export default function page() {
 
                         // Check if the category is already selected
                         const newSelected = selectedCategories.includes(slug)
-                          ? selectedCategories.filter((s) => s !== slug) // Remove the category from the selected categories
+                          ? selectedCategories.filter((s) => s !== slug) // Return the selected categories without the current category
                           : [...selectedCategories, slug]; // Add the category to the selected categories
 
-                        // Update the selected categories state
-                        setSelectedCategories(newSelected); // Array of selected categories eg: ["cat1", "cat2", "cat3"]
-
-                        // Get the URL params and set the categories param
-                        const params = new URLSearchParams(searchParams);
-
-                        // Set the categories param in the URL
-                        params.set("categories", newSelected.join(",")); // Set the categories param in the URL eg: categories=cat1,cat2,cat3
-
-                        // Route to the new URL with the updated params
-                        router.push(`/products?${params.toString()}`);
+                        categoriesFilterHandler(newSelected); // Update the selected categories in the URL
                       }}
                       className="mr-2"
                     />
@@ -313,7 +321,7 @@ export default function page() {
                     Number(e.target.value),
                     priceRange[1] - 10
                   );
-                  setPriceRange([newMin, priceRange[1]]);
+                  handlePriceRange([newMin, priceRange[1]]); // Update the min price range in the URL
                 }}
               />
 
@@ -329,7 +337,7 @@ export default function page() {
                     Number(e.target.value),
                     priceRange[0] + 10
                   );
-                  setPriceRange([priceRange[0], newMax]);
+                  handlePriceRange([priceRange[0], newMax]); // Update the max price range in the URL
                 }}
               />
 

@@ -25,7 +25,7 @@ export default function page() {
   // Router Instance
   const router = useRouter();
 
-  // Search Params Instance
+  // URL Params Instance
   const searchParams = useSearchParams();
 
   // State to store the loading status
@@ -56,67 +56,78 @@ export default function page() {
     message: "",
   });
 
-  // Handle Page Change function
-  const handlePageChange = (newPage: number) => {
+  /**
+   * Function to update the URL with the new params
+   * @param updates - Object containing the updates to be applied to the URL params, {key: value}
+   * @returns void
+   *
+   * @example
+   * // Example usage:
+   * updateURL({ page: "2", sortBy: "priceAsc" }); // Updates the URL to /products?page=2&sortBy=priceAsc
+   * // Another example:
+   * updateURL({ categories: "cat1,cat2", priceMin: "100", priceMax: "500" }); // Updates the URL to /products?categories=cat1,cat2&priceMin=100&priceMax=500
+   */
+  const updateURL = (updates: Record<string, string>) => {
     // If its already navigating, return to prevent multiple requests
     if (isNavigating) return;
 
     // Set is navigating to true to prevent multiple requests
     setIsNavigating(true);
 
-    // Get the URL params and set the Page param
-    const params = new URLSearchParams(searchParams);
+    // Get the URL params and to set the new params based on the updates
+    const params = new URLSearchParams(window.location.search);
 
-    // Set the currentPage param in the URL eg: page=1
-    params.set("page", String(newPage));
+    // Apply updates to the params to set the new URL
+    Object.entries(updates).forEach(([key, value]) => {
+      // Check if the value is not empty or null or undefined
+      if (value) {
+        params.set(key, value);
+      } else {
+        // If the value is empty, remove the param from the URL
+        params.delete(key);
+      }
+    });
+
+    // Reset to page 1 for filter changes (except page changes) [if changing to new filter and the page is not 1, reset to page 1 to avoid empty page]
+    if (!("page" in updates)) {
+      params.set("page", "1");
+    }
 
     // Route to the new URL with the updated params
     router.push(`/products?${params.toString()}`);
 
     // Set is navigating to false after 500ms to allow the next request to be sent
     setTimeout(() => setIsNavigating(false), 500);
+  };
+
+  // Handle Categories Filter function
+  const categoriesFilterHandler = (slugs: string[]) => {};
+
+  // Handle Page Change function
+  const handlePageChange = (newPage: number) => {
+    // Set the page state to the new page
+    setCurrentPage(newPage);
+
+    // Update the URL with the new page param
+    updateURL({ page: String(newPage) });
   };
 
   // Handle Sort By function
   const handleSortBy = (newSortBy: string) => {
-    // If its already navigating, return to prevent multiple requests
-    if (isNavigating) return;
+    // Set the sortBy state to the new sortBy value
+    setSortBy(newSortBy);
 
-    // Set is navigating to true to prevent multiple requests
-    setIsNavigating(true);
-
-    // Get the URL params and set the sortBy param
-    const params = new URLSearchParams(searchParams);
-
-    // Set the sortBy param in the URL eg: sortBy=priceAsc
-    params.set("sortBy", newSortBy);
-
-    // Route to the new URL with the updated params
-    router.push(`/products?${params.toString()}`);
-
-    // Set is navigating to false after 500ms to allow the next request to be sent
-    setTimeout(() => setIsNavigating(false), 500);
+    // Update the URL with the new sortBy param
+    updateURL({ page: String(newSortBy) });
   };
 
   // Handle Sort By On Sale function
   const handleOnSale = (newOnSale: boolean) => {
-    // If its already navigating, return to prevent multiple requests
-    if (isNavigating) return;
+    // Set the onSale state to the new onSale value
+    setOnSale(newOnSale);
 
-    // Set is navigating to true to prevent multiple requests
-    setIsNavigating(true);
-
-    // Get the URL params and set the onSale param
-    const params = new URLSearchParams(searchParams);
-
-    // Set the onSale param in the URL eg: onSale=true
-    params.set("onSale", String(newOnSale));
-
-    // Route to the new URL with the updated params
-    router.push(`/products?${params.toString()}`);
-
-    // Set is navigating to false after 500ms to allow the next request to be sent
-    setTimeout(() => setIsNavigating(false), 500);
+    // Update the URL with the new onSale param
+    updateURL({ onSale: String(newOnSale) });
   };
 
   // Fetch data from server
@@ -164,6 +175,29 @@ export default function page() {
     }
   };
 
+  // Initialize from URL params
+  useEffect(() => {
+    // Get the last URL params
+    const params = new URLSearchParams(window.location.search);
+
+    // Initialize all states from URL params
+    const initialPage = Number(params.get("page")) || 1; // Default page is 1
+    const initialPerPage = Number(params.get("perPage")) || 12; // Default perPage is 12
+    const initialCategories = params.get("categories")?.split(",") || []; // Default categories is empty array
+    const initialPriceMin = Number(params.get("priceMin")) || 0; // Default priceMin is 0
+    const initialPriceMax = Number(params.get("priceMax")) || 5000; // Default priceMax is 5000
+    const initialOnSale = params.get("onSale") === "true"; // Default onSale is false
+    const initialSortBy = params.get("sortBy") || ""; // Default sortBy is empty string
+
+    // Batch all state updates together
+    setCurrentPage(initialPage);
+    setPerPage(initialPerPage);
+    setSelectedCategories(initialCategories);
+    setPriceRange([initialPriceMin, initialPriceMax]);
+    setOnSale(initialOnSale);
+    setSortBy(initialSortBy);
+  }, []); // Run only once on mount
+
   // Fetch data from server
   useEffect(() => {
     const initFetch = async () => {
@@ -178,60 +212,7 @@ export default function page() {
     };
 
     initFetch();
-  }, [currentPage, perPage, selectedCategories, priceRange, onSale, sortBy]);
-
-  // Initialize from URL params
-  useEffect(() => {
-    // Get the URL params and set the state variables accordingly
-    const params = new URLSearchParams(searchParams);
-
-    // If the URL has currentPage param, set the currentPage state variable eg:page=1
-    if (params.has("page")) {
-      setCurrentPage(Number(params.get("page")) || 1);
-    }
-
-    // If the URL has perPage param, set the perPage state variable eg:perPage=10
-    if (params.has("perPage")) {
-      setPerPage(Number(params.get("perPage")) || 10);
-    }
-
-    // If the URL has categories param, set the selectedCategories state variable which is an array of category slugs eg:categories=cat1,cat2,cat3 => ["cat1", "cat2", "cat3"]
-    if (params.has("categories")) {
-      setSelectedCategories(params.get("categories")?.split(",") || []); //%2 is comma encoded
-    }
-
-    // If the URL has priceRange param, set the priceRange state variable which is an array of two numbers eg:priceRange=10,100 => [10, 100]
-    if (params.has("priceMin") && params.has("priceMax")) {
-      setPriceRange([
-        Number(params.get("priceMin")) || 0,
-        Number(params.get("priceMax")) || 0,
-      ]);
-    }
-
-    // If the URL has onSale param, set the onSale state variable eg:onSale=true => true
-    if (params.has("onSale")) {
-      setOnSale(params.get("onSale") === "true" ? true : false);
-    }
-
-    // If the URL has sortBy param, set the sortBy state variable eg:sortBy=priceAsc => "priceAsc"
-    if (params.has("sortBy")) {
-      setSortBy(
-        params.get("sortBy") === "priceAsc"
-          ? "priceAsc"
-          : params.get("sortBy") === "priceDesc"
-          ? "priceDesc"
-          : params.get("sortBy") === "newest"
-          ? "newest"
-          : params.get("sortBy") === "popular"
-          ? "popular"
-          : params.get("sortBy") === "bestSelling"
-          ? "bestSelling"
-          : "newest"
-      );
-    }
-
-    // Initialize other filters from URL...
-  }, [searchParams]);
+  }, [searchParams]); // Only depend on searchParams
 
   return (
     <>

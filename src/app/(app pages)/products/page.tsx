@@ -23,6 +23,7 @@ import PaginationControl from "@/components/PaginationControl";
 import { convertPriceToBHD } from "@/lib/helpers";
 import ProductCard from "@/components/ProductCard";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import ProductCardSkeleton from "@/components/ProductCardSkeleton";
 
 export default function page() {
   // Router Instance
@@ -146,6 +147,24 @@ export default function page() {
 
     // Update the URL with the new price range after debounce delay
     debouncedPriceUpdate(newPriceRange);
+  };
+
+  // Handle Reset Filters function
+  const handleResetFilters = () => {
+    // Reset all filters to default values
+    setSelectedCategories([]);
+    setPriceRange([0, 5000]);
+    setOnSale(false);
+    setSortBy("");
+
+    // Update the URL with the default values
+    updateURL({
+      categories: "",
+      priceMin: "0",
+      priceMax: "5000",
+      onSale: "false",
+      sortBy: "",
+    });
   };
 
   // Fetch data from server
@@ -386,6 +405,16 @@ export default function page() {
               <option value="bestSelling">Best Selling</option>
             </select>
           </div>
+
+          {/* Reset Filters Button */}
+          <div className="mb-6">
+            <button
+              onClick={handleResetFilters}
+              className="w-full px-4 py-2 text-white bg-red-600 rounded-md text-sm font-medium hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            >
+              Reset Filters
+            </button>
+          </div>
         </nav>
 
         {/* Right Side: Products grid */}
@@ -393,21 +422,26 @@ export default function page() {
           {/* Products Grid */}
           <div className="grid gap-3 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-1">
             {/* Handle Loading */}
-            <></>
+            {loading && (
+              <>
+                {[...Array(12)].map((_, index) => (
+                  <ProductCardSkeleton key={index} />
+                ))}
+              </>
+            )}
 
             {/* Handle No Products */}
-            <>
-              {loading && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
-                  <LoadingSpinner />
-                </div>
-              )}
-            </>
+            {!loading && products?.length === 0 && (
+              <div className="col-span-6 text-center py-4">
+                <h2 className="text-lg font-semibold">No Products Found</h2>
+              </div>
+            )}
 
-            {/* Handle Date */}
-            {products?.map((product) => {
-              return <ProductCard key={product.id} product={product} />;
-            })}
+            {/* Handle Data */}
+            {!loading &&
+              products?.map((product) => {
+                return <ProductCard key={product.id} product={product} />;
+              })}
           </div>
 
           {/* Pagination Control Container */}

@@ -5,6 +5,7 @@ import { Product } from "@/types/product";
 
 // import custom components
 import ProductCard from "../ProductCard";
+import ProductCardSkeleton from "../ProductCardSkeleton";
 
 interface LayoutProps {
   products: Product[]; // Replace 'any' with the actual type of your products
@@ -15,6 +16,7 @@ interface LayoutProps {
   }; // Optional grid configuration for responsive design
   cardWidth?: string; // Optional prop to control card width
   className?: string; // Optional className prop for additional styling
+  isLoading?: boolean; // Optional loading state
 }
 
 export default function ProductsGridLayout(props: LayoutProps) {
@@ -28,14 +30,8 @@ export default function ProductsGridLayout(props: LayoutProps) {
       lg: 8,
     }, // Default grid configuration
     cardWidth,
+    isLoading = false,
   } = props;
-
-  // Check if products are empty and return a message if so
-  if (products.length === 0) {
-    return (
-      <div className="text-center p-8 text-gray-500">No products available</div>
-    );
-  }
 
   // Base Style for the grid layout
   const baseStyle = `grid gap-3`;
@@ -52,6 +48,23 @@ export default function ProductsGridLayout(props: LayoutProps) {
 
   return (
     <div className={`${baseStyle}  ${gridClasses} ${cardWidthClass}`}>
+      {/* Handle Loading State */}
+      {isLoading && (
+        <>
+          {Array.from({ length: 8 }).map((_, index) => (
+            <ProductCardSkeleton key={index} />
+          ))}
+        </>
+      )}
+
+      {/* Handle No Date */}
+      {products.length === 0 && !isLoading && (
+        <div className="col-span-full text-center text-gray-500">
+          No products available
+        </div>
+      )}
+
+      {/* Handle Data */}
       {products.map((product) => {
         return <ProductCard key={product.id} product={product} />;
       })}

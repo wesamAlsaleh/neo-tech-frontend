@@ -19,6 +19,7 @@ import { getAllCategories } from "@/services/categories-services";
 import PaginationControl from "@/components/PaginationControl";
 import { convertPriceToBHD } from "@/lib/helpers";
 import ProductCard from "@/components/ProductCard";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function page() {
   // Router Instance
@@ -30,12 +31,15 @@ export default function page() {
   // State to store the loading status
   const [loading, setLoading] = useState<boolean>(true);
 
+  // State to store the navigating status to prevent multiple requests "debounce"
+  const [isNavigating, setIsNavigating] = useState(false);
+
   // State to store the data
   const [categories, setCategories] = useState<Category[]>();
   const [products, setProducts] = useState<Product[]>();
 
   // State to sort the products
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]); // array of selected categories slugs eg: ["cat1", "cat2", "cat3"]
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000]);
   const [onSale, setOnSale] = useState(false);
   const [sortBy, setSortBy] = useState<string>("");
@@ -44,7 +48,7 @@ export default function page() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [totalItems, setTotalItems] = useState<number>(0);
-  const [perPage, setPerPage] = useState<number>(16);
+  const [perPage, setPerPage] = useState<number>(12);
 
   // State to store the server response
   const [serverResponse, setServerResponse] = useState({
@@ -52,58 +56,68 @@ export default function page() {
     message: "",
   });
 
-  // Initialize from URL params
-  useEffect(() => {
-    // Get the URL params and set the state variables accordingly
+  // Handle Page Change function
+  const handlePageChange = (newPage: number) => {
+    // If its already navigating, return to prevent multiple requests
+    if (isNavigating) return;
+
+    // Set is navigating to true to prevent multiple requests
+    setIsNavigating(true);
+
+    // Get the URL params and set the Page param
     const params = new URLSearchParams(searchParams);
 
-    // If the URL has currentPage param, set the currentPage state variable eg:page=1
-    if (params.has("page")) {
-      setCurrentPage(Number(params.get("page")) || 1);
-    }
+    // Set the currentPage param in the URL eg: page=1
+    params.set("page", String(newPage));
 
-    // If the URL has perPage param, set the perPage state variable eg:perPage=10
-    if (params.has("perPage")) {
-      setPerPage(Number(params.get("perPage")) || 10);
-    }
+    // Route to the new URL with the updated params
+    router.push(`/products?${params.toString()}`);
 
-    // If the URL has categories param, set the selectedCategories state variable which is an array of category slugs eg:categories=cat1,cat2,cat3 => ["cat1", "cat2", "cat3"]
-    if (params.has("categories")) {
-      setSelectedCategories(params.get("categories")?.split(",") || []);
-    }
+    // Set is navigating to false after 500ms to allow the next request to be sent
+    setTimeout(() => setIsNavigating(false), 500);
+  };
 
-    // If the URL has priceRange param, set the priceRange state variable which is an array of two numbers eg:priceRange=10,100 => [10, 100]
-    if (params.has("priceMin") && params.has("priceMax")) {
-      setPriceRange([
-        Number(params.get("priceMin")) || 0,
-        Number(params.get("priceMax")) || 0,
-      ]);
-    }
+  // Handle Sort By function
+  const handleSortBy = (newSortBy: string) => {
+    // If its already navigating, return to prevent multiple requests
+    if (isNavigating) return;
 
-    // If the URL has onSale param, set the onSale state variable eg:onSale=true => true
-    if (params.has("onSale")) {
-      setOnSale(params.get("onSale") === "true" ? true : false);
-    }
+    // Set is navigating to true to prevent multiple requests
+    setIsNavigating(true);
 
-    // If the URL has sortBy param, set the sortBy state variable eg:sortBy=priceAsc => "priceAsc"
-    if (params.has("sortBy")) {
-      setSortBy(
-        params.get("sortBy") === "priceAsc"
-          ? "priceAsc"
-          : params.get("sortBy") === "priceDesc"
-          ? "priceDesc"
-          : params.get("sortBy") === "newest"
-          ? "newest"
-          : params.get("sortBy") === "popular"
-          ? "popular"
-          : params.get("sortBy") === "bestSelling"
-          ? "bestSelling"
-          : "newest"
-      );
-    }
+    // Get the URL params and set the sortBy param
+    const params = new URLSearchParams(searchParams);
 
-    // Initialize other filters from URL...
-  }, [searchParams]);
+    // Set the sortBy param in the URL eg: sortBy=priceAsc
+    params.set("sortBy", newSortBy);
+
+    // Route to the new URL with the updated params
+    router.push(`/products?${params.toString()}`);
+
+    // Set is navigating to false after 500ms to allow the next request to be sent
+    setTimeout(() => setIsNavigating(false), 500);
+  };
+
+  // Handle Sort By On Sale function
+  const handleOnSale = (newOnSale: boolean) => {
+    // If its already navigating, return to prevent multiple requests
+    if (isNavigating) return;
+
+    // Set is navigating to true to prevent multiple requests
+    setIsNavigating(true);
+
+    // Get the URL params and set the onSale param
+    const params = new URLSearchParams(searchParams);
+
+    // Set the onSale param in the URL eg: onSale=true
+    params.set("onSale", String(newOnSale));
+
+    // Route to the new URL with the updated params
+    router.push(`/products?${params.toString()}`);
+
+    // Set is navigating to false after 500ms to allow the next request to be sent
+    setTimeout(() => setIsNavigating(false), 500);
+  };
 
   // Fetch data from server
   const fetchData = async () => {
@@ -165,6 +179,59 @@ export default function page() {
 
     initFetch();
   }, [currentPage, perPage, selectedCategories, priceRange, onSale, sortBy]);
+
+  // Initialize from URL params
+  useEffect(() => {
+    // Get the URL params and set the state variables accordingly
+    const params = new URLSearchParams(searchParams);
+
+    // If the URL has currentPage param, set the currentPage state variable eg:page=1
+    if (params.has("page")) {
+      setCurrentPage(Number(params.get("page")) || 1);
+    }
+
+    // If the URL has perPage param, set the perPage state variable eg:perPage=10
+    if (params.has("perPage")) {
+      setPerPage(Number(params.get("perPage")) || 10);
+    }
+
+    // If the URL has categories param, set the selectedCategories state variable which is an array of category slugs eg:categories=cat1,cat2,cat3 => ["cat1", "cat2", "cat3"]
+    if (params.has("categories")) {
+      setSelectedCategories(params.get("categories")?.split(",") || []); //%2 is comma encoded
+    }
+
+    // If the URL has priceRange param, set the priceRange state variable which is an array of two numbers eg:priceRange=10,100 => [10, 100]
+    if (params.has("priceMin") && params.has("priceMax")) {
+      setPriceRange([
+        Number(params.get("priceMin")) || 0,
+        Number(params.get("priceMax")) || 0,
+      ]);
+    }
+
+    // If the URL has onSale param, set the onSale state variable eg:onSale=true => true
+    if (params.has("onSale")) {
+      setOnSale(params.get("onSale") === "true" ? true : false);
+    }
+
+    // If the URL has sortBy param, set the sortBy state variable eg:sortBy=priceAsc => "priceAsc"
+    if (params.has("sortBy")) {
+      setSortBy(
+        params.get("sortBy") === "priceAsc"
+          ? "priceAsc"
+          : params.get("sortBy") === "priceDesc"
+          ? "priceDesc"
+          : params.get("sortBy") === "newest"
+          ? "newest"
+          : params.get("sortBy") === "popular"
+          ? "popular"
+          : params.get("sortBy") === "bestSelling"
+          ? "bestSelling"
+          : "newest"
+      );
+    }
+
+    // Initialize other filters from URL...
+  }, [searchParams]);
 
   return (
     <>
@@ -302,7 +369,9 @@ export default function page() {
                 type="checkbox"
                 id="on-sale"
                 checked={onSale}
-                onChange={() => setOnSale(!onSale)}
+                onChange={() => {
+                  handleOnSale(!onSale); // Toggle the onSale state
+                }}
                 className="mr-2"
               />
 
@@ -319,7 +388,10 @@ export default function page() {
             {/* Sort Options Fields */}
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(String(e.target.value))}
+              onChange={(e) => {
+                // Request the new page with the new sortBy param
+                handleSortBy(String(e.target.value));
+              }}
               className="w-full p-2 border rounded"
             >
               <option value="">Default</option>
@@ -340,7 +412,13 @@ export default function page() {
             <></>
 
             {/* Handle No Products */}
-            <></>
+            <>
+              {loading && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-10">
+                  <LoadingSpinner />
+                </div>
+              )}
+            </>
 
             {/* Handle Date */}
             {products?.map((product) => {
@@ -353,16 +431,11 @@ export default function page() {
             {/* Previous Button */}
             <button
               onClick={() => {
-                // Set the current page to the previous page
-                setCurrentPage(currentPage - 1);
+                // Get the param page to set the new page in the URL
+                const newPage = currentPage - 1;
 
-                // Get the URL params and set the currentPage param
-                const params = new URLSearchParams(searchParams);
-
-                params.set("page", String(currentPage - 1)); // Set the currentPage param in the URL eg: page=1
-
-                // Route to the new URL with the updated params
-                router.push(`/products?${params.toString()}`);
+                // Request the new page
+                handlePageChange(newPage);
               }}
               disabled={currentPage === 1}
               className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${"bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"} ${
@@ -378,16 +451,11 @@ export default function page() {
             {/* Next Button */}
             <button
               onClick={() => {
-                // Set the current page to the previous page
-                setCurrentPage(currentPage + 1);
+                // Get the param page to set the new page in the URL
+                const newPage = currentPage + 1;
 
-                // Get the URL params and set the currentPage param
-                const params = new URLSearchParams(searchParams);
-
-                params.set("page", String(currentPage + 1)); // Set the currentPage param in the URL eg: page=1
-
-                // Route to the new URL with the updated params
-                router.push(`/products?${params.toString()}`);
+                // Request the new page
+                handlePageChange(newPage);
               }}
               disabled={currentPage === totalPages}
               className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${"bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"} ${

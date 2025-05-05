@@ -102,54 +102,36 @@ export default function page() {
 
   // Handle Categories Filter function
   const categoriesFilterHandler = (slugs: string[]) => {
-    // Set the selected categories state to the new slugs
-    setSelectedCategories(slugs);
-
     // Update the URL with the new categories param eg: slugs=["cat1", "cat2", "cat3"] => categories=cat1,cat2,cat3
     updateURL({ categories: slugs.join(",") });
   };
 
   // Handle Page Change function
   const handlePageChange = (newPage: number) => {
-    // Set the page state to the new page
-    setCurrentPage(newPage);
-
     // Update the URL with the new page param
     updateURL({ page: String(newPage) });
   };
 
-  // Handle Sort By function
+  // TODO: Handle Sort By function
   const handleSortBy = (newSortBy: string) => {
-    // Set the sortBy state to the new sortBy value
-    setSortBy(newSortBy);
-
     // Update the URL with the new sortBy param
-    updateURL({ page: String(newSortBy) });
+    updateURL({ sortBy: String(newSortBy) });
   };
 
   // Handle Sort By On Sale function
   const handleOnSale = (newOnSale: boolean) => {
-    // Set the onSale state to the new onSale value
-    setOnSale(newOnSale);
-
     // Update the URL with the new onSale param
     updateURL({ onSale: String(newOnSale) });
   };
 
-  // Handle Sort By Price Range function
+  // TODO: Handle Sort By Price Range function
   const handlePriceRange = (newPriceRange: [number, number]) => {
-    // Set the priceRange state to the new priceRange value
-    setPriceRange(newPriceRange);
-
     // Update the URL with the new priceRange param
     updateURL({
       priceMin: String(newPriceRange[0]),
       priceMax: String(newPriceRange[1]),
     });
   };
-
-  // Fetch data from server
-  const fetchData = async () => {};
 
   // Fetch data from server
   useEffect(() => {
@@ -296,7 +278,7 @@ export default function page() {
             </div>
           </div>
 
-          {/* Price Range Filter Container */}
+          {/* TODO: Price Range Filter Container */}
           <div className="mb-6">
             {/* Label */}
             <h3 className="font-medium mb-2">Price Range</h3>
@@ -363,7 +345,7 @@ export default function page() {
             </div>
           </div>
 
-          {/* Sort Options Container */}
+          {/* TODO: Sort Options Container */}
           <div className="mb-6">
             {/* Label */}
             <h3 className="font-medium mb-2">Sort By</h3>

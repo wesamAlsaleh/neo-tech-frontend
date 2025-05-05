@@ -6,6 +6,7 @@ import { Suspense, useEffect, useState } from "react";
 import {
   deleteCategoryById,
   getAllCategories,
+  getAllCategoriesAdmin,
   toggleCategoryStatusById,
 } from "@/services/categories-services";
 
@@ -49,7 +50,7 @@ export default function CategoryList() {
   const fetchData = async () => {
     try {
       // Fetch all categories
-      const result = await getAllCategories();
+      const result = await getAllCategoriesAdmin();
 
       // Update the UI with the fetched data
       setServerResponse({

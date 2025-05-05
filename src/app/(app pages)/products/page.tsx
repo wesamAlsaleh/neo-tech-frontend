@@ -212,7 +212,25 @@ export default function page() {
                         category.category_slug
                       )} // Check if the category is selected
                       onChange={() => {
-                        console.log(category.category_slug);
+                        // Get the slug of the category
+                        const slug = category.category_slug;
+
+                        // Check if the category is already selected
+                        const newSelected = selectedCategories.includes(slug)
+                          ? selectedCategories.filter((s) => s !== slug) // Remove the category from the selected categories
+                          : [...selectedCategories, slug]; // Add the category to the selected categories
+
+                        // Update the selected categories state
+                        setSelectedCategories(newSelected); // Array of selected categories eg: ["cat1", "cat2", "cat3"]
+
+                        // Get the URL params and set the categories param
+                        const params = new URLSearchParams(searchParams);
+
+                        // Set the categories param in the URL
+                        params.set("&categories", newSelected.join(",")); // Set the categories param in the URL eg: categories=cat1,cat2,cat3
+
+                        // Route to the new URL with the updated params
+                        router.push(`/products?${params.toString()}`);
                       }}
                       className="mr-2"
                     />

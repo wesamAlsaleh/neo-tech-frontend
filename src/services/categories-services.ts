@@ -9,6 +9,15 @@ import { cookies } from "next/headers";
 // Get all categories from the API endpoint for admin
 export async function getAllCategoriesAdmin() {
   try {
+    // Get user token from cookies
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    // Check if user token exists
+    if (!userToken) {
+      console.error("Token not found in cookies");
+    }
+
     // Fetch the categories
     const response = await axios.get(
       `${process.env.NEXT_PUBLIC_APP_URI}/admin/categories`,
@@ -16,6 +25,7 @@ export async function getAllCategoriesAdmin() {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
+          Authorization: `Bearer ${userToken}`,
         },
       }
     );

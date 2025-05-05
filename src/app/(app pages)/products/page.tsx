@@ -266,7 +266,7 @@ export default function page() {
       {/* Content Layout */}
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Left Side: Filters Sidebar */}
-        <nav className="w-[15%] h-[85vh] overflow-y-auto bg-orange-50 p-4 rounded-lg shadow ">
+        <nav className="w-[15%] h-[85vh] overflow-y-auto bg-white p-4 rounded-lg">
           {/* Label */}
           <h2 className="font-bold text-lg text-black mb-4">Filters</h2>
 

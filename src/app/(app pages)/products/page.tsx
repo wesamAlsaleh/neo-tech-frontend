@@ -313,7 +313,7 @@ export default function page() {
               <input
                 type="range"
                 min={0}
-                max={1000}
+                max={priceRange[1] - 10}
                 step={10}
                 value={priceRange[0]}
                 onChange={(e) => {
@@ -328,7 +328,7 @@ export default function page() {
               {/* Max Range Field */}
               <input
                 type="range"
-                min={0}
+                min={priceRange[0] + 10}
                 max={1000}
                 step={10}
                 value={priceRange[1]}

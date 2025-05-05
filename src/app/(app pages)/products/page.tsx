@@ -149,87 +149,81 @@ export default function page() {
   };
 
   // Fetch data from server
-  const fetchData = async () => {
-    // Get Parallel Data
-    const [categoriesFetching, productsFetching] = await Promise.all([
-      getAllCategories(),
-      getProductsClient(
-        currentPage,
-        perPage,
-        selectedCategories,
-        priceRange[0], // min price
-        priceRange[1], // max price
-        onSale,
-        sortBy
-      ),
-    ]);
-
-    if (categoriesFetching.status) {
-      // Set the categories data
-      setCategories(categoriesFetching.categories);
-    } else {
-      // Set the server response
-      setServerResponse({
-        status: categoriesFetching.status,
-        message: categoriesFetching.message,
-      });
-    }
-
-    if (productsFetching.status) {
-      // Set the products data
-      setProducts(productsFetching.products);
-
-      // Set the pagination details
-      setTotalItems(productsFetching.totalProducts);
-      setTotalPages(productsFetching.totalPages);
-      setCurrentPage(productsFetching.currentPage);
-      setPerPage(productsFetching.perPage);
-    } else {
-      // Set the server response
-      setServerResponse({
-        status: productsFetching.status,
-        message: productsFetching.message,
-      });
-    }
-  };
-
-  // Initialize from URL params
-  useEffect(() => {
-    // Get the last URL params
-    const params = new URLSearchParams(window.location.search);
-
-    // Initialize all states from URL params
-    const initialPage = Number(params.get("page")) || 1; // Default page is 1
-    const initialPerPage = Number(params.get("perPage")) || 12; // Default perPage is 12
-    const initialCategories = params.get("categories")?.split(",") || []; // Default categories is empty array
-    const initialPriceMin = Number(params.get("priceMin")) || 0; // Default priceMin is 0
-    const initialPriceMax = Number(params.get("priceMax")) || 5000; // Default priceMax is 5000
-    const initialOnSale = params.get("onSale") === "true"; // Default onSale is false
-    const initialSortBy = params.get("sortBy") || ""; // Default sortBy is empty string
-
-    // Batch all state updates together
-    setCurrentPage(initialPage);
-    setPerPage(initialPerPage);
-    setSelectedCategories(initialCategories);
-    setPriceRange([initialPriceMin, initialPriceMax]);
-    setOnSale(initialOnSale);
-    setSortBy(initialSortBy);
-  }, []); // Run only once on mount
+  const fetchData = async () => {};
 
   // Fetch data from server
   useEffect(() => {
-    const initFetch = async () => {
+    const fetchData = async () => {
       // Set loading to true while fetching data
       setLoading(true);
 
-      // Fetch the user cart data from the server
-      await fetchData();
+      // Get the last URL params
+      const params = new URLSearchParams(window.location.search);
+
+      // Extract all params from the URL
+      const initialPage = Number(params.get("page")) || 1; // Default page is 1
+      const initialPerPage = Number(params.get("perPage")) || 12; // Default perPage is 12
+      const initialCategories = params.get("categories")?.split(",") || []; // Default categories is empty array ex: category:cat1,cat2,cat3 => ["cat1", "cat2", "cat3"]
+      const initialPriceMin = Number(params.get("priceMin")) || 0; // Default priceMin is 0
+      const initialPriceMax = Number(params.get("priceMax")) || 5000; // Default priceMax is 5000
+      const initialOnSale = params.get("onSale") === "true"; // Default onSale is false
+      const initialSortBy = params.get("sortBy") || ""; // Default sortBy is empty string
+
+      // Batch all state updates together
+      setCurrentPage(initialPage);
+      setPerPage(initialPerPage);
+      setSelectedCategories(initialCategories);
+      setPriceRange([initialPriceMin, initialPriceMax]);
+      setOnSale(initialOnSale);
+      setSortBy(initialSortBy);
+
+      // Get Parallel Data
+      const [categoriesFetching, productsFetching] = await Promise.all([
+        getAllCategories(),
+        getProductsClient(
+          initialPage,
+          initialPerPage,
+          initialCategories, // categories slugs as array eg: ["cat1", "cat2", "cat3"]
+          initialPriceMin, // min price
+          initialPriceMax, // max price
+          initialOnSale,
+          initialSortBy
+        ),
+      ]);
+
+      if (categoriesFetching.status) {
+        // Set the categories data
+        setCategories(categoriesFetching.categories);
+      } else {
+        // Set the server response
+        setServerResponse({
+          status: categoriesFetching.status,
+          message: categoriesFetching.message,
+        });
+      }
+
+      if (productsFetching.status) {
+        // Set the products data
+        setProducts(productsFetching.products);
+
+        // Set the pagination details
+        setTotalItems(productsFetching.totalProducts);
+        setTotalPages(productsFetching.totalPages);
+        setCurrentPage(productsFetching.currentPage);
+        setPerPage(productsFetching.perPage);
+      } else {
+        // Set the server response
+        setServerResponse({
+          status: productsFetching.status,
+          message: productsFetching.message,
+        });
+      }
 
       // Set loading to false after fetching data
       setLoading(false);
     };
 
-    initFetch();
+    fetchData();
   }, [searchParams]); // Only depend on searchParams
 
   return (

@@ -67,3 +67,31 @@ export const getStatusColor = (status: string): string => {
       return "bg-gray-100 border border-gray-400 text-gray-700";
   }
 };
+
+/**
+ * Creates a debounced version of a function that delays its execution
+ * until after a specified delay has elapsed since the last time it was invoked.
+ *
+ * @param fn - The function to debounce.
+ * @param delay - The number of milliseconds to delay the function execution.
+ * @returns A debounced version of the provided function.
+ *
+ * @example
+ * ```typescript
+ * const debouncedFunction = debounce(() => {
+ *   console.log('Function executed!');
+ * }, 300);
+ *
+ * debouncedFunction(); // Will execute after 300ms if not called again within that time.
+ * ```
+ */
+export const debounce = (fn: Function, delay: number) => {
+  // Set a timeout to delay the API call
+  let timeoutId: NodeJS.Timeout;
+
+  // Return the function that will be called after the delay
+  return (...args: any[]) => {
+    clearTimeout(timeoutId); // Clear the previous timeout if it exists
+    timeoutId = setTimeout(() => fn(...args), delay); // Set a new timeout to call the function after the delay
+  };
+};

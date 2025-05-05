@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 // import backend services
 import { getProducts, getProductsClient } from "@/services/products-services";
@@ -9,6 +9,9 @@ import { getProducts, getProductsClient } from "@/services/products-services";
 // import types
 import { Product } from "@/types/product";
 import { Category } from "@/types/category";
+
+// import debounce helper
+import { debounce } from "@/lib/helpers";
 
 // import icons
 
@@ -112,7 +115,7 @@ export default function page() {
     updateURL({ page: String(newPage) });
   };
 
-  // TODO: Handle Sort By function
+  // Handle Sort By function
   const handleSortBy = (newSortBy: string) => {
     // Update the URL with the new sortBy param
     updateURL({ sortBy: String(newSortBy) });
@@ -124,13 +127,25 @@ export default function page() {
     updateURL({ onSale: String(newOnSale) });
   };
 
-  // TODO: Handle Sort By Price Range function
+  // Function to update the price range in the URL after debounce delay
+  const debouncedPriceUpdate = useMemo(
+    () =>
+      debounce((range: [number, number]) => {
+        updateURL({
+          priceMin: String(range[0]),
+          priceMax: String(range[1]),
+        });
+      }, 500), // 500ms delay then call the updateURL function
+    []
+  );
+
+  // Handle Sort By Price Range
   const handlePriceRange = (newPriceRange: [number, number]) => {
-    // Update the URL with the new priceRange param
-    updateURL({
-      priceMin: String(newPriceRange[0]),
-      priceMax: String(newPriceRange[1]),
-    });
+    // Set the local state immediately for UI responsiveness
+    setPriceRange(newPriceRange);
+
+    // Update the URL with the new price range after debounce delay
+    debouncedPriceUpdate(newPriceRange);
   };
 
   // Fetch data from server
@@ -278,49 +293,53 @@ export default function page() {
             </div>
           </div>
 
-          {/* TODO: Price Range Filter Container */}
+          {/* Price Range Filter Container */}
           <div className="mb-6">
             {/* Label */}
             <h3 className="font-medium mb-2">Price Range</h3>
 
             {/* Range Container */}
-            <div className="flex flex-col space-y-2">
-              {/* Min Range Field */}
-              <input
-                type="range"
-                min={0}
-                max={priceRange[1] - 10}
-                step={10}
-                value={priceRange[0]}
-                onChange={(e) => {
-                  const newMin = Math.min(
-                    Number(e.target.value),
-                    priceRange[1] - 10
-                  );
-                  handlePriceRange([newMin, priceRange[1]]); // Update the min price range in the URL
-                }}
-              />
+            <div className="flex items-center gap-2">
+              {/* Min Price Input Container */}
+              <div className="flex items-center">
+                {/* Label */}
+                <span className="mr-1">BD</span>
 
-              {/* Max Range Field */}
-              <input
-                type="range"
-                min={priceRange[0] + 10}
-                max={1000}
-                step={10}
-                value={priceRange[1]}
-                onChange={(e) => {
-                  const newMax = Math.max(
-                    Number(e.target.value),
-                    priceRange[0] + 10
-                  );
-                  handlePriceRange([priceRange[0], newMax]); // Update the max price range in the URL
-                }}
-              />
+                {/* Min Range Field */}
+                <input
+                  type="number"
+                  min="0"
+                  value={priceRange[0]}
+                  onChange={(e) => {
+                    const min = Math.max(0, Number(e.target.value));
+                    const max = Math.max(min + 1, priceRange[1]);
+                    handlePriceRange([min, max]);
+                  }}
+                  className="w-16 p-1 border rounded"
+                />
+              </div>
 
-              {/* Price Range Display */}
-              <div className="text-sm mt-2 text-center">
-                {convertPriceToBHD(String(priceRange[0]))} -{" "}
-                {convertPriceToBHD(String(priceRange[1]))}
+              <span>to</span>
+
+              {/* Max Price Input Container */}
+              <div className="flex items-center">
+                {/* Label */}
+                <span className="mr-1">BD</span>
+
+                {/* Max Range Field */}
+                <input
+                  type="number"
+                  min={priceRange[0] + 1}
+                  value={priceRange[1]}
+                  onChange={(e) => {
+                    const max = Math.max(
+                      priceRange[0] + 1,
+                      Number(e.target.value)
+                    );
+                    handlePriceRange([priceRange[0], max]);
+                  }}
+                  className="w-16 p-1 border rounded"
+                />
               </div>
             </div>
           </div>
@@ -345,7 +364,7 @@ export default function page() {
             </div>
           </div>
 
-          {/* TODO: Sort Options Container */}
+          {/* Sort Options Container */}
           <div className="mb-6">
             {/* Label */}
             <h3 className="font-medium mb-2">Sort By</h3>

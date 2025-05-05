@@ -51,9 +51,7 @@ export default function ProductsGridLayout(props: LayoutProps) {
   const cardWidthClass = cardWidth ? `w-${cardWidth}` : "w-full";
 
   return (
-    <div
-      className={`${baseStyle} ${className} ${gridClasses} ${cardWidthClass}`}
-    >
+    <div className={`${baseStyle}  ${gridClasses} ${cardWidthClass}`}>
       {products.map((product) => {
         return <ProductCard key={product.id} product={product} />;
       })}

@@ -18,6 +18,7 @@ import ProductsGridLayout from "@/components/(layouts)/ProductsGridLayout";
 import { getAllCategories } from "@/services/categories-services";
 import PaginationControl from "@/components/PaginationControl";
 import { convertPriceToBHD } from "@/lib/helpers";
+import ProductCard from "@/components/ProductCard";
 
 export default function page() {
   // Router Instance
@@ -43,7 +44,7 @@ export default function page() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [totalItems, setTotalItems] = useState<number>(0);
-  const [perPage, setPerPage] = useState<number>(9);
+  const [perPage, setPerPage] = useState<number>(16);
 
   // State to store the server response
   const [serverResponse, setServerResponse] = useState({
@@ -227,7 +228,7 @@ export default function page() {
                         const params = new URLSearchParams(searchParams);
 
                         // Set the categories param in the URL
-                        params.set("&categories", newSelected.join(",")); // Set the categories param in the URL eg: categories=cat1,cat2,cat3
+                        params.set("categories", newSelected.join(",")); // Set the categories param in the URL eg: categories=cat1,cat2,cat3
 
                         // Route to the new URL with the updated params
                         router.push(`/products?${params.toString()}`);
@@ -333,18 +334,68 @@ export default function page() {
 
         {/* Right Side: Products grid */}
         <div className="w-[85%] flex flex-col justify-between min-h-[85vh]">
-          <ProductsGridLayout
-            products={products || []}
-            gridConfig={{ sm: 2, md: 4, lg: 5 }}
-          />
+          {/* Products Grid */}
+          <div className="grid gap-3 lg:grid-cols-6 md:grid-cols-3 sm:grid-cols-1">
+            {/* Handle Loading */}
+            <></>
+
+            {/* Handle No Products */}
+            <></>
+
+            {/* Handle Date */}
+            {products?.map((product) => {
+              return <ProductCard key={product.id} product={product} />;
+            })}
+          </div>
 
           {/* Pagination Control Container */}
-          <div className="self-center">
-            <PaginationControl
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={setCurrentPage}
-            />
+          <div className="flex items-center mt-4 gap-x-4 self-center">
+            {/* Previous Button */}
+            <button
+              onClick={() => {
+                // Set the current page to the previous page
+                setCurrentPage(currentPage - 1);
+
+                // Get the URL params and set the currentPage param
+                const params = new URLSearchParams(searchParams);
+
+                params.set("page", String(currentPage - 1)); // Set the currentPage param in the URL eg: page=1
+
+                // Route to the new URL with the updated params
+                router.push(`/products?${params.toString()}`);
+              }}
+              disabled={currentPage === 1}
+              className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${"bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"} ${
+                currentPage === 1 ? "cursor-not-allowed" : ""
+              }`}
+            >
+              Previous
+            </button>
+
+            {/* Counter of current page */}
+            <span className="font-semibold">{`${currentPage} of ${totalPages}`}</span>
+
+            {/* Next Button */}
+            <button
+              onClick={() => {
+                // Set the current page to the previous page
+                setCurrentPage(currentPage + 1);
+
+                // Get the URL params and set the currentPage param
+                const params = new URLSearchParams(searchParams);
+
+                params.set("page", String(currentPage + 1)); // Set the currentPage param in the URL eg: page=1
+
+                // Route to the new URL with the updated params
+                router.push(`/products?${params.toString()}`);
+              }}
+              disabled={currentPage === totalPages}
+              className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${"bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"} ${
+                currentPage === totalPages ? "cursor-not-allowed" : ""
+              }`}
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>

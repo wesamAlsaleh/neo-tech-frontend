@@ -12,6 +12,7 @@ import { getAllCategories } from "@/services/categories-services";
 // import custom components
 import HomeComponentTitle from "@/components/HomeComponentTitle";
 import LoadingSpinner from "./LoadingSpinner";
+import Link from "next/link";
 
 export default function BrowseByCategorySection() {
   // Router instance
@@ -68,21 +69,25 @@ export default function BrowseByCategorySection() {
         {!loading &&
           categories.map((category) => (
             // category card container (name + image)
-            <div
+            <Link
               key={category.id}
-              className="border border-gray-300 w-44 h-40 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-orange-400 transition-all"
+              href={`/products?categories=${category.category_slug}`}
             >
-              <img
-                src={category.category_image_url!}
-                alt={category.category_slug}
-                width={50}
-                height={50}
-                onClick={() =>
-                  router.push(`/categories/${category.category_slug}`)
-                }
-              />
-              <span className="mt-2 font-medium">{category.category_name}</span>
-            </div>
+              <div
+                key={category.id}
+                className="border border-gray-300 w-44 h-40 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:bg-orange-400 transition-all"
+              >
+                <img
+                  src={category.category_image_url!}
+                  alt={category.category_slug}
+                  width={50}
+                  height={50}
+                />
+                <span className="mt-2 font-medium">
+                  {category.category_name}
+                </span>
+              </div>
+            </Link>
           ))}
       </div>
     </>

@@ -13,6 +13,7 @@ import { Product } from "@/types/product";
 import HomeComponentTitle from "./HomeComponentTitle";
 import ProductCard from "./ProductCard";
 import ProductsGridLayout from "./(layouts)/ProductsGridLayout";
+import Button from "./Button";
 
 export default function ExploreProductsSection() {
   // Router instance
@@ -70,13 +71,11 @@ export default function ExploreProductsSection() {
       <ProductsGridLayout products={products} isLoading={loading} />
 
       {/*  View All Products Button */}
-      <div className="flex justify-center mt-4">
-        <button
-          className="bg-primary text-white py-2 px-4 rounded-md font-bold text-wrap"
+      <div className="flex justify-center mt-6">
+        <Button
+          text="View All Products"
           onClick={() => router.push("/products")}
-        >
-          View All Products
-        </button>
+        />
       </div>
     </>
   );

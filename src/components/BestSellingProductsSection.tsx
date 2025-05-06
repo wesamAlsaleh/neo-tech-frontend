@@ -66,7 +66,7 @@ export default function BestSellingProductsSection() {
         title=" Best Selling Products"
         subtitle="This Month"
         viewAllButton={true}
-        url="/products"
+        url="/products?sortBy=bestSelling"
       />
 
       {/* Product Cards Grid */}

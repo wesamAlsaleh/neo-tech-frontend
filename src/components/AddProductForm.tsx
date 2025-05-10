@@ -1,6 +1,7 @@
 "use client";
 
 import React, { Suspense, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 // import handle form submission function
 import { createProduct } from "@/services/products-services";
@@ -13,31 +14,21 @@ import { Category } from "@/types/category";
 
 // import custom components
 import ProductImageUpload from "@/components/ProductImageUpload";
-import { useRouter } from "next/navigation";
-
-// Form status interface
-interface FormStatus {
-  success: boolean;
-  message: string;
-  error: string;
-}
 
 export default function AddProductForm() {
   const [productName, setProductName] = useState<string>(""); // State to store the product name
   const [productDescription, setProductDescription] = useState<string>(""); // State to store the product description
   const [productPrice, setProductPrice] = useState<number>(0); // State to store the product price
-  // const [productRating, setProductRating] = useState<number>(0); // State to store the product rating
   const [productImages, setProductImages] = useState<FileList | null>(null); // State to store the product images
   const [productStatus, setProductStatus] = useState<string | number>(""); // State to store the product status 'active' or 'inactive'
   const [productCategory, setProductCategory] = useState<string | number>(""); // State to store the product category
   const [productStock, setProductStock] = useState<number>(0); // State to store the product stock
   const [productBarcode, setProductBarcode] = useState<string>(""); // State to store the product barcode
   const [categories, setCategories] = useState<Category[]>([]); // State to store the fetched categories
-  const [serverResponse, setServerResponse] = useState<FormStatus>({
-    success: false,
+  const [serverResponse, setServerResponse] = useState({
+    status: false,
     message: "",
-    error: "",
-  }); // State to store the response status to display to the user after form submission
+  }); // State to store the server response
   const [isSubmitting, setIsSubmitting] = useState(false); // State to store the form submission status
 
   // Router instance
@@ -91,36 +82,6 @@ export default function AddProductForm() {
     // Prepare form data
     const formData = new FormData();
 
-    // If any field is empty, display an error message and return
-    if (!productName || !productCategory || !productImages || !productBarcode) {
-      setServerResponse({
-        success: false,
-        message: `${!productName ? "Product Name, " : ""}${
-          !productCategory ? "Category, " : ""
-        }${!productStatus ? "Status, " : ""}${
-          !productImages ? "Images, " : ""
-        } ${!productBarcode ? "Barcode" : ""} cannot be empty*`,
-        error: "client error",
-      });
-
-      setIsSubmitting(false); // Reset the form submission status
-
-      return;
-    }
-
-    // If the product barcode is not 13 digits or is not a number, display an error message and return
-    if (productBarcode.length !== 13 || isNaN(Number(productBarcode))) {
-      setServerResponse({
-        success: false,
-        message: "Product barcode must be 13 digits*",
-        error: "client error",
-      });
-
-      setIsSubmitting(false); // Reset the form submission status
-
-      return;
-    }
-
     // Append text fields
     formData.append("product_name", productName);
     formData.append("product_description", productDescription);
@@ -148,9 +109,8 @@ export default function AddProductForm() {
 
       // Update UI with the response message
       setServerResponse({
-        success: result.status,
+        status: result.status,
         message: result.message,
-        error: "",
       });
 
       // If the form submission is successful, reload the page or reset the form fields if the resetForm parameter is true
@@ -162,13 +122,6 @@ export default function AddProductForm() {
           router.push("/admin/products"); // Redirect to the categories page
         }
       }
-    } catch (error: any) {
-      // Update UI with the error message
-      setServerResponse({
-        success: false,
-        message: error.response.data.message,
-        error: "server error",
-      });
     } finally {
       setIsSubmitting(false); // Reset the form submission
     }
@@ -176,17 +129,17 @@ export default function AddProductForm() {
 
   return (
     <>
-      {/* Display the status message */}
+      {/* Display message */}
       {serverResponse.message && (
         <div
-          className={`p-3 rounded-lg  my-3 ${
-            serverResponse.success
-              ? "bg-green-100 text-green-600" // Success styles
-              : "bg-red-100 text-red-600" // Error styles
+          className={`px-4 py-3 rounded relative mb-4 ${
+            serverResponse.status
+              ? "bg-green-100 border border-green-400 text-green-700"
+              : "bg-red-100 border border-red-400 text-red-700 "
           }`}
           role="alert"
         >
-          {serverResponse.success ? (
+          {serverResponse.status ? (
             <strong className="font-bold">Success! </strong>
           ) : (
             <strong className="font-bold">Error! </strong>
@@ -263,7 +216,6 @@ export default function AddProductForm() {
           onChange={(files: FileList) => setProductImages(files)} // set the product images state when the user uploads images
         />
 
-        {/* Product details container */}
         {/* Product details container */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Category field container */}

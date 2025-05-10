@@ -72,7 +72,7 @@ export default function OrderPrint(props: { orderId: string }) {
   // Function to handle print
   const handlePrint = () => {
     // Create a new window (pop-up window) with just the order content
-    const printWindow = window.open("", "_blank", "width=800,height=600");
+    const printWindow = window.open("sds", "_blank", "width=1000,height=800");
 
     if (!printWindow) {
       alert("Please allow pop-ups to print the order");

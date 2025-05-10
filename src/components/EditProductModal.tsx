@@ -9,18 +9,16 @@ import { Category } from "@/types/category";
 // import backend services
 import { getAllCategories } from "@/services/categories-services";
 import { updateProduct } from "@/services/products-services";
+
+// import components
 import ProductImageUpload from "./ProductImageUpload";
+import { ColumnLayout } from "./(layouts)/ColumnLayout";
+import Card from "./Card";
 
 interface ProductEditModalProps {
   isOpen: boolean; // modal open state
   onClose: () => void; // set isOpen to false then close the modal
   product?: Product; // item to edit if any
-}
-
-interface FormStatus {
-  success: boolean;
-  message: string;
-  error: string;
 }
 
 export default function EditProductModal({
@@ -54,6 +52,13 @@ export default function EditProductModal({
     setProductCategory(product?.category_id || 0);
     setProductBarcode(String(product?.product_barcode) || "");
   }, [product]);
+
+  // Form Response type
+  type FormStatus = {
+    success: boolean;
+    message: string;
+    error: string;
+  };
 
   const [serverResponse, setServerResponse] = useState<FormStatus>({
     success: false,
@@ -157,16 +162,10 @@ export default function EditProductModal({
   if (!isOpen) return null;
 
   return (
-    // ... container
+    // Modal Container
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      {/* ... container */}
-      <div className="bg-white p-6 rounded-lg w-full max-w-md">
-        {/* Header container */}
-        <div className="flex justify-between items-center mb-4">
-          {/* Modal title */}
-          <h2 className="text-xl font-bold">Edit {product?.product_name}</h2>
-        </div>
-
+      {/* Modal Content container */}
+      <div className="bg-white p-6 rounded-lg overflow-y-auto w-full max-w-2xl max-h-[90vh]">
         {/* Display the status message */}
         {serverResponse.message && (
           <div
@@ -188,227 +187,231 @@ export default function EditProductModal({
 
         {/* Edit form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Name & Price Fields container*/}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Name field container */}
-            <div>
-              <label
-                htmlFor="product_name"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Product Name<span className="text-red-600">*</span>
-              </label>
+          <Card
+            CardTitle="Product Details"
+            CardDescription={`Manage ${product?.product_name} name, description, or price`}
+            CardContent={
+              <div className="space-y-4">
+                {/* Name & Price Fields container*/}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Name field container */}
+                  <div>
+                    <label
+                      htmlFor="product_name"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Product Name<span className="text-red-600">*</span>
+                    </label>
 
-              <input
-                type="text"
-                id="product_name"
-                value={productName}
-                onChange={(event) => setProductName(event.target.value)}
-                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
-              />
-            </div>
+                    <input
+                      type="text"
+                      id="product_name"
+                      value={productName}
+                      onChange={(event) => setProductName(event.target.value)}
+                      className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
+                    />
+                  </div>
 
-            {/* Price field container */}
-            <div>
-              <label
-                htmlFor="product_price"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Product Price (BHD)
-              </label>
+                  {/* Price field container */}
+                  <div>
+                    <label
+                      htmlFor="product_price"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Product Price (BHD)
+                    </label>
 
-              <input
-                type="number"
-                id="product_price"
-                value={productPrice}
-                onChange={(event) =>
-                  setProductPrice(Number(event.target.value))
-                }
-                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
-                min="0"
-                step="0.01"
-              />
-            </div>
-          </div>
+                    <input
+                      type="number"
+                      id="product_price"
+                      value={productPrice}
+                      onChange={(event) =>
+                        setProductPrice(Number(event.target.value))
+                      }
+                      className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
+                      min="0"
+                      step="0.01"
+                    />
+                  </div>
+                </div>
 
-          {/* Description field container */}
-          <div>
-            <label
-              htmlFor="product_description"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Product Description
-            </label>
+                {/* Description field container */}
+                <div>
+                  <label
+                    htmlFor="product_description"
+                    className="block text-sm font-medium text-gray-700"
+                  >
+                    Product Description
+                  </label>
 
-            <textarea
-              id="product_description"
-              value={productDescription}
-              onChange={(event) => setProductDescription(event.target.value)}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
-              rows={3}
-            />
-          </div>
-
-          {/* Product images container */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {product?.images?.map((image, index) => (
-              // Display the product images
-              <div key={index} className="relative">
-                <img
-                  src={image}
-                  alt={`Preview ${index + 1}`}
-                  className="w-full h-32 object-cover rounded-lg"
-                />
+                  <textarea
+                    id="product_description"
+                    value={productDescription}
+                    onChange={(event) =>
+                      setProductDescription(event.target.value)
+                    }
+                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm p-2"
+                    rows={3}
+                  />
+                </div>
               </div>
-            ))}
-          </div>
-
-          {/* Image Upload field container */}
-          <ProductImageUpload
-            onChange={(files: FileList) => setProductImages(files)} // set the product images state when the user uploads images
-            required={false}
+            }
           />
 
-          {/* Product details container */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Category field container */}
-            <Suspense fallback={<p>Loading categories...</p>}>
-              <div>
-                {/* Label for category selection */}
-                <label
-                  htmlFor="product_category"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Category<span className="text-red-600">*</span>
-                </label>
-
-                {/* Dropdown to select a product category */}
-                <select
-                  id="product_category"
-                  value={productCategory}
-                  onChange={(event) =>
-                    setProductCategory(Number(event.target.value))
-                  }
-                  className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm 
-                          focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
-                >
-                  {/* Default disabled option prompting selection */}
-                  <option value="" disabled>
-                    Select a category
-                  </option>
-
-                  {/* Dynamically listing available categories */}
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.category_name}
-                    </option>
+          <Card
+            CardTitle="Product Images"
+            CardDescription={`Manage ${product?.product_name} Images`}
+            CardContent={
+              <div className="space-y-4">
+                {/* Product images container */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {product?.images?.map((image, index) => (
+                    // Display the product images
+                    <div key={index} className="relative">
+                      <img
+                        src={image}
+                        alt={`Preview ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                    </div>
                   ))}
-                </select>
+                </div>
+
+                {/* Image Upload field container */}
+                <ProductImageUpload
+                  onChange={(files: FileList) => setProductImages(files)} // set the product images state when the user uploads images
+                  required={false}
+                />
               </div>
-            </Suspense>
+            }
+          />
 
-            {/* Status field container */}
-            <div>
-              {/* Label for product status selection */}
-              <label
-                htmlFor="product_status"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Product Status<span className="text-red-600">*</span>
-              </label>
+          <Card
+            CardTitle="Manage Product Status"
+            CardDescription={`Manage ${product?.product_name} Category, Status, Stock, or Barcode`}
+            CardContent={
+              <div className="space-y-4">
+                {" "}
+                {/* Product details container */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Category field container */}
+                  <Suspense fallback={<p>Loading categories...</p>}>
+                    <div>
+                      {/* Label for category selection */}
+                      <label
+                        htmlFor="product_category"
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Category<span className="text-red-600">*</span>
+                      </label>
 
-              {/* Dropdown to set product status (Active/Inactive) */}
-              <select
-                id="product_status"
-                value={productStatus}
-                onChange={(event) =>
-                  setProductStatus(Number(event.target.value))
-                }
-                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm 
-                        focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
-              >
-                {/* Default disabled option prompting selection */}
-                <option value="" disabled>
-                  Select a status
-                </option>
-                <option value="1">Active</option>
-                <option value="0">Inactive</option>
-              </select>
-            </div>
+                      {/* Dropdown to select a product category */}
+                      <select
+                        id="product_category"
+                        value={productCategory}
+                        onChange={(event) =>
+                          setProductCategory(Number(event.target.value))
+                        }
+                        className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm 
+                            focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
+                      >
+                        {/* Default disabled option prompting selection */}
+                        <option value="" disabled>
+                          Select a category
+                        </option>
 
-            {/* Product Stock field container */}
-            <div>
-              {/* Label for product stock input */}
-              <label
-                htmlFor="product_stock"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Product Stock
-              </label>
+                        {/* Dynamically listing available categories */}
+                        {categories.map((category) => (
+                          <option key={category.id} value={category.id}>
+                            {category.category_name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </Suspense>
 
-              {/* Input field for entering product stock quantity */}
-              <input
-                type="number"
-                id="product_stock"
-                min="0" // Ensures no negative stock values
-                value={productStock}
-                onChange={(event) =>
-                  setProductStock(Number(event.target.value) || 0)
-                }
-                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm 
-                        focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
-              />
-            </div>
+                  {/* Status field container */}
+                  <div>
+                    {/* Label for product status selection */}
+                    <label
+                      htmlFor="product_status"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Product Status<span className="text-red-600">*</span>
+                    </label>
 
-            {/* Product Barcode field container */}
-            <div>
-              {/* Label for barcode input field */}
-              <label
-                htmlFor="product_barcode"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Product Barcode (13 digits)
-                <span className="text-red-600">*</span>
-              </label>
+                    {/* Dropdown to set product status (Active/Inactive) */}
+                    <select
+                      id="product_status"
+                      value={productStatus}
+                      onChange={(event) =>
+                        setProductStatus(Number(event.target.value))
+                      }
+                      className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm 
+                          focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
+                    >
+                      {/* Default disabled option prompting selection */}
+                      <option value="" disabled>
+                        Select a status
+                      </option>
+                      <option value="1">Active</option>
+                      <option value="0">Inactive</option>
+                    </select>
+                  </div>
 
-              {/* Input field for barcode entry */}
-              <input
-                type="text"
-                pattern="[0-9]*" // Restricts input to numeric values only
-                maxLength={13} // Limits input length to 13 digits
-                id="product_barcode"
-                value={String(productBarcode)}
-                onChange={(event) => setProductBarcode(event.target.value)}
-                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm 
-                        focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
-              />
-            </div>
-          </div>
+                  {/* Product Stock field container */}
+                  <div>
+                    {/* Label for product stock input */}
+                    <label
+                      htmlFor="product_stock"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Product Stock
+                    </label>
 
-          {/* Star Rating field container */}
-          {/* <div>
-                 <label
-                   htmlFor="product_rating"
-                   className="block text-sm font-medium text-gray-700"
-                 >
-                   Product Rating (0-5) stars
-                 </label>
-       
-                 <select
-                   id="product_rating"
-                   value={productRating}
-                   onChange={(event) => setProductRating(Number(event.target.value))} // set the product rating state when the user selects a rating
-                   className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
-                   required
-                 >
-                   <option value="0">Default Rating (0)</option>
-                   <option value="1">⭐</option>
-                   <option value="2">⭐⭐</option>
-                   <option value="3">⭐⭐⭐</option>
-                   <option value="4">⭐⭐⭐⭐</option>
-                   <option value="5">⭐⭐⭐⭐⭐</option>
-                 </select>
-               </div> */}
+                    {/* Input field for entering product stock quantity */}
+                    <input
+                      type="number"
+                      id="product_stock"
+                      min="0" // Ensures no negative stock values
+                      value={productStock}
+                      onChange={(event) =>
+                        setProductStock(Number(event.target.value) || 0)
+                      }
+                      className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm 
+                          focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
+                    />
+                  </div>
+
+                  {/* Product Barcode field container */}
+                  <div>
+                    {/* Label for barcode input field */}
+                    <label
+                      htmlFor="product_barcode"
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Product Barcode (13 digits)
+                      <span className="text-red-600">*</span>
+                    </label>
+
+                    {/* Input field for barcode entry */}
+                    <input
+                      type="text"
+                      pattern="[0-9]*" // Restricts input to numeric values only
+                      maxLength={13} // Limits input length to 13 digits
+                      id="product_barcode"
+                      value={String(productBarcode)}
+                      onChange={(event) =>
+                        setProductBarcode(event.target.value)
+                      }
+                      className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm 
+                          focus:border-orange-500 focus:ring focus:ring-orange-200 focus:ring-opacity-50 p-2"
+                    />
+                  </div>
+                </div>
+              </div>
+            }
+          />
 
           {/* button containers */}
           <div className="flex justify-end gap-2">

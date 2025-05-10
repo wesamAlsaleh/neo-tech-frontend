@@ -276,16 +276,12 @@ export default function OrderPrint(props: { orderId: string }) {
                   );
                 })}
               </tbody>
-
-              <tfoot>
-                {/* Order Total Price Row */}
-                <tr className="border-t font-semibold">
-                  <td className="text-left pl-2 py-2 pt-4">
-                    Total: {convertPriceToBHD(String(order.total_price))}
-                  </td>
-                </tr>
-              </tfoot>
             </table>
+          </div>
+
+          {/* Order Total Price */}
+          <div className="flex">
+            <p> Total Amount: {convertPriceToBHD(String(order.total_price))}</p>
           </div>
 
           {/* Thank you message or company info */}

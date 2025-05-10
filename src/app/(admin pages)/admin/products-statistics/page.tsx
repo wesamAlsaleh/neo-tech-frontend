@@ -5,6 +5,12 @@ import React, { useEffect, useState } from "react";
 // import icons
 import { icons } from "../../../../../public/icons";
 
+// import axios
+import axios from "axios";
+
+// import date-fns for date manipulation
+import { format } from "date-fns";
+
 // import backend services
 import { getProductStatistics } from "@/services/products-services";
 
@@ -15,8 +21,6 @@ import { ColumnLayout } from "@/components/(layouts)/ColumnLayout";
 import Card from "@/components/Card";
 import Table from "@/components/Table";
 import Button from "@/components/Button";
-import axios from "axios";
-import { format } from "date-fns";
 
 /**
  * @function getAllProductsInCSV - to get all products in CSV format (for admin)

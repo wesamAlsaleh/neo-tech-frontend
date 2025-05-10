@@ -9,7 +9,6 @@ import Table from "./Table";
 import { convertPriceToBHD } from "@/lib/helpers";
 import DataRangePicker from "./DataRangePicker";
 import Card from "./Card";
-import Filter from "./Filter";
 
 // import components
 
@@ -124,7 +123,7 @@ export default function SalesReport() {
   return (
     <div className="flex flex-col gap-y-4">
       {/* Server Message */}
-      {serverResponse?.message && (
+      {!loading && serverResponse?.message && (
         <div
           className={`px-4 py-3 rounded relative mb-4 ${
             serverResponse.status

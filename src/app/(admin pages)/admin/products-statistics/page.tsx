@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { icons } from "../../../../../public/icons";
 
 // import backend services
+import { getProductStatistics } from "@/services/products-services";
 
 // import components
 import PageTitle from "@/components/PageTitle";
@@ -13,8 +14,73 @@ import { TwoColumnLayout } from "@/components/(layouts)/TwoColumnLayout";
 import { ColumnLayout } from "@/components/(layouts)/ColumnLayout";
 import Card from "@/components/Card";
 import Table from "@/components/Table";
-import { getProductStatistics } from "@/services/products-services";
 import Button from "@/components/Button";
+import axios from "axios";
+import { format } from "date-fns";
+
+/**
+ * @function getAllProductsInCSV - to get all products in CSV format (for admin)
+ */
+export const getAllProductsInCSV = async () => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/products/export/statistics/csv`,
+      {
+        responseType: "blob", // Set response type to blob for file download
+      }
+    );
+
+    // Create a link element and trigger download
+    const blob = new Blob([response.data], { type: "text/csv" });
+
+    // Create a URL for the blob
+    const url = window.URL.createObjectURL(blob);
+
+    // Create a link element to reference the blob
+    const link = document.createElement("a");
+
+    // Set the href attribute to the blob URL
+    link.href = url;
+
+    // Get filename from headers
+    const contentDisposition = response.headers["content-disposition"];
+
+    // Get current date
+    const currentDate = format(new Date(), "yyyy-MM-dd");
+
+    // default fallback filename
+    let filename = `neoTech_products_data_${currentDate}.csv`;
+
+    // Set the download attribute with the filename
+    link.setAttribute("download", filename); // this will be the name of the downloaded file e.g. neoTech_products_data_2023-10-01.csv
+
+    // Append the link to the body (required for Firefox)
+    document.body.appendChild(link);
+
+    // Trigger the download
+    link.click();
+
+    // Clean up and remove the link
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+
+    return {
+      status: true,
+      message: "Your file downloaded successfully.",
+    };
+  } catch (error: any) {
+    // Debugging error
+    console.error(error);
+
+    // Log the Developer message
+    console.log(error.response.data.devMessage);
+
+    return {
+      status: false,
+      message: error.response.data.message,
+    };
+  }
+};
 
 export default function page() {
   // State to store the product statistics data
@@ -105,9 +171,9 @@ export default function page() {
         subtitle="View the statistics of the products in the system."
         actionButton={
           <Button
-            text="Excel Sheet"
+            text="Export to CSV"
             iconSrc={icons.excelIcon96.src}
-            onClick={() => {}}
+            onClick={() => getAllProductsInCSV()}
           />
         }
       />

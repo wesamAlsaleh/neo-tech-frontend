@@ -21,6 +21,7 @@ export default function page() {
       <PageTitle
         title="Add New Feature"
         subtitle="Here you can add a new feature to the system. Note that only active features will be displayed to the users. And only 3 features can be activated to the system."
+        highlightText="The recommended size for the icon is 96x96 pixels."
         actionButton={
           <Button
             text="Back"

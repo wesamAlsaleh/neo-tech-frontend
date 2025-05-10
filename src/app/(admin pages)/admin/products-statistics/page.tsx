@@ -2,6 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 
+// import icons
+import { icons } from "../../../../../public/icons";
+
 // import backend services
 
 // import components
@@ -11,6 +14,7 @@ import { ColumnLayout } from "@/components/(layouts)/ColumnLayout";
 import Card from "@/components/Card";
 import Table from "@/components/Table";
 import { getProductStatistics } from "@/services/products-services";
+import Button from "@/components/Button";
 
 export default function page() {
   // State to store the product statistics data
@@ -99,6 +103,13 @@ export default function page() {
       <PageTitle
         title="Products Statistics"
         subtitle="View the statistics of the products in the system."
+        actionButton={
+          <Button
+            text="Excel Sheet"
+            iconSrc={icons.excelIcon96.src}
+            onClick={() => {}}
+          />
+        }
       />
 
       {/* Table */}

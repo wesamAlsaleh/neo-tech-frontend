@@ -383,6 +383,8 @@ export default function EditOrderForm(props: propsType) {
         <div className="w-1/2 flex-col">
           <Card
             CardTitle={`Edit Order Details`}
+            CardHeight={"h-[500px]"}
+            CardMaxContentHeight={"max-h-[500px]"}
             CardContent={
               <form className="space-y-4">
                 {/* Status field container */}
@@ -534,19 +536,16 @@ export default function EditOrderForm(props: propsType) {
                     </div>
                   </div>
                 )}
-
-                {/* Save Button Container */}
-                <div className="mt-4">
-                  <Button
-                    // onClick={() => {}}
-                    onClick={() => handleSubmit()}
-                    type="submit"
-                    text="Save Changes"
-                    buttonClassName="w-full"
-                    disabled={isSubmitting}
-                  />
-                </div>
               </form>
+            }
+            CardFooter={
+              <Button
+                onClick={() => handleSubmit()}
+                type="submit"
+                text="Save Changes"
+                buttonClassName="w-full"
+                disabled={isSubmitting}
+              />
             }
           />
         </div>
@@ -555,6 +554,8 @@ export default function EditOrderForm(props: propsType) {
         <div className="w-1/2 flex-col">
           <Card
             CardTitle={`Edit Order Items`}
+            CardHeight={"h-[500px]"}
+            CardMaxContentHeight={"max-h-[500px]"}
             CardContent={
               <div className="flex flex-col gap-4">
                 {/* Search Bar Container */}

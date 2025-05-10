@@ -12,22 +12,52 @@ import { Product } from "@/types/product";
 // import custom components
 import HomeComponentTitle from "./HomeComponentTitle";
 import ProductCard from "./ProductCard";
+import ProductsGridLayout from "./(layouts)/ProductsGridLayout";
+import Button from "./Button";
 
 export default function ExploreProductsSection() {
   // Router instance
   const router = useRouter();
 
+  // State to manage the loading state
+  const [loading, setLoading] = useState(true);
+
+  // State to manage products
   const [products, setProducts] = useState<Product[]>([]);
 
-  // fetch all categories
-  useEffect(() => {
-    const fetchExploreProducts = async () => {
+  // Function to fetch best selling products from the server
+  const fetchExploreProducts = async () => {
+    try {
+      // Call the server function to get the best selling products
       const serverResponse = await getExploreProducts();
 
-      if (serverResponse.status) setProducts(serverResponse.products);
+      // If the server response is successful, set the products state
+      if (serverResponse.status) {
+        setProducts(serverResponse.products);
+      } else {
+        // If the server response is not successful, set the products state to an empty array
+        setProducts([]);
+
+        // To make the loading skeleton appear in case of an error
+        setLoading(true);
+      }
+    } catch (error) {
+      // To make the loading skeleton appear in case of an error
+      setLoading(true);
+    } finally {
+      // Set loading to false after fetching data
+      setLoading(false);
+    }
+  };
+
+  // Fetch data from server
+  useEffect(() => {
+    const initFetch = async () => {
+      // Fetch the user cart data from the server
+      await fetchExploreProducts();
     };
 
-    fetchExploreProducts();
+    initFetch();
   }, []);
 
   return (
@@ -38,20 +68,14 @@ export default function ExploreProductsSection() {
       />
 
       {/* Product Cards Grid */}
-      <div className="grid lg:grid-cols-8 md:grid-cols-4 sm:grid-cols-2 gap-2 w-[100%]">
-        {products.map((product) => {
-          return <ProductCard key={product.id} product={product} />;
-        })}
-      </div>
+      <ProductsGridLayout products={products} isLoading={loading} />
 
       {/*  View All Products Button */}
-      <div className="flex justify-center mt-4">
-        <button
-          className="bg-primary text-white py-2 px-4 rounded-md font-bold text-wrap"
+      <div className="flex justify-center mt-6">
+        <Button
+          text="View All Products"
           onClick={() => router.push("/products")}
-        >
-          View All Products
-        </button>
+        />
       </div>
     </>
   );

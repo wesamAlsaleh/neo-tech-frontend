@@ -152,6 +152,17 @@ import customerInsightsIcon96 from "../public/assets/button-icons/icons8-custome
 import bannerIcon48 from "../public/assets/button-icons/icons8-banner-48.png";
 import bannerIcon96 from "../public/assets/button-icons/icons8-banner-96.png";
 
+// Statistics icons
+import statisticsIcon48 from "../public/assets/button-icons/icons8-statistics-48.png";
+import statisticsIcon96 from "../public/assets/button-icons/icons8-statistics-96.png";
+
+// No image icons
+import noImageIcon from "../public/assets/no-image.webp";
+
+// Excel icons
+import excelIcon48 from "../public/assets/button-icons/icons8-excel-48.png";
+import excelIcon96 from "../public/assets/button-icons/icons8-excel-96.png";
+
 export const icons = {
   userIcon48,
   userIcon96,
@@ -241,4 +252,9 @@ export const icons = {
   customerInsightsIcon96,
   bannerIcon48,
   bannerIcon96,
+  noImageIcon,
+  statisticsIcon48,
+  statisticsIcon96,
+  excelIcon48,
+  excelIcon96,
 };

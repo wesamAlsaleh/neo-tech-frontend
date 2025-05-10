@@ -10,20 +10,44 @@ import { Feature } from "@/types/features";
 
 // import custom components
 import TrustBadgeCard from "./TrustBadgeCard";
+import LoadingSpinner from "./LoadingSpinner";
 
 export default function TrustBadgesSection() {
+  // State to hold trust badges
   const [trustBadges, setTrustBadges] = useState<Feature[]>([]);
+
+  // State to hold loading state
+  const [loading, setLoading] = useState(true);
+
+  // Function to fetch trust badges from the server
+  const fetchTrustBadges = async () => {
+    // Set loading to true while fetching data
+    setLoading(true);
+
+    // Fetch trust badges from the server
+    const serverResponse = await getActiveShopFeatures();
+
+    // Check if the response is successful and has features
+    if (serverResponse.status) setTrustBadges(serverResponse.features);
+    else setTrustBadges([]); // Set trust badges to empty array if no features found
+
+    // Set loading to false after fetching data
+    setLoading(false);
+  };
 
   // fetch all trust badges (3 or less badges only)
   useEffect(() => {
-    const fetchTrustBadges = async () => {
-      const serverResponse = await getActiveShopFeatures();
-
-      if (serverResponse.status) setTrustBadges(serverResponse.features);
+    const fetchData = async () => {
+      await fetchTrustBadges();
     };
 
-    fetchTrustBadges();
+    fetchData();
   }, []);
+
+  // If loading, return a loading spinner or skeleton (optional)
+  if (loading) {
+    return <LoadingSpinner />; // You can replace this with a skeleton or loading component
+  }
 
   return (
     // Trust Badges Section Container

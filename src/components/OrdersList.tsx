@@ -15,6 +15,7 @@ import { formatDateTime, convertPriceToBHD } from "@/lib/helpers";
 
 // import custom components
 import LoadingSpinner from "./LoadingSpinner";
+import Table from "./Table";
 
 export default function OrdersList() {
   // Router Instance
@@ -30,7 +31,7 @@ export default function OrdersList() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [totalItems, setTotalItems] = useState<number>(0);
-  const [perPage, setPerPage] = useState<number>(1);
+  const [perPage, setPerPage] = useState<number>(10);
 
   // State to store the server response
   const [serverResponse, setServerResponse] = useState({
@@ -41,7 +42,7 @@ export default function OrdersList() {
   // Fetch data from server
   const fetchData = async () => {
     // Call the server API to get the orders data
-    const response = await getAllOrders(15, currentPage);
+    const response = await getAllOrders(perPage, currentPage);
 
     console.log(response);
 
@@ -77,10 +78,14 @@ export default function OrdersList() {
     initFetch();
   }, [currentPage, perPage]);
 
-  // if loading, display loading message
-  if (loading) {
-    return <LoadingSpinner />;
-  }
+  // Prepare Table Columns
+  const columns = [
+    { key: "id", label: "Order ID" },
+    { key: "customer_name", label: "Customer Name" },
+    { key: "status", label: "Status" },
+    { key: "total_price", label: "Total Price" },
+    { key: "created_at", label: "Order Date" },
+  ];
 
   return (
     <>
@@ -104,109 +109,68 @@ export default function OrdersList() {
       )}
 
       {/* Orders table */}
-      <table className="min-w-full table-auto border-collapse border border-gray-300">
-        <thead className="bg-gray-200 h-12">
-          <tr>
-            <th className="px-4 py-2 border border-gray-300 w-11">Order ID</th>
-            <th className="px-4 py-2 border border-gray-300 w-32">
-              Customer Name
-            </th>
-            <th className="px-4 py-2 border border-gray-300 w-28">Status</th>
-            <th className="px-4 py-2 border border-gray-300 w-24">
-              Total Price
-            </th>
-            <th className="px-4 py-2 border border-gray-300 w-24">
-              Order Date
-            </th>
-          </tr>
-        </thead>
+      <Table
+        columns={columns}
+        rows={orders || []}
+        noDataMessage=" No orders found."
+        isLoading={loading}
+        onRowClick={(row) => {
+          router.push(`/admin/orders/${row.id}`); // navigate to order details page without refreshing the page
+          window.scrollTo({ top: 0, behavior: "smooth" }); // 'smooth' or 'auto'
+        }}
+        renderCell={(row, key) => {
+          // Render User Name
+          if (key === "customer_name") {
+            return (
+              <span>
+                {row.user.first_name} {row.user.last_name}
+              </span>
+            );
+          }
 
-        {orders?.length === 0 && (
-          <tbody>
-            <tr className="h-12">
-              <td colSpan={5} className="text-center py-4">
-                No orders found.
-              </td>
-            </tr>
-          </tbody>
-        )}
+          // Render Order Status
+          if (key === "status") {
+            // Get the order status
+            const status = row.status;
 
-        <tbody>
-          {orders?.map((order) => (
-            <tr
-              key={order.id}
-              className="hover:bg-gray-100 even:bg-gray-50 h-16 cursor-pointer transition duration-200 ease-in-out"
-              onClick={() => {
-                router.push(`/admin/orders/${order.id}`); // navigate to order details page without refreshing the page
-                window.scrollTo({ top: 0, behavior: "smooth" }); // 'smooth' or 'auto'
-              }}
-            >
-              <td className="px-4 py-2 border border-gray-300 text-center">
-                {order.id}
-              </td>
+            // Badge
+            const baseClass = "px-3 py-1 rounded-md text-sm border capitalize"; // Define the base class for the role badge
+            let badgeClass = "bg-gray-100 text-gray-700 border border-gray-400"; // Define the badge class based on the role
 
-              <td className="px-4 py-2 border border-gray-300 text-center">
-                {order.user?.first_name} {order.user?.last_name}
-              </td>
+            // Define the badge class based on the status
+            if (status === "pending") {
+              badgeClass = "bg-yellow-100 text-yellow-700 border-yellow-400";
+            }
+            if (status === "canceled") {
+              badgeClass = "bg-red-100 text-red-700 border-red-400";
+            }
+            if (status === "completed") {
+              badgeClass = "bg-green-100 text-green-700 border-green-400";
+            }
 
-              <td className="px-4 py-2 border border-gray-300 text-center">
-                {/* Status Container */}
-                <div
-                  className={`text-xs px-2 py-1 rounded inline-block ${
-                    order.status === "pending"
-                      ? "bg-yellow-100 border border-yellow-400 text-yellow-700"
-                      : order.status === "canceled"
-                      ? "bg-red-100 border border-red-400 text-red-700"
-                      : order.status === "completed"
-                      ? "bg-green-100 border border-green-400 text-green-700"
-                      : "bg-gray-100 border border-gray-400 text-gray-700"
-                  }`}
-                >
-                  <h1 className="font-bold capitalize">{order.status}</h1>
-                </div>
-              </td>
+            return (
+              <span className={`${baseClass} ${badgeClass}`}>{status}</span>
+            );
+          }
 
-              <td className="px-4 py-2 border border-gray-300 text-center">
-                {convertPriceToBHD(String(order.total_price))}
-              </td>
+          // Render Order Total Price
+          if (key === "total_price") {
+            return <span>{convertPriceToBHD(row.total_price)}</span>;
+          }
 
-              <td className="px-4 py-2 border border-gray-300 text-center">
-                {formatDateTime(order.created_at)}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+          // Render Order Date
+          if (key === "created_at") {
+            return <span>{formatDateTime(row.created_at)}</span>;
+          }
 
-      {/* Pagination Control */}
-      {totalPages > 1 && (
-        <div className="flex items-center mt-4 gap-x-4">
-          {/* Previous Button */}
-          <button
-            onClick={() => setCurrentPage(currentPage - 1)}
-            disabled={currentPage === 1}
-            className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${"bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"} ${
-              currentPage === 1 ? "cursor-not-allowed" : ""
-            }`}
-          >
-            Previous
-          </button>
-
-          {/* Counter of current page */}
-          <span className="font-semibold">{`${currentPage} of ${totalPages}`}</span>
-
-          {/* Next Button */}
-          <button
-            onClick={() => setCurrentPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${"bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"} ${
-              currentPage === totalPages ? "cursor-not-allowed" : ""
-            }`}
-          >
-            Next
-          </button>
-        </div>
-      )}
+          // Render value of the cell without any formatting
+          return <span>{row[key]}</span>;
+        }}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        setCurrentPage={setCurrentPage}
+        preventRowClickColumn="created_at"
+      />
     </>
   );
 }

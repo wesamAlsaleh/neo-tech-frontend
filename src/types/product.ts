@@ -1,3 +1,4 @@
+// This is used for the product type
 export type Product = {
   id: number;
   product_name: string;
@@ -22,6 +23,7 @@ export type Product = {
   deleted_at: string | null;
 };
 
+// This is used for the product fetching with all details
 export type SingleProduct = {
   id: number;
   product_name: string;

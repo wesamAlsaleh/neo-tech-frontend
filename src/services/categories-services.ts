@@ -6,12 +6,55 @@ import axios from "axios";
 // Import the cookies from the next/headers module
 import { cookies } from "next/headers";
 
-// Get all categories from the API endpoint
+// Get all categories from the API endpoint for admin
+export async function getAllCategoriesAdmin() {
+  try {
+    // Get user token from cookies
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    // Check if user token exists
+    if (!userToken) {
+      console.error("Token not found in cookies");
+    }
+
+    // Fetch the categories
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/categories`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    // Return the categories
+    return {
+      status: true,
+      message: response.data.message,
+      categories: response.data.categories,
+    };
+  } catch (error: any) {
+    // Log and return the error
+    console.error("Categories fetch error:", error);
+
+    return {
+      status: false,
+      message:
+        error.response?.data?.message ||
+        "An error occurred while fetching categories",
+    };
+  }
+}
+
+// Get all categories from the API endpoint for client
 export async function getAllCategories() {
   try {
     // Fetch the categories
     const response = await axios.get(
-      `${process.env.NEXT_PUBLIC_APP_URI}/categories`,
+      `${process.env.NEXT_PUBLIC_APP_URI}/categories-client`,
       {
         headers: {
           "Content-Type": "application/json",

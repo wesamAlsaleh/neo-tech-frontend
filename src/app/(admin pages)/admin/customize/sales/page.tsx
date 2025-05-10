@@ -1,4 +1,7 @@
+"use client";
+
 import React from "react";
+import { useRouter } from "next/navigation";
 
 // import custom components
 import PageTitle from "@/components/PageTitle";
@@ -6,24 +9,31 @@ import { ActionButton } from "@/components/ActionButton";
 import SaleProductsList from "@/components/SaleProductsList";
 import Separator from "@/components/Separator";
 import FlashSalesList from "@/components/FlashSalesList";
+import Button from "@/components/Button";
 
 export default function page() {
+  // Router Instance
+  const router = useRouter();
+
   return (
     <>
       <PageTitle
         title="Sales Settings"
-        subtitle="Here you can manage and customize NeoTech sales settings"
+        subtitle="Manage NeoTech Flash Sales"
         actionButton={
-          <ActionButton
+          <Button
             text="Add Flash Sale"
-            href="/admin/customize/sales/create-flash-sale"
+            onClick={() => {
+              router.push("/admin/customize/sales/create-flash-sale");
+            }}
           />
         }
         actionButton2={
-          <ActionButton
+          <Button
             text="Manage Products"
-            href="/admin/products"
-            color="steelblue"
+            onClick={() => {
+              router.push("/admin/products");
+            }}
           />
         }
       />

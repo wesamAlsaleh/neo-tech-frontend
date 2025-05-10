@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
+import Button from "./Button";
 
 // interface
 interface HomeComponentTitleProps {
@@ -46,12 +47,7 @@ export default function HomeComponentTitle({
 
         {/* actions */}
         {viewAllButton && url && (
-          <button
-            className="bg-primary text-white font-bold px-4 py-1 rounded-md"
-            onClick={() => router.push(url!)}
-          >
-            View All
-          </button>
+          <Button text="View All" onClick={() => router.push(url!)} />
         )}
 
         {/* Pagination control if provided */}

@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { Product } from "@/types/product";
 
 // import helper functions
-import { convertPriceToBHD } from "@/lib/helpers";
+import { convertPriceToBHD, formatDateTime } from "@/lib/helpers";
 
 // Services import
 import {
@@ -28,6 +28,8 @@ import EditProductModal from "./EditProductModal";
 import DeleteModal from "./DeleteModal";
 import SaleModal from "./SaleModal";
 import TableStatusColumn from "./TableStatusColumn";
+import Table from "./Table";
+import Image from "next/image";
 
 export default function ProductsList() {
   // Router instance
@@ -173,10 +175,22 @@ export default function ProductsList() {
     initFetch();
   }, [currentPage, perPage]);
 
-  // If loading, show loading spinner
-  if (loading) {
-    return <LoadingSpinner />;
-  }
+  // Prepare Table Columns
+  const columns: {
+    key: string;
+    label: string;
+    align?: "left" | "center" | "right";
+  }[] = [
+    { key: "product_name", label: "Product Name" },
+    { key: "product_image", label: "Product Image" },
+    { key: "is_active", label: "Is Active" },
+    { key: "product_stock", label: "Stock" },
+    { key: "onSale", label: "On Sale" },
+    { key: "product_price", label: "Product Price" },
+    { key: "created_at", label: "Created At" },
+    { key: "updated_at", label: "Updated At" },
+    { key: "actions", label: "Actions" },
+  ];
 
   return (
     <div className="overflow-x-auto">
@@ -200,260 +214,230 @@ export default function ProductsList() {
       )}
 
       {/* Products Table */}
-      <table className="min-w-full table-auto border-collapse border border-gray-300 shadow-md">
-        <thead>
-          <tr className="bg-gray-100 border-b border-gray-300">
-            <th className="px-4 py-2 border border-gray-300">Product Name</th>
-            <th className="px-4 py-2 border border-gray-300">Product Image</th>
-            <th className="px-4 py-2 border border-gray-300">Is Active</th>
-            <th className="px-4 py-2 border border-gray-300">In Stock</th>
-            <th className="px-4 py-2 border border-gray-300">On Sale</th>
-            <th className="px-4 py-2 border border-gray-300">Product Price</th>
-            <th className="px-4 py-2 border border-gray-300">Product Rating</th>
-            <th className="px-4 py-2 border border-gray-300">Created At</th>
-            <th className="px-4 py-2 border border-gray-300">Updated At</th>
-            <th className="px-4 py-2 border border-gray-300">Actions</th>
-          </tr>
-        </thead>
+      <Table
+        columns={columns}
+        rows={products || []}
+        noDataMessage="No products found."
+        onRowClick={(row) => router.push(`/products/${row.slug}`)}
+        renderCell={(row, key) => {
+          // Render Product Image
+          if (key === "product_image") {
+            if (row.images) {
+              return (
+                <Image
+                  className="object-cover rounded"
+                  src={row.images[0]} // first image
+                  alt={row.product_name}
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src =
+                      "https://placehold.co/100x100?text=No+Image";
+                  }}
+                  width={80}
+                  height={80}
+                />
+              );
+            } else {
+              return <span className="text-xs text-black-500">No image</span>;
+            }
+          }
 
-        <tbody>
-          {(products || []).length === 0 ? (
-            <tr>
-              <td colSpan={8} className="px-4 py-6 text-center">
-                No products found.
-              </td>
-            </tr>
-          ) : (
-            products?.map((product) => (
-              <tr
-                key={product.id}
-                className="hover:bg-gray-100 even:bg-gray-50"
-              >
-                {/* Product Name */}
-                <td className="px-4 py-2 border border-gray-300">
-                  {product.product_name}
-                </td>
+          // Render Product Status Badge
+          if (key === "is_active") {
+            // Get the image status
+            const isActive = row.is_active ? true : false;
 
-                {/* Product first image*/}
-                <td className="px-4 py-2 border border-gray-300">
-                  {product.images && product.images.length > 0 ? (
-                    <img
-                      className="h-10 w-10 object-cover rounded"
-                      src={product.images[0]} // first image
-                      alt={product.product_name}
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src =
-                          "https://placehold.co/100x100?text=No+Image";
-                      }}
-                    />
-                  ) : (
-                    <div className="h-10 w-10 bg-gray-200 flex items-center justify-center rounded">
-                      <span className="text-xs text-gray-500">No image</span>
-                    </div>
-                  )}
-                </td>
+            const statusText = isActive ? "Active" : "Inactive";
 
-                {/* Product Active Status */}
-                <td className="px-4 py-2 border border-gray-300">
-                  <TableStatusColumn
-                    condition={product.is_active}
-                    onYes="Active"
-                    onNo="Inactive"
+            // Badge
+            const baseClass = "px-3 py-1 rounded-md text-sm border capitalize"; // Define the base class for the role badge
+            let badgeClass = "bg-gray-100 text-gray-700 border border-gray-400"; // Define the badge class based on the role
+
+            // Define the badge class based on the status
+            if (isActive) {
+              badgeClass = "bg-green-100 text-green-700 border-green-400";
+            } else {
+              badgeClass = "bg-red-100 text-red-700 border-red-400";
+            }
+
+            return (
+              <span className={`${baseClass} ${badgeClass}`}>{statusText}</span>
+            );
+          }
+
+          // Render Product Stock Badge
+          if (key === "product_stock") {
+            // Get the product stock
+            const productStock = row.product_stock;
+            // Badge
+            const baseClass = "px-3 py-1 rounded-md text-sm border capitalize"; // Define the base class for the role badge
+            let badgeClass = "bg-gray-100 text-gray-700 border border-gray-400"; // Define the badge class based on the role
+
+            // Define the badge class based on the role
+            if (productStock > 5) {
+              badgeClass = "bg-blue-100 text-blue-700 border-blue-400";
+            } else if (productStock < 5) {
+              badgeClass = "bg-orange-100 text-orange-700 border-orange-400";
+            } else {
+              badgeClass = "bg-red-100 text-red-700 border-red-400";
+            }
+
+            return (
+              <span className={`${baseClass} ${badgeClass}`}>
+                {productStock}
+              </span>
+            );
+          }
+
+          // Render the sale badge
+          if (key === "onSale") {
+            // Check if the product is on sale
+            const onSale = row.onSale;
+
+            // Badge
+            const baseClass =
+              "px-3 py-1 rounded-md text-sm border capitalize truncate"; // Define the base class for the role badge
+            let badgeClass = "bg-gray-100 text-gray-700 border border-gray-400"; // Define the badge class based on the role
+
+            // Define the badge class based on the role
+            if (onSale) {
+              badgeClass = "bg-amber-100 text-amber-700 border-amber-400";
+            } else {
+              badgeClass = "bg-gray-100 text-gray-700 border-gray-400";
+            }
+
+            return (
+              <span className={`${baseClass} ${badgeClass}`}>
+                {onSale ? "On Sale" : "Not On Sale"}
+              </span>
+            );
+          }
+
+          // Render Product Price
+          if (key === "product_price") {
+            // Get the product price based on whether it's on sale or not
+            const productPrice = row.onSale
+              ? row.product_price_after_discount
+              : row.product_price;
+
+            return <span>{convertPriceToBHD(String(productPrice))}</span>;
+          }
+
+          // Render Category Created At
+          if (key === "created_at" || key === "updated_at") {
+            return (
+              <span className="truncate">{formatDateTime(row.created_at)}</span>
+            );
+          }
+
+          // Render Actions
+          if (key === "actions") {
+            return (
+              <div className="flex items-center justify-center space-x-2">
+                {/* Edit button */}
+                <button
+                  className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
+                  onClick={() => handleEditClick(row)}
+                  title={`Edit ${row.product_name}`}
+                >
+                  <img
+                    src={icons.edit50.src}
+                    alt="Edit"
+                    width={24}
+                    height={24}
                   />
-                </td>
+                </button>
 
-                {/* Product stock Status */}
-                <td className="px-4 py-2 border border-gray-300">
-                  {product.product_stock > 0 ? (
-                    <span className="bg-green-100 text-green-600 px-2 py-1 rounded-md font-bold">
-                      {product.product_stock} in stock
-                    </span>
-                  ) : (
-                    <span className="bg-red-100 text-red-600 px-2 py-1 rounded-md font-bold">
-                      Out of stock
-                    </span>
-                  )}
-                </td>
-
-                {/* Product On Sale Status */}
-                <td className="px-4 py-2 border border-gray-300">
-                  <TableStatusColumn
-                    condition={product.onSale}
-                    onYes="Yes"
-                    onNo="No"
+                {/* Toggle status button */}
+                <button
+                  className={`${
+                    row.is_active
+                      ? "bg-rose-400 hover:bg-rose-500"
+                      : "bg-green-500 hover:bg-green-600"
+                  } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
+                  onClick={() => handleToggleProductStatus(String(row.id))}
+                  title={
+                    row.is_active
+                      ? `Deactivate ${row.product_name}`
+                      : `Activate product ${row.product_name}`
+                  }
+                >
+                  <img
+                    src={
+                      row.is_active
+                        ? icons.removeBasket50.src
+                        : icons.addBasket50.src
+                    }
+                    alt={row.is_active ? "Deactivate" : "Activate"}
+                    width={24}
+                    height={24}
                   />
-                </td>
+                </button>
 
-                {/* Product Original Price */}
-                <td className="px-4 py-2 border border-gray-300">
-                  {product.onSale ? (
-                    <>
-                      <span className="line-through text-gray-500 mr-2">
-                        {convertPriceToBHD(product.product_price)}
-                      </span>
-                      <span>
-                        {convertPriceToBHD(
-                          product.product_price_after_discount
-                        )}
-                      </span>
-                    </>
-                  ) : (
-                    <span>{convertPriceToBHD(product.product_price)}</span>
-                  )}
-                </td>
+                {/* View product button */}
+                {/* <button
+                  className={` bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
+                  title={`View ${row.product_name}`}
+                  onClick={() => router.push(`/products/${row.slug}`)}
+                >
+                  <img
+                    src={icons.viewIcon96.src}
+                    alt={`View ${row.product_name}`}
+                    width={24}
+                    height={24}
+                  />
+                </button> */}
 
-                {/* Product Rating */}
-                <td className="px-4 py-2 border border-gray-300">
-                  {product.product_rating} ⭐
-                </td>
+                {/* Sale button */}
+                <button
+                  className={`${
+                    row.onSale
+                      ? "bg-amber-400 hover:bg-amber-500"
+                      : "bg-lime-400 hover:bg-lime-600"
+                  } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
+                  title={
+                    row.onSale
+                      ? `Remove ${row.product_name} From Sale`
+                      : `Put ${row.product_name} On Sale`
+                  }
+                  onClick={() => handleSaleProduct(row)}
+                >
+                  <img
+                    src={
+                      row.onSale
+                        ? icons.salePriceTag48.src
+                        : icons.salePriceTag48.src
+                    }
+                    alt={row.onSale ? "Remove from Sale" : "Put On Sale"}
+                    width={24}
+                    height={24}
+                  />
+                </button>
 
-                {/* Product Created Date */}
-                <td className="px-4 py-2 border border-gray-300">
-                  {new Date(product.created_at).toLocaleDateString()}
-                </td>
+                {/* Delete button */}
+                {/* <button
+                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
+                  onClick={() => handleDeleteClick(row)}
+                  title={`Delete ${row.product_name}`}
+                >
+                  <img
+                    src={icons.delete50.src}
+                    alt="Delete"
+                    width={24}
+                    height={24}
+                  />
+                </button> */}
+              </div>
+            );
+          }
 
-                {/* Product updated Date */}
-                <td className="px-4 py-2 border border-gray-300">
-                  {new Date(product.updated_at).toLocaleDateString()}
-                </td>
-
-                {/* Action buttons */}
-                <td className="px-4 py-2 border border-gray-300">
-                  <div className="flex items-center justify-center space-x-2">
-                    {/* Edit button */}
-                    <button
-                      className="bg-sky-500 hover:bg-sky-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
-                      onClick={() => handleEditClick(product)}
-                      title={`Edit ${product.product_name}`}
-                    >
-                      <img
-                        src={icons.edit50.src}
-                        alt="Edit"
-                        width={24}
-                        height={24}
-                      />
-                    </button>
-
-                    {/* Toggle status button */}
-                    <button
-                      className={`${
-                        product.is_active
-                          ? "bg-rose-400 hover:bg-rose-500"
-                          : "bg-green-500 hover:bg-green-600"
-                      } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
-                      onClick={() =>
-                        handleToggleProductStatus(String(product.id))
-                      }
-                      title={
-                        product.is_active
-                          ? `Deactivate ${product.product_name}`
-                          : `Activate product ${product.product_name}`
-                      }
-                    >
-                      <img
-                        src={
-                          product.is_active
-                            ? icons.removeBasket50.src
-                            : icons.addBasket50.src
-                        }
-                        alt={product.is_active ? "Deactivate" : "Activate"}
-                        width={24}
-                        height={24}
-                      />
-                    </button>
-
-                    {/* View product button */}
-                    <button
-                      className={` bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
-                      title={`View ${product.product_name}`}
-                      onClick={() => router.push(`/products/${product.slug}`)}
-                    >
-                      <img
-                        src={icons.viewIcon96.src}
-                        alt={`View ${product.product_name}`}
-                        width={24}
-                        height={24}
-                      />
-                    </button>
-
-                    {/* Sale button */}
-                    <button
-                      className={`${
-                        product.onSale
-                          ? "bg-amber-400 hover:bg-amber-500"
-                          : "bg-lime-400 hover:bg-lime-600"
-                      } text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition`}
-                      title={
-                        product.onSale
-                          ? `Remove ${product.product_name} From Sale`
-                          : `Put ${product.product_name} On Sale`
-                      }
-                      onClick={() => handleSaleProduct(product)}
-                    >
-                      <img
-                        src={
-                          product.onSale
-                            ? icons.salePriceTag48.src
-                            : icons.salePriceTag48.src
-                        }
-                        alt={
-                          product.onSale ? "Remove from Sale" : "Put On Sale"
-                        }
-                        width={24}
-                        height={24}
-                      />
-                    </button>
-
-                    {/* Delete button */}
-                    <button
-                      className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition"
-                      onClick={() => handleDeleteClick(product)}
-                      title={`Delete ${product.product_name}`}
-                    >
-                      <img
-                        src={icons.delete50.src}
-                        alt="Delete"
-                        width={24}
-                        height={24}
-                      />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-
-      {/* Pagination Control */}
-      {totalPages > 1 && (
-        <div className="flex items-center mt-4 gap-x-4">
-          {/* Previous Button */}
-          <button
-            onClick={() => setCurrentPage(currentPage - 1)}
-            disabled={currentPage === 1}
-            className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${"bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"} ${
-              currentPage === 1 ? "cursor-not-allowed" : ""
-            }`}
-          >
-            Previous
-          </button>
-
-          {/* Counter of current page */}
-          <span className="font-semibold">{`${currentPage} of ${totalPages}`}</span>
-
-          {/* Next Button */}
-          <button
-            onClick={() => setCurrentPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className={`px-4 py-2 text-white rounded-md text-sm font-medium disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-offset-2 ${"bg-orange-600 hover:bg-orange-700 focus:ring-orange-500"} ${
-              currentPage === totalPages ? "cursor-not-allowed" : ""
-            }`}
-          >
-            Next
-          </button>
-        </div>
-      )}
+          // Render without any special formatting
+          return <span>{row[key]}</span>;
+        }}
+        isLoading={loading} // Loading state
+        currentPage={currentPage} // Current page number
+        totalPages={totalPages} // Total number of pages
+        setCurrentPage={setCurrentPage} // Function to set the current page
+      />
 
       {/* Edit Modal */}
       <EditProductModal

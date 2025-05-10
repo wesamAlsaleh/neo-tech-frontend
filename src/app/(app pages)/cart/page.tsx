@@ -28,6 +28,7 @@ import { convertPriceToBHD } from "@/lib/helpers";
 
 // Import icons
 import { icons } from "../../../../public/icons";
+import Button from "@/components/Button";
 
 export default function page() {
   // Get the user data from the auth context
@@ -215,15 +216,20 @@ export default function page() {
       {/* Header Container */}
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-semibold text-gray-500 mb-4">
-          Your Cart ({userCartItemsCount})
+          Your Cart ({userCartItemsCount || 0})
         </h1>
 
         {/* Add to cart button */}
-        <Link href="/home">
-          <button className="px-6 py-3 border border-gray-500 text-black rounded-lg hover:bg-orange-100 transition">
-            Return To Shop
-          </button>
-        </Link>
+        <Button
+          text="Return To Shop"
+          onClick={() => {
+            router.push("/home");
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            });
+          }}
+        />
       </div>
 
       {/* Display error message if something is wrong */}
@@ -255,12 +261,16 @@ export default function page() {
           </h1>
 
           {/* Link */}
-          <Link
-            href="/home"
-            className="px-6 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
-          >
-            Return To Home Page
-          </Link>
+          <Button
+            text="Return To Home Page"
+            onClick={() => {
+              router.push("/home");
+              window.scrollTo({
+                top: 0,
+                behavior: "smooth",
+              });
+            }}
+          />
         </div>
       )}
 

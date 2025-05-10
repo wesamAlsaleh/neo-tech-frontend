@@ -2,27 +2,35 @@
 
 import Link from "next/link";
 import React from "react";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
+
+// import date-fns for date manipulation
+import { subMonths, format } from "date-fns";
 
 // import icons
 import { icons } from "../../public/icons";
-import Image from "next/image";
 
 // Custom LI element
 const LI = ({
   href,
+  activeUrl,
   name,
   iconSrc,
 }: {
   href: string;
+  activeUrl?: string; // This is used to check if the current page is active without query params
   name: string;
   iconSrc?: string;
 }) => {
   // Get the url of the current page and highlight the corresponding link
   const pathname = usePathname();
 
+  // Get base path without query params
+  const basePath = pathname.split("?")[0];
+
   // Check if the current pathname matches the href
-  const isActive = pathname === href;
+  const isActive = pathname === href || (activeUrl && basePath === activeUrl);
 
   return (
     <li>
@@ -52,6 +60,10 @@ const LI = ({
 };
 
 export default function AdminSidebar() {
+  // Get today's date and one month ago date
+  const formattedEnd = format(new Date(), "yyyy-MM-dd"); // Today
+  const formattedStart = format(subMonths(new Date(), 1), "yyyy-MM-dd"); // Exactly 1 month ago
+
   return (
     <aside className="flex flex-col w-64 min-h-screen bg-gray-900 text-gray-300 p-5 shadow-lg">
       {/* Side Bar LOGO Container */}
@@ -84,11 +96,6 @@ export default function AdminSidebar() {
             iconSrc={icons.categoryIcon96.src}
           />
           <LI
-            href="#/admin/brands"
-            name="Brands"
-            iconSrc={icons.brandIcon96.src}
-          />
-          <LI
             href="/admin/products"
             name="Products"
             iconSrc={icons.productsIcon96.src}
@@ -103,12 +110,17 @@ export default function AdminSidebar() {
             name="Flash Sales"
             iconSrc={icons.flashSaleIcon96.src}
           />
+          <LI
+            href="/admin/users"
+            name="Users"
+            iconSrc={icons.customerInsightsIcon96.src}
+          />
         </ul>
 
         {/* Group 2 */}
         <GroupTitle title="Customize Shop" mt />
         <ul className="space-y-1.5">
-          <LI href="#" name="Banner" iconSrc={icons.bannerIcon96.src} />
+          {/* <LI href="#" name="Banner" iconSrc={icons.bannerIcon96.src} /> */}
           <LI
             href="/admin/customize/slider"
             name="Image Carousel"
@@ -125,14 +137,15 @@ export default function AdminSidebar() {
         <GroupTitle title="Analytics" mt />
         <ul className="space-y-1.5">
           <LI
-            href="/admin/analytics"
+            href={`/admin/analytics?start_date=${formattedStart}&end_date=${formattedEnd}`}
+            activeUrl="/admin/analytics"
             name="Sales Reports"
             iconSrc={icons.analyticsIcon96.src}
           />
           <LI
-            href="/admin/insights"
-            name="Customer Insights"
-            iconSrc={icons.customerInsightsIcon96.src}
+            href="/admin/products-statistics"
+            name="Products Statistics"
+            iconSrc={icons.statisticsIcon96.src}
           />
         </ul>
 

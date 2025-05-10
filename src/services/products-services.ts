@@ -4,7 +4,7 @@ import axios from "axios";
 import { cookies } from "next/headers";
 
 /**
- * @function getProducts to get all products
+ * @function getProducts to get all products 'admin'
  */
 export const getProducts = async (currentPage: number, perPage: number) => {
   try {
@@ -19,6 +19,77 @@ export const getProducts = async (currentPage: number, perPage: number) => {
       currentPage: response.data.products.current_page,
       totalPages: response.data.products.last_page,
       perPage: response.data.products.per_page,
+    };
+  } catch (error: any) {
+    // Debugging error
+    console.error(error);
+
+    // Log the Developer message
+    console.log(error.response.data.developerMessage);
+
+    return {
+      status: false,
+      message: error.response.data.message,
+    };
+  }
+};
+
+/**
+ * @function getProductsClient to get all products 'client'
+ * @param {number} currentPage - The current page number (required)
+ * @param {number} perPage - The number of products per page (required)
+ * @param {string[]} categorySlugs - An array of category slugs to filter products by category, eg. ['electronics', 'clothing'] (optional)
+ * @param {number} priceMin - The minimum price to filter products by price (optional)
+ * @param {number} priceMax - The maximum price to filter products by price (optional)
+ * @param {boolean} onSale - A boolean to filter products that are on sale (optional)
+ * @param {string} sortBy - The sorting criteria for the products, only for: priceAsc, priceDesc ,newest, popular, bestSelling (optional)
+ *
+ * @returns {Promise<{status: boolean, products?: Product[], currentPage?: number, perPage?: number, totalPages?: number, totalProducts?: number, message?: string}>}
+ */
+export const getProductsClient = async (
+  currentPage: number,
+  perPage: number,
+  categorySlugs?: string[], // array of category slugs
+  priceMin?: number,
+  priceMax?: number,
+  onSale?: boolean,
+  sortBy?: string
+) => {
+  try {
+    // Base URL for the API endpoint
+    let url = `products-client?page=${currentPage}&perPage=${perPage}`;
+
+    // If categorySlug is provided, append it to the URL
+    if (categorySlugs && categorySlugs.length > 0) {
+      url += `&categories=${categorySlugs.join(",")}`; // Converts array to comma-separated string e.g. 'electronics,clothing'
+    }
+
+    // If priceMin and priceMax are provided, append them to the URL
+    if (priceMin != undefined && priceMax != undefined) {
+      url += `&priceMin=${priceMin}&priceMax=${priceMax}`;
+    }
+
+    // If onSale is provided, append it to the URL
+    if (onSale) {
+      url += `&onSale=${onSale}`;
+    }
+
+    // If sortBy is provided, append it to the URL
+    if (sortBy) {
+      url += `&sortBy=${sortBy}`;
+    }
+
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/${url}`
+    );
+
+    return {
+      status: true,
+      products: response.data.products.data,
+      currentPage: response.data.products.current_page,
+      perPage: response.data.products.per_page,
+      totalPages: response.data.products.last_page,
+      totalProducts: response.data.products.total,
     };
   } catch (error: any) {
     // Debugging error
@@ -745,6 +816,82 @@ export const putRating = async (productId: string, rating: number) => {
       message:
         error.response.data.message ||
         "An error occurred while rating the product.",
+    };
+  }
+};
+
+/**
+ * @function searchProducts - to search for products using a search term
+ * @param {string} searchTerm - The search term to filter products by name or barcode
+ */
+export const searchProducts = async (searchTerm: string) => {
+  try {
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/search-products?query=${searchTerm}`
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+      productsCount: response.data.products_count,
+      products: response.data.products,
+    };
+  } catch (error) {
+    console.error(error);
+
+    return {
+      status: false,
+      message: "An error occurred while searching for the products.",
+    };
+  }
+};
+
+/**
+ * @function getProductStatistics - to get product statistics
+ */
+export const getProductStatistics = async (
+  currentPage: number,
+  perPage: number
+) => {
+  try {
+    const cookieStore = await cookies();
+    const userToken = cookieStore.get("userToken")?.value;
+
+    if (!userToken) {
+      return {
+        status: false,
+        message: "Authentication token not found.",
+      };
+    }
+
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_APP_URI}/admin/products-statistics?per_page=${perPage}&page=${currentPage}`,
+      {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      }
+    );
+
+    return {
+      status: true,
+      message: response.data.message,
+      products: response.data.products.data,
+      currentPage: response.data.products.current_page,
+      totalPages: response.data.products.last_page,
+      totalProducts: response.data.products.total,
+      perPage: response.data.products.per_page,
+    };
+  } catch (error: any) {
+    // Debugging error
+    console.error(error);
+
+    // Log the Developer message
+    console.log(error);
+
+    return {
+      status: false,
+      message: error.response.data.message,
     };
   }
 };

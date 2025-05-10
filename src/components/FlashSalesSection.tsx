@@ -17,6 +17,7 @@ import { icons } from "../../public/icons";
 import HomeComponentTitle from "./HomeComponentTitle";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ProductCard from "@/components/ProductCard";
+import ProductsGridLayout from "./(layouts)/ProductsGridLayout";
 
 export default function FlashSalesSection() {
   // pagination state
@@ -126,11 +127,7 @@ export default function FlashSalesSection() {
       />
 
       {/* Product Cards Grid */}
-      <div className="grid lg:grid-cols-8 md:grid-cols-4 sm:grid-cols-1 gap-2 w-[100%]">
-        {products.map((product) => {
-          return <ProductCard key={product.id} product={product} />;
-        })}
-      </div>
+      <ProductsGridLayout products={products} />
     </div>
   );
 }

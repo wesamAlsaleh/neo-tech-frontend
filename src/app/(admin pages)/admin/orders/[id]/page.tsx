@@ -98,8 +98,6 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
             iconSrc={icons.edit100.src}
           />
         }
-        actionButton3={<Button text="Download" />}
-        actionButton4={<Button text="Print" />}
       />
 
       {/* Content Container */}
@@ -299,7 +297,13 @@ export default function page({ params }: { params: Promise<{ id: string }> }) {
               }
               CardFooter={
                 <div className="p-1">
-                  <Button text="Request Invoice" buttonClassName="w-full" />
+                  <Button
+                    text="Request Invoice"
+                    buttonClassName="w-full"
+                    onClick={() => {
+                      router.push(`/admin/orders/${order?.id}/print`);
+                    }}
+                  />
                 </div>
               }
             />
